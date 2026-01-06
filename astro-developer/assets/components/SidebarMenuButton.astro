@@ -1,0 +1,13 @@
+---
+const { href, class: className = "" } = Astro.props;
+const classes = `flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 ${className}`.trim();
+---
+{href ? (
+  <a class={classes} href={href}>
+    <slot />
+  </a>
+) : (
+  <button class={classes} type="button">
+    <slot />
+  </button>
+)}

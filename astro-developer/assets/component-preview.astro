@@ -1,0 +1,139 @@
+---
+import Button from "@components/ui/Button.astro";
+import Card from "@components/ui/Card.astro";
+import Container from "@components/ui/Container.astro";
+import Section from "@components/ui/Section.astro";
+import StatsGrid from "@components/ui/StatsGrid.astro";
+import IconBadge from "@components/ui/IconBadge.astro";
+import Badge from "@components/ui/Badge.astro";
+import Avatar from "@components/ui/Avatar.astro";
+import Input from "@components/ui/Input.astro";
+import Textarea from "@components/ui/Textarea.astro";
+import Checkbox from "@components/ui/Checkbox.astro";
+import Switch from "@components/ui/Switch.astro";
+import Select from "@components/ui/Select.astro";
+import Accordion from "@components/ui/Accordion.astro";
+import AccordionItem from "@components/ui/AccordionItem.astro";
+import AccordionTrigger from "@components/ui/AccordionTrigger.astro";
+import AccordionContent from "@components/ui/AccordionContent.astro";
+import Banner from "@components/ui/Banner.astro";
+import BannerContent from "@components/ui/BannerContent.astro";
+import BannerTitle from "@components/ui/BannerTitle.astro";
+import BannerDescription from "@components/ui/BannerDescription.astro";
+import SidebarMenu from "@components/ui/SidebarMenu.astro";
+import SidebarMenuItem from "@components/ui/SidebarMenuItem.astro";
+import SidebarMenuButton from "@components/ui/SidebarMenuButton.astro";
+
+const stats = [
+  { label: "Users", value: "12.4k", note: "Last 30 days" },
+  { label: "Signups", value: "820", note: "This week" },
+  { label: "Revenue", value: "$24k", note: "Monthly" },
+  { label: "Retention", value: "92%", note: "YoY" },
+];
+
+const faqItems = [
+  { question: "What is included?", answer: "A curated set of Astro components." },
+  { question: "Can I customize?", answer: "Yes, edit props and Tailwind classes." },
+];
+
+const selectOptions = [
+  { label: "Option A", value: "a" },
+  { label: "Option B", value: "b" },
+  { label: "Option C", value: "c" },
+];
+---
+
+<Container>
+  <Section title="Component Preview" kicker="Astro Developer">
+    <div class="grid gap-6">
+      <Card title="Buttons">
+        <div class="flex flex-wrap gap-3">
+          <Button>Primary</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="ghost">Ghost</Button>
+        </div>
+      </Card>
+
+      <Card title="Badges & Avatars">
+        <div class="flex flex-wrap items-center gap-4">
+          <Badge text="New" />
+          <IconBadge label="Featured" icon="tabler:star" />
+          <Avatar alt="A" />
+          <Avatar alt="J" size="lg" />
+        </div>
+      </Card>
+
+      <Card title="Forms">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <Input label="First name" name="firstName" placeholder="Jane" />
+          <Input label="Last name" name="lastName" placeholder="Doe" />
+          <Textarea label="Notes" name="notes" placeholder="Add details" />
+          <div class="space-y-3">
+            <Checkbox label="Subscribe" name="subscribe" />
+            <Switch label="Enable alerts" name="alerts" />
+            <Select options={selectOptions} placeholder="Choose" />
+          </div>
+        </div>
+      </Card>
+
+      <Card title="Stats Grid">
+        <StatsGrid stats={stats} />
+      </Card>
+
+      <Card title="Accordion">
+        <Accordion>
+          <AccordionItem open>
+            <AccordionTrigger>Product Information</AccordionTrigger>
+            <AccordionContent>
+              <p>Premium materials, designed for performance.</p>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem>
+            <AccordionTrigger>Shipping Details</AccordionTrigger>
+            <AccordionContent>
+              <p>Worldwide shipping within 3-5 business days.</p>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </Card>
+
+      <Banner>
+        <BannerContent>
+          <BannerTitle>Banner Title</BannerTitle>
+          <BannerDescription>Banner description copy goes here.</BannerDescription>
+        </BannerContent>
+      </Banner>
+
+      <Card title="Sidebar Menu">
+        <SidebarMenu class="w-64">
+          <SidebarMenuItem>
+            <SidebarMenuButton href="/">
+              <span>Home</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton href="/dashboard">
+              <span>Dashboard</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton href="/settings">
+              <span>Settings</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </Card>
+
+      <Card title="FAQ Snippets">
+        <ul class="space-y-4">
+          {faqItems.map((item) => (
+            <li class="rounded-md border border-gray-200 p-4">
+              <p class="font-medium text-gray-900">{item.question}</p>
+              <p class="mt-2 text-sm text-gray-600">{item.answer}</p>
+            </li>
+          ))}
+        </ul>
+      </Card>
+    </div>
+  </Section>
+</Container>

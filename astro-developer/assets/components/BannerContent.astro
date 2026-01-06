@@ -1,0 +1,7 @@
+---
+const { class: className = "" } = Astro.props;
+const classes = `space-y-2 ${className}`.trim();
+---
+<div class={classes}>
+  <slot />
+</div>

@@ -1,0 +1,8 @@
+---
+import Select from "@components/vue/Select.vue";
+
+const { options = [], modelValue = "", placeholder = "Select an option", class: className = "" } = Astro.props;
+---
+<div class={className}>
+  <Select options={options} modelValue={modelValue} placeholder={placeholder} client:load />
+</div>

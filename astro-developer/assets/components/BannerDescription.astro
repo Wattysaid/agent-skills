@@ -1,0 +1,7 @@
+---
+const { class: className = "" } = Astro.props;
+const classes = `text-sm text-gray-600 ${className}`.trim();
+---
+<p class={classes}>
+  <slot />
+</p>

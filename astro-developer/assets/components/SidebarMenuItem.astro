@@ -1,0 +1,7 @@
+---
+const { class: className = "" } = Astro.props;
+const classes = `rounded-md ${className}`.trim();
+---
+<div class={classes}>
+  <slot />
+</div>

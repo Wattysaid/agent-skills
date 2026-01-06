@@ -1,0 +1,33 @@
+---
+const {
+  href,
+  variant = "primary",
+  size = "md",
+  class: className = "",
+  type = "button",
+} = Astro.props;
+
+const variants = {
+  primary: "bg-black text-white hover:bg-gray-900",
+  secondary: "bg-white text-black border border-black hover:bg-gray-100",
+  ghost: "bg-transparent text-black hover:bg-gray-100",
+};
+
+const sizes = {
+  sm: "px-3 py-1.5 text-sm",
+  md: "px-4 py-2 text-sm",
+  lg: "px-5 py-2.5 text-base",
+};
+
+const base = "inline-flex items-center gap-2 rounded-md font-medium transition";
+const classes = `${base} ${variants[variant] ?? variants.primary} ${sizes[size] ?? sizes.md} ${className}`.trim();
+---
+{href ? (
+  <a class={classes} href={href}>
+    <slot />
+  </a>
+) : (
+  <button class={classes} type={type}>
+    <slot />
+  </button>
+)}

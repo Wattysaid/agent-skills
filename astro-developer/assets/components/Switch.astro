@@ -1,0 +1,10 @@
+---
+const { label = "Toggle", name = "toggle", class: className = "" } = Astro.props;
+---
+<label class={`inline-flex items-center gap-2 text-sm text-gray-700 ${className}`.trim()}>
+  <input type="checkbox" name={name} class="peer sr-only" />
+  <span class="relative h-5 w-9 rounded-full bg-gray-200 transition peer-checked:bg-black">
+    <span class="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-4"></span>
+  </span>
+  <span>{label}</span>
+</label>

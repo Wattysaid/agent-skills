@@ -1,0 +1,11 @@
+---
+const { open = false, class: className = "" } = Astro.props;
+const classes = `group py-4 ${className}`.trim();
+---
+<details class={classes} open={open}>
+  <summary class="flex cursor-pointer items-center justify-between text-sm font-medium text-gray-900">
+    <slot name="trigger" />
+    <span class="text-base text-gray-400 group-open:rotate-45 transition">+</span>
+  </summary>
+  <slot name="content" />
+</details>

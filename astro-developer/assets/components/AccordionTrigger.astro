@@ -1,0 +1,7 @@
+---
+const { class: className = "" } = Astro.props;
+const classes = `text-left ${className}`.trim();
+---
+<span slot="trigger" class={classes}>
+  <slot />
+</span>

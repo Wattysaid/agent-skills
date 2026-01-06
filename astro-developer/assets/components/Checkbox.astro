@@ -1,0 +1,7 @@
+---
+const { label = "Checkbox", name = "field", class: className = "" } = Astro.props;
+---
+<label class={`inline-flex items-center gap-2 text-sm text-gray-700 ${className}`.trim()}>
+  <input type="checkbox" name={name} class="h-4 w-4 rounded border-gray-300" />
+  <span>{label}</span>
+</label>
