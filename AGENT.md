@@ -47,6 +47,78 @@ Usage notes:
 <location>project</location>
 </skill>
 
+<skill>
+<name>business-skills</name>
+<description>Index of business skills in this folder. Use to select the right skill for a task and understand each skill’s role and trigger.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>business-consultant</name>
+<description>Provide structured business consulting analysis, diagnostics, and recommendations across strategy, finance, operations, sales, and marketing. Use for consulting-style problem solving, executive summaries, or decision support.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>strategy</name>
+<description>Develop business strategy, competitive analysis, and growth options. Use for strategic planning, market analysis, or portfolio decisions.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>finance</name>
+<description>Analyze financial statements, budgets, cash flow, unit economics, and financial risks. Use for finance/accounting questions, financial performance reviews, forecasts, or budgeting tasks.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>operations</name>
+<description>Improve operational processes, capacity, service levels, and efficiency. Use for workflows, process design, operational KPIs, or execution issues.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>marketing</name>
+<description>Plan and evaluate marketing strategy, positioning, campaigns, and metrics. Use for marketing, brand, growth, acquisition, or go-to-market tasks.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>sales</name>
+<description>Build sales strategy, pipelines, outreach, and forecasting. Use for sales process design, revenue targets, pipeline health, or deal management tasks.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>customer-success</name>
+<description>Improve customer onboarding, retention, and account health. Use for customer success strategy, churn reduction, QBRs, or customer lifecycle tasks.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>leadership</name>
+<description>Support leadership decisions, org design, and team effectiveness. Use for management, culture, org change, or leadership communication tasks.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>hr</name>
+<description>Support HR and people operations work such as hiring, performance, compensation, and policies. Use for HR processes, employee relations, or org health tasks.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>pmo</name>
+<description>Support project and program management: planning, tracking, governance, and delivery. Use for PMO reporting, roadmaps, risk logs, or execution cadence tasks.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>legal</name>
+<description>Assist with legal/compliance workflows such as contract reviews, policy drafting, and risk assessment. Use for legal questions, compliance checks, or governance tasks.</description>
+<location>project</location>
+</skill>
+
 </available_skills>
 <!-- SKILLS_TABLE_END -->
 

@@ -10,6 +10,18 @@ A small collection of Codex skills used by BusinessStrategyToolkit.com. Each ski
 | dev-browser | Browser automation with persistent page state for navigation, form filling, scraping, testing, and screenshots. | `dev-browser/` |
 | gastown | Multi-agent orchestrator for Claude Code with gt/bd workflow operations and recovery. | `gastown/` |
 | zai-cli | Z.AI CLI for vision analysis, web search, page reading, GitHub repo exploration, and MCP tools. | `zai-cli/` |
+| business-skills | Index of business skills with routing guidance for the suite. | `Business-Skills/` |
+| business-consultant | Cross-functional consulting analysis and recommendations for executive decision support. | `Business-Skills/business-consultant/` |
+| strategy | Business strategy, competitive analysis, and growth options. | `Business-Skills/strategy/` |
+| finance | Financial statements, budgeting, cash flow, and unit economics analysis. | `Business-Skills/finance/` |
+| operations | Operational process design, capacity, service levels, and efficiency. | `Business-Skills/operations/` |
+| marketing | Marketing strategy, positioning, campaigns, and metrics. | `Business-Skills/marketing/` |
+| sales | Sales strategy, pipeline, outreach, and forecasting. | `Business-Skills/sales/` |
+| customer-success | Customer onboarding, retention, account health, and churn reduction. | `Business-Skills/customer-success/` |
+| leadership | Leadership decisions, org design, and team effectiveness. | `Business-Skills/leadership/` |
+| hr | Hiring, performance, compensation, and people operations. | `Business-Skills/hr/` |
+| pmo | Program management planning, tracking, governance, and delivery. | `Business-Skills/pmo/` |
+| legal | Contract review, compliance, policy drafting, and risk assessment. | `Business-Skills/legal/` |
 
 ## Using a skill
 
