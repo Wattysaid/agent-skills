@@ -57,6 +57,8 @@ description: Provide structured business consulting analysis, diagnostics, and r
 - Ask clarifying questions when inputs, constraints, or success metrics are missing.
 - After receiving answers, append a new entry to `memory-context.md` using the template.
 - If answers indicate another domain, prompt use of the complementary skill.
+- Read and maintain `business-variables.md` for stable, cross-skill facts.
+- Only update `business-variables.md` when values change.
 
 Note: Requires `python3` for scripts.
 

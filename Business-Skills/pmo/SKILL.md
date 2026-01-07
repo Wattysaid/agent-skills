@@ -41,6 +41,7 @@ description: Support project and program management: planning, tracking, governa
 
 ## Memory context
 - Read `memory-context.md` at the start of work to reuse prior facts.
+- Read `business-variables.md` for stable cross-skill facts; do not edit it.
 - Ask clarifying questions when inputs, constraints, or success metrics are missing.
 - After receiving answers, append a new entry to `memory-context.md` using the template.
 - If answers indicate another domain, prompt use of the complementary skill.

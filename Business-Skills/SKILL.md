@@ -38,6 +38,10 @@ Start with the most relevant skill, but use `business-consultant` whenever the s
 - Read `memory-context.md` to seed company-wide facts before starting discovery.
 - Append new org-level context after intake or major decisions.
 
+## Business variables
+- Read `business-variables.md` before discovery to anchor stable facts.
+- Only `business-consultant` updates `business-variables.md`.
+
 ## Skills and roles
 - `business-consultant`: Cross-functional discovery, diagnostics, and executive-ready recommendations. Use for ambiguous problems, multi-function decisions, or missing context.
 - `strategy`: Strategic planning, market analysis, and growth options. Use for direction, portfolio choices, or competitive positioning.
