@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Defs2" targetNamespace="http://best.practice/examples" exporter="Camunda Modeler" exporterVersion="5.40.1">
+  <bpmn:collaboration id="Collab_Approval">
+    <bpmn:participant id="Participant_Approval" name="Approval Process" processRef="approval" />
+  </bpmn:collaboration>
+  <bpmn:process id="approval" name="Approval Process" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_Approval">
+      <bpmn:lane id="Lane_Approver" name="Approver">
+        <bpmn:flowNodeRef>review</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>decision</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>decline</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>startEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>approve</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_08kckvw</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:userTask id="review" name="Review Request">
+      <bpmn:incoming>Flow_0ysuuuc</bpmn:incoming>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="decision" name="Approved?" default="declineFlow">
+      <bpmn:outgoing>Flow_1nr6feh</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="decline" name="Decline Request">
+      <bpmn:outgoing>Flow_1fnu5px</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="startEvent" name="Start">
+      <bpmn:outgoing>Flow_0ysuuuc</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="approve" name="Approve Request">
+      <bpmn:incoming>Flow_1nr6feh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rl68v4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_08kckvw">
+      <bpmn:incoming>Flow_1rl68v4</bpmn:incoming>
+      <bpmn:incoming>Flow_1fnu5px</bpmn:incoming>
+      <bpmn:outgoing>Flow_09tli63</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="end" name="End">
+      <bpmn:incoming>Flow_09tli63</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ysuuuc" sourceRef="startEvent" targetRef="review" />
+    <bpmn:sequenceFlow id="sf2" sourceRef="review" targetRef="decision" />
+    <bpmn:sequenceFlow id="declineFlow" sourceRef="decision" targetRef="decline">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="http://www.omg.org/spec/FEEL/1.1">approved = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1nr6feh" sourceRef="decision" targetRef="approve" />
+    <bpmn:sequenceFlow id="Flow_1fnu5px" sourceRef="decline" targetRef="Gateway_08kckvw" />
+    <bpmn:sequenceFlow id="Flow_1rl68v4" sourceRef="approve" targetRef="Gateway_08kckvw" />
+    <bpmn:sequenceFlow id="Flow_09tli63" sourceRef="Gateway_08kckvw" targetRef="end" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Approval">
+    <bpmndi:BPMNPlane id="BPMNPlane_Approval" bpmnElement="Collab_Approval">
+      <bpmndi:BPMNShape id="Shape_Participant_Approval" bpmnElement="Participant_Approval" isHorizontal="true">
+        <dc:Bounds x="160" y="120" width="800" height="330" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Approver" bpmnElement="Lane_Approver" isHorizontal="true">
+        <dc:Bounds x="190" y="120" width="770" height="330" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_review" bpmnElement="review">
+        <dc:Bounds x="310" y="190" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_decision" bpmnElement="decision" isMarkerVisible="true">
+        <dc:Bounds x="470" y="205" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="468" y="181" width="53" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_decline" bpmnElement="decline">
+        <dc:Bounds x="610" y="330" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_startEvent" bpmnElement="startEvent">
+        <dc:Bounds x="232" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="238" y="253" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_approve" bpmnElement="approve">
+        <dc:Bounds x="600" y="190" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_08kckvw_di" bpmnElement="Gateway_08kckvw" isMarkerVisible="true">
+        <dc:Bounds x="785" y="205" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_end" bpmnElement="end">
+        <dc:Bounds x="892" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="900" y="254" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_sf2" bpmnElement="sf2">
+        <di:waypoint x="430" y="230" />
+        <di:waypoint x="470" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_declineFlow" bpmnElement="declineFlow">
+        <di:waypoint x="495" y="255" />
+        <di:waypoint x="495" y="370" />
+        <di:waypoint x="610" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ysuuuc_di" bpmnElement="Flow_0ysuuuc">
+        <di:waypoint x="268" y="230" />
+        <di:waypoint x="310" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nr6feh_di" bpmnElement="Flow_1nr6feh">
+        <di:waypoint x="520" y="230" />
+        <di:waypoint x="600" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rl68v4_di" bpmnElement="Flow_1rl68v4">
+        <di:waypoint x="720" y="230" />
+        <di:waypoint x="785" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09tli63_di" bpmnElement="Flow_09tli63">
+        <di:waypoint x="835" y="230" />
+        <di:waypoint x="892" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fnu5px_di" bpmnElement="Flow_1fnu5px">
+        <di:waypoint x="730" y="370" />
+        <di:waypoint x="810" y="370" />
+        <di:waypoint x="810" y="255" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

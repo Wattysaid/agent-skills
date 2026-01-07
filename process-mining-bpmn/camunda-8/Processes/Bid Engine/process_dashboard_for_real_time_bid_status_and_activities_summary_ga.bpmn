@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+  id="Definitions_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetNamespace="http://example.com/schema/bpmn">
+  <bpmn:collaboration id="Collab_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+    <bpmn:participant id="Participant_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Dashboard for real-time bid status and activities summary (Gantt chart/timeline views)" processRef="Process_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Dashboard for real-time bid status and activities summary (Gantt chart/timeline views)" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+      <bpmn:lane id="Lane_Platform_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="AI Bid Platform">
+        <bpmn:flowNodeRef>StartEvent_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CaptureContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ValidateSignals_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ContextReady_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ContextMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CoreAction_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AIEnrich_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Rerun_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_AcceptMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Personalize_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_UpdateSystem_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Notify_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Sync_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_UpdateDashboard_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Success_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Team_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Bid Team / Stakeholders">
+        <bpmn:flowNodeRef>Task_RequestContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_WaitContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Review_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Accept_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Corrections_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Rework_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="StartEvent_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Start - Dashboard for real-time bid status and a">
+      <bpmn:outgoing>Flow_Start_to_Capture_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_CaptureContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Capture request and objectives">
+      <bpmn:incoming>Flow_Start_to_Capture_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Capture_to_Validate_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_ValidateSignals_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Validate inputs & data signals">
+      <bpmn:incoming>Flow_Capture_to_Validate_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Validate_to_ContextGW_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_ContextReady_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Context complete?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Validate_to_ContextGW_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_ContextReady_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ContextReady_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_RequestContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Request missing inputs from team">
+      <bpmn:incoming>Flow_ContextReady_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_RequestContext_to_Wait_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="Event_WaitContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Wait for context/approvals">
+      <bpmn:incoming>Flow_RequestContext_to_Wait_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Wait_to_ContextMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+      <bpmn:timerEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="Gateway_ContextMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Context resolved" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_ContextReady_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:incoming>Flow_Wait_to_ContextMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_ContextMerge_to_Core_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_CoreAction_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Dashboard for real-time bid status and activities summary (Gantt chart/timeline views)">
+      <bpmn:incoming>Flow_ContextMerge_to_Core_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Core_to_AI_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_AIEnrich_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="AI enrich & structure output">
+      <bpmn:incoming>Flow_Core_to_AI_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_AI_to_Review_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_Review_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Team review & annotate">
+      <bpmn:incoming>Flow_AI_to_Review_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Review_to_Accept_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_Accept_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Accept draft?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Review_to_Accept_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Accept_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Accept_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_Corrections_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Apply corrections & guidance">
+      <bpmn:incoming>Flow_Accept_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Corrections_to_Rerun_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_Rerun_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Re-run generation with feedback">
+      <bpmn:incoming>Flow_Corrections_to_Rerun_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Rerun_to_AcceptMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_AcceptMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Draft resolved" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_Accept_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:incoming>Flow_Rerun_to_AcceptMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_AcceptMerge_to_Personalize_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_Personalize_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Personalize & tailor outputs">
+      <bpmn:incoming>Flow_AcceptMerge_to_Personalize_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Personalize_to_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Compliance / quality review">
+      <bpmn:incoming>Flow_Personalize_to_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Compliance_to_Gateway_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Passed checks?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Compliance_to_Gateway_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Compliance_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Compliance_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_UpdateSystem_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Update systems of record">
+      <bpmn:incoming>Flow_Compliance_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_UpdateSystem_to_Notify_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_Notify_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Notify stakeholders & logs">
+      <bpmn:incoming>Flow_UpdateSystem_to_Notify_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Notify_to_Sync_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_Sync_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Sync CRM / attach artefacts">
+      <bpmn:incoming>Flow_Notify_to_Sync_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Sync_to_Dashboard_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_UpdateDashboard_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Update dashboard/status">
+      <bpmn:incoming>Flow_Sync_to_Dashboard_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+      <bpmn:outgoing>Flow_Dashboard_to_End_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_Success_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="End - Completed">
+      <bpmn:incoming>Flow_Dashboard_to_End_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="EndEvent_Rework_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="End - Rework/stop">
+      <bpmn:incoming>Flow_Compliance_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_Start_to_Capture_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="StartEvent_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_CaptureContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_Capture_to_Validate_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_CaptureContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_ValidateSignals_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_Validate_to_ContextGW_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_ValidateSignals_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Gateway_ContextReady_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_ContextReady_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Gateway_ContextReady_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Gateway_ContextMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Ready" />
+    <bpmn:sequenceFlow id="Flow_ContextReady_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Gateway_ContextReady_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_RequestContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Missing" />
+    <bpmn:sequenceFlow id="Flow_RequestContext_to_Wait_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_RequestContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Event_WaitContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_Wait_to_ContextMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Event_WaitContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Gateway_ContextMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_ContextMerge_to_Core_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Gateway_ContextMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_CoreAction_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_Core_to_AI_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_CoreAction_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_AIEnrich_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_AI_to_Review_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_AIEnrich_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_Review_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_Review_to_Accept_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_Review_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Gateway_Accept_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_Accept_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Gateway_Accept_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Gateway_AcceptMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Yes" />
+    <bpmn:sequenceFlow id="Flow_Accept_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Gateway_Accept_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_Corrections_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="No" />
+    <bpmn:sequenceFlow id="Flow_Corrections_to_Rerun_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_Corrections_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_Rerun_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_Rerun_to_AcceptMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_Rerun_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Gateway_AcceptMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_AcceptMerge_to_Personalize_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Gateway_AcceptMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_Personalize_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_Personalize_to_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_Personalize_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_Compliance_to_Gateway_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Gateway_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_Compliance_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Gateway_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_UpdateSystem_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Pass" />
+    <bpmn:sequenceFlow id="Flow_Compliance_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Gateway_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="EndEvent_Rework_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" name="Fail" />
+    <bpmn:sequenceFlow id="Flow_UpdateSystem_to_Notify_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_UpdateSystem_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_Notify_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_Notify_to_Sync_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_Notify_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_Sync_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_Sync_to_Dashboard_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_Sync_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="Task_UpdateDashboard_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+    <bpmn:sequenceFlow id="Flow_Dashboard_to_End_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" sourceRef="Task_UpdateDashboard_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" targetRef="EndEvent_Success_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" />
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+    <bpmndi:BPMNPlane id="BPMNPlane_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Collab_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+      <bpmndi:BPMNShape id="ParticipantShape_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Participant_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" isHorizontal="true">
+        <dc:Bounds x="80" y="120" width="3200" height="440" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_Platform_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Lane_Platform_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" isHorizontal="true">
+        <dc:Bounds x="80" y="140" width="3200" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_Team_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Lane_Team_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" isHorizontal="true">
+        <dc:Bounds x="80" y="340" width="3200" height="200" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_StartEvent_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="StartEvent_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="120" y="220" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CaptureContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_CaptureContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="220" y="200" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ValidateSignals_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_ValidateSignals_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="370" y="200" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ContextReady_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Gateway_ContextReady_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="520" y="215" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RequestContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_RequestContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="520" y="400" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Event_WaitContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Event_WaitContext_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="670" y="420" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ContextMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Gateway_ContextMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="820" y="215" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CoreAction_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_CoreAction_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="970" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AIEnrich_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_AIEnrich_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="1120" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Review_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_Review_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="1270" y="400" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Accept_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Gateway_Accept_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="1420" y="415" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Corrections_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_Corrections_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="1570" y="400" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rerun_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_Rerun_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="1720" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_AcceptMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Gateway_AcceptMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="1870" y="215" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Personalize_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_Personalize_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="2020" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="2170" y="400" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Gateway_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="2320" y="415" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_Rework_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="EndEvent_Rework_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="2320" y="470" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_UpdateSystem_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_UpdateSystem_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="2470" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Notify_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_Notify_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="2620" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Sync_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_Sync_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="2770" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_UpdateDashboard_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Task_UpdateDashboard_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="2920" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_Success_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="EndEvent_Success_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <dc:Bounds x="3070" y="220" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Edge_Flow_Start_to_Capture_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Start_to_Capture_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="156" y="238" />
+        <di:waypoint x="220" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Capture_to_Validate_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Capture_to_Validate_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="340" y="240" />
+        <di:waypoint x="370" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Validate_to_ContextGW_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Validate_to_ContextGW_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="490" y="240" />
+        <di:waypoint x="520" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ContextReady_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_ContextReady_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="570" y="240" />
+        <di:waypoint x="820" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ContextReady_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_ContextReady_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="545" y="240" />
+        <di:waypoint x="545" y="440" />
+        <di:waypoint x="520" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RequestContext_to_Wait_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_RequestContext_to_Wait_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="640" y="440" />
+        <di:waypoint x="670" y="438" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Wait_to_ContextMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Wait_to_ContextMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="706" y="438" />
+        <di:waypoint x="820" y="438" />
+        <di:waypoint x="820" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ContextMerge_to_Core_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_ContextMerge_to_Core_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="870" y="240" />
+        <di:waypoint x="970" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Core_to_AI_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Core_to_AI_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="1110" y="240" />
+        <di:waypoint x="1120" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AI_to_Review_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_AI_to_Review_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="1260" y="240" />
+        <di:waypoint x="1270" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Review_to_Accept_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Review_to_Accept_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="1410" y="440" />
+        <di:waypoint x="1420" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Accept_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Accept_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="1470" y="440" />
+        <di:waypoint x="1870" y="440" />
+        <di:waypoint x="1870" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Accept_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Accept_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="1445" y="465" />
+        <di:waypoint x="1570" y="465" />
+        <di:waypoint x="1570" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Corrections_to_Rerun_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Corrections_to_Rerun_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="1710" y="440" />
+        <di:waypoint x="1720" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Rerun_to_AcceptMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Rerun_to_AcceptMerge_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="1860" y="240" />
+        <di:waypoint x="1870" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AcceptMerge_to_Personalize_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_AcceptMerge_to_Personalize_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="1920" y="240" />
+        <di:waypoint x="2020" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Personalize_to_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Personalize_to_Compliance_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="2160" y="240" />
+        <di:waypoint x="2170" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Compliance_to_Gateway_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Compliance_to_Gateway_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="2310" y="440" />
+        <di:waypoint x="2320" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Compliance_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Compliance_Yes_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="2370" y="440" />
+        <di:waypoint x="2470" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Compliance_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Compliance_No_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="2345" y="465" />
+        <di:waypoint x="2345" y="490" />
+        <di:waypoint x="2320" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_UpdateSystem_to_Notify_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_UpdateSystem_to_Notify_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="2610" y="240" />
+        <di:waypoint x="2620" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Notify_to_Sync_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Notify_to_Sync_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="2760" y="240" />
+        <di:waypoint x="2770" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Sync_to_Dashboard_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Sync_to_Dashboard_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="2910" y="240" />
+        <di:waypoint x="2920" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Dashboard_to_End_Dashboard_for_real_time_bid_status_and_activities_summary_Ga" bpmnElement="Flow_Dashboard_to_End_Dashboard_for_real_time_bid_status_and_activities_summary_Ga">
+        <di:waypoint x="3060" y="240" />
+        <di:waypoint x="3070" y="238" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

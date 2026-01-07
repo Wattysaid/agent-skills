@@ -1,0 +1,12 @@
+flowchart LR
+  subgraph Requester
+    A[Start] --> B[Submit]
+  end
+  subgraph Approver
+    B --> C[Review]
+    C --> D{Approved?}
+  end
+  D -->|Yes| E[Approve]
+  D -->|No| F[Reject]
+  E --> G[End]
+  F --> G

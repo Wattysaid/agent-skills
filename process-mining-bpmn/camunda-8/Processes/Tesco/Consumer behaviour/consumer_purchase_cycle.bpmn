@@ -1,0 +1,1004 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_ConsumerPurchase" targetNamespace="http://example.com/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.1">
+  <bpmn:message id="Message_SocialMedia" name="Social media inspiration" />
+  <bpmn:message id="Message_FamilyRequest" name="Family request" />
+  <bpmn:message id="Message_InAppPromo" name="In-app promotion" />
+  <bpmn:message id="Message_OutOfStock" name="Out of stock" />
+  <bpmn:message id="Message_RefundRequest" name="Refund request" />
+  <bpmn:collaboration id="Collab_ConsumerPurchase">
+    <bpmn:participant id="Participant_Consumer" name="Consumer" processRef="Process_ConsumerPurchase" />
+    <bpmn:textAnnotation id="Annotation_PostPurchaseDetails">
+      <bpmn:text>Cooking complexity; Outcome (success/unsatisfied/leftovers/waste); Feedback (repeat/avoid/share)</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Annotation_OnlineDetails">
+      <bpmn:text>Platform entry; Basket method; Delivery timing; Substitution preferences; Price sensitivity; Delivery outcomes</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Annotation_QuickCommerceDetails">
+      <bpmn:text>Urgency driver; Mode (rapid delivery/convenience/petrol); Trade-offs (price/selection)</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Annotation_ClickCollectDetails">
+      <bpmn:text>Pickup location; Window tight/flexible; Substitution preferences; Collection outcome</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Annotation_AbandonDetails">
+      <bpmn:text>Eat takeaway; Use what's at home; Change recipe; Delay until later</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Annotation_InStoreDetails">
+      <bpmn:text>Store choice; Travel mode; Time constraint; Shop method; Product decision rules; Checkout; Payment; Receipts/feedback/returns</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Annotation_ListMethodOptions">
+      <bpmn:text>Mental; Written; App list; Recipe auto-list; Shared list; Voice assistant</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Annotation_ConsumptionGoalOptions">
+      <bpmn:text>Cook meal; Bake/dessert; Snack; Drink; Ready meal; Top-up; Family recipe; Diet-led</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Annotation_PlanningHorizonOptions">
+      <bpmn:text>Immediate (0-2h); Same day; This week; Future/event date</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Annotation_DecisionClarityOptions">
+      <bpmn:text>High (exact items); Medium (brands flexible); Low (browse/inspire)</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Annotation_TriggerOptions">
+      <bpmn:text>Discovery/inspiration; Routine; Occasion; Problem-driven; Emotional/impulse</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_DecisionClarityOptions" sourceRef="Task_AssessDecisionClarity" targetRef="Annotation_DecisionClarityOptions" />
+    <bpmn:association id="Association_ConsumptionGoalOptions" sourceRef="Task_SelectConsumptionGoal" targetRef="Annotation_ConsumptionGoalOptions" />
+    <bpmn:association id="Association_ListMethodOptions" sourceRef="Task_BuildShoppingList" targetRef="Annotation_ListMethodOptions" />
+    <bpmn:association id="Association_TriggerOptions" sourceRef="Gateway_TriggerType" targetRef="Annotation_TriggerOptions" />
+    <bpmn:textAnnotation id="TextAnnotation_1kbssyw">
+      <bpmn:text>Out and about, quick shop squeezed in before turning home.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1dut3a2" associationDirection="None" sourceRef="Task_EstimateList" targetRef="TextAnnotation_1kbssyw" />
+    <bpmn:association id="Association_InStoreDetails" sourceRef="Subprocess_InStore" targetRef="Annotation_InStoreDetails" />
+    <bpmn:association id="Association_AbandonDetails" sourceRef="Subprocess_AbandonAlternatives" targetRef="Annotation_AbandonDetails" />
+    <bpmn:association id="Association_ClickCollectDetails" sourceRef="Subprocess_ClickCollect" targetRef="Annotation_ClickCollectDetails" />
+    <bpmn:association id="Association_QuickCommerceDetails" sourceRef="Subprocess_QuickCommerce" targetRef="Annotation_QuickCommerceDetails" />
+    <bpmn:association id="Association_OnlineDetails" sourceRef="Subprocess_OnlineDelivery" targetRef="Annotation_OnlineDetails" />
+    <bpmn:association id="Association_PostPurchaseDetails" sourceRef="Subprocess_PostPurchase" targetRef="Annotation_PostPurchaseDetails" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_ConsumerPurchase" name="Consumer Purchase Cycle" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Consumer" />
+    <bpmn:userTask id="Task_CaptureTrigger" name="Identify trigger">
+      <bpmn:incoming>Flow_Start_to_Capture</bpmn:incoming>
+      <bpmn:outgoing>Flow_Capture_to_TriggerGateway</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="StartEvent_Need" name="Need/intent to eat or make something">
+      <bpmn:outgoing>Flow_Start_to_Capture</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_SelectConsumptionGoal" name="Select consumption goal">
+      <bpmn:incoming>Flow_0levdjz</bpmn:incoming>
+      <bpmn:outgoing>Flow_Goal_to_Planning</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_AssessDecisionClarity" name="Assess decision clarity">
+      <bpmn:incoming>Flow_Planning_to_Clarity</bpmn:incoming>
+      <bpmn:outgoing>Flow_Clarity_to_Inventory</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_CheckInventory" name="Check inventory at home?">
+      <bpmn:incoming>Flow_Clarity_to_Inventory</bpmn:incoming>
+      <bpmn:outgoing>Flow_CheckInventory_No</bpmn:outgoing>
+      <bpmn:outgoing>Flow_CheckInventory_Yes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_Trigger_Emotional" name="Emotional / impulse">
+      <bpmn:incoming>Flow_Trigger_to_Emotional</bpmn:incoming>
+      <bpmn:outgoing>Flow_TriggerEmotional_to_Goal</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_Start_to_Capture" sourceRef="StartEvent_Need" targetRef="Task_CaptureTrigger" />
+    <bpmn:sequenceFlow id="Flow_Capture_to_TriggerGateway" sourceRef="Task_CaptureTrigger" targetRef="Gateway_TriggerType" />
+    <bpmn:sequenceFlow id="Flow_Trigger_to_Emotional" name="Emotional" sourceRef="Gateway_TriggerType" targetRef="Task_Trigger_Emotional" />
+    <bpmn:sequenceFlow id="Flow_Trigger_to_ProblemDriven" name="Problem-driven" sourceRef="Gateway_TriggerType" targetRef="Task_Trigger_ProblemDriven" />
+    <bpmn:sequenceFlow id="Flow_Trigger_to_FamilyRequest" name="Occasion" sourceRef="Gateway_TriggerType" targetRef="Event_FamilyRequest" />
+    <bpmn:sequenceFlow id="Flow_Trigger_to_Routine" name="Routine" sourceRef="Gateway_TriggerType" targetRef="Task_Trigger_Routine" />
+    <bpmn:sequenceFlow id="Flow_Trigger_to_SocialMedia" name="Discovery" sourceRef="Gateway_TriggerType" targetRef="Event_SocialMediaTrigger" />
+    <bpmn:sequenceFlow id="Flow_FamilyRequest_to_TriggerOccasion" sourceRef="Event_FamilyRequest" targetRef="Task_Trigger_Occasion" />
+    <bpmn:sequenceFlow id="Flow_1xktkqn" sourceRef="Task_Trigger_Occasion" targetRef="Gateway_0iedjuu" />
+    <bpmn:sequenceFlow id="Flow_0s3y1cl" sourceRef="Task_Trigger_ProblemDriven" targetRef="Gateway_0iedjuu" />
+    <bpmn:sequenceFlow id="Flow_0zl07jr" sourceRef="Task_Trigger_Routine" targetRef="Gateway_0iedjuu" />
+    <bpmn:sequenceFlow id="Flow_0gstlw0" sourceRef="Task_Trigger_Discovery" targetRef="Gateway_0iedjuu" />
+    <bpmn:sequenceFlow id="Flow_TriggerEmotional_to_Goal" sourceRef="Task_Trigger_Emotional" targetRef="Gateway_0iedjuu" />
+    <bpmn:sequenceFlow id="Flow_0levdjz" sourceRef="Gateway_0iedjuu" targetRef="Task_SelectConsumptionGoal" />
+    <bpmn:sequenceFlow id="Flow_Goal_to_Planning" sourceRef="Task_SelectConsumptionGoal" targetRef="Task_SetPlanningHorizon" />
+    <bpmn:sequenceFlow id="Flow_Planning_to_Clarity" sourceRef="Task_SetPlanningHorizon" targetRef="Task_AssessDecisionClarity" />
+    <bpmn:sequenceFlow id="Flow_Clarity_to_Inventory" sourceRef="Task_AssessDecisionClarity" targetRef="Gateway_CheckInventory" />
+    <bpmn:sequenceFlow id="Flow_SocialMedia_to_TriggerDiscovery" sourceRef="Event_SocialMediaTrigger" targetRef="Task_Trigger_Discovery" />
+    <bpmn:sequenceFlow id="Flow_CheckInventory_No" name="No" sourceRef="Gateway_CheckInventory" targetRef="Task_EstimateList" />
+    <bpmn:sequenceFlow id="Flow_CheckInventory_Yes" name="Yes" sourceRef="Gateway_CheckInventory" targetRef="Task_ScanInventory" />
+    <bpmn:sequenceFlow id="Flow_ScanInventory_to_Enough" sourceRef="Task_ScanInventory" targetRef="Gateway_EnoughIngredients" />
+    <bpmn:sequenceFlow id="Flow_EnoughIngredients_No" name="No" sourceRef="Gateway_EnoughIngredients" targetRef="Gateway_1qoma8d" />
+    <bpmn:sequenceFlow id="Flow_EnoughIngredients_Yes" name="Yes" sourceRef="Gateway_EnoughIngredients" targetRef="Gateway_StillBuyExtras" />
+    <bpmn:sequenceFlow id="Flow_EstimateList_to_BuildList" sourceRef="Task_EstimateList" targetRef="Gateway_1qoma8d" />
+    <bpmn:sequenceFlow id="Flow_StillBuyExtras_No" name="No" sourceRef="Gateway_StillBuyExtras" targetRef="Task_CookConsume" />
+    <bpmn:sequenceFlow id="Flow_StillBuyExtras_Yes" name="Yes" sourceRef="Gateway_StillBuyExtras" targetRef="Gateway_1qoma8d" />
+    <bpmn:sequenceFlow id="Flow_BuildList_to_Budget" sourceRef="Task_BuildShoppingList" targetRef="Gateway_FulfillmentMode" />
+    <bpmn:sequenceFlow id="Flow_Fulfillment_Abandon" name="Abandon" sourceRef="Gateway_FulfillmentMode" targetRef="Subprocess_AbandonAlternatives" />
+    <bpmn:sequenceFlow id="Flow_Fulfillment_QuickCommerce" name="Quick commerce" sourceRef="Gateway_FulfillmentMode" targetRef="Subprocess_QuickCommerce" />
+    <bpmn:sequenceFlow id="Flow_Fulfillment_ClickCollect" name="Click &#38; collect" sourceRef="Gateway_FulfillmentMode" targetRef="Subprocess_ClickCollect" />
+    <bpmn:sequenceFlow id="Flow_Fulfillment_Online" name="Online delivery" sourceRef="Gateway_FulfillmentMode" targetRef="Event_InAppPromo" />
+    <bpmn:sequenceFlow id="Flow_Fulfillment_InStore" name="In-store" sourceRef="Gateway_FulfillmentMode" targetRef="Subprocess_InStore" />
+    <bpmn:sequenceFlow id="Flow_OutOfStock_to_Handle" sourceRef="Boundary_OutOfStock" targetRef="Task_HandleOutOfStock" />
+    <bpmn:sequenceFlow id="Flow_TimeConstraint_to_Handle" sourceRef="Boundary_TimeConstraint" targetRef="Task_HandleTimeConstraint" />
+    <bpmn:sequenceFlow id="Flow_InAppPromo_to_Online" sourceRef="Event_InAppPromo" targetRef="Subprocess_OnlineDelivery" />
+    <bpmn:sequenceFlow id="Flow_Abandon_to_End" sourceRef="Subprocess_AbandonAlternatives" targetRef="EndEvent_Abandon" />
+    <bpmn:sequenceFlow id="Flow_QuickCommerce_to_ItemsObtained" sourceRef="Subprocess_QuickCommerce" targetRef="Gateway_ItemsObtained" />
+    <bpmn:sequenceFlow id="Flow_ClickCollect_to_ItemsObtained" sourceRef="Subprocess_ClickCollect" targetRef="Gateway_ItemsObtained" />
+    <bpmn:sequenceFlow id="Flow_Online_to_ItemsObtained" sourceRef="Subprocess_OnlineDelivery" targetRef="Gateway_ItemsObtained" />
+    <bpmn:sequenceFlow id="Flow_InStore_to_ItemsObtained" sourceRef="Subprocess_InStore" targetRef="Gateway_ItemsObtained" />
+    <bpmn:sequenceFlow id="Flow_ItemsObtained_Yes" sourceRef="Gateway_ItemsObtained" targetRef="Subprocess_PostPurchase" />
+    <bpmn:sequenceFlow id="Flow_1itn344" sourceRef="Task_ProcessRefund" targetRef="Event_0eqjw8p" />
+    <bpmn:sequenceFlow id="Flow_0felilm" sourceRef="Task_HandleMissedDelivery" targetRef="Event_0c4ofje" />
+    <bpmn:sequenceFlow id="Flow_PostPurchase_to_End" sourceRef="Subprocess_PostPurchase" targetRef="EndEvent_Completed" />
+    <bpmn:sequenceFlow id="Flow_MissedDelivery_to_Handle" sourceRef="Boundary_MissedDelivery" targetRef="Task_HandleMissedDelivery" />
+    <bpmn:sequenceFlow id="Flow_Refund_to_Process" sourceRef="Boundary_RefundRequest" targetRef="Task_ProcessRefund" />
+    <bpmn:sequenceFlow id="Flow_CookConsume_to_End" sourceRef="Task_CookConsume" targetRef="EndEvent_NoPurchase" />
+    <bpmn:userTask id="Task_ScanInventory" name="Scan cupboards/fridge/freezer">
+      <bpmn:incoming>Flow_CheckInventory_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_ScanInventory_to_Enough</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_EstimateList" name="Estimate what to buy">
+      <bpmn:incoming>Flow_CheckInventory_No</bpmn:incoming>
+      <bpmn:outgoing>Flow_EstimateList_to_BuildList</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_EnoughIngredients" name="Enough ingredients already?">
+      <bpmn:incoming>Flow_ScanInventory_to_Enough</bpmn:incoming>
+      <bpmn:outgoing>Flow_EnoughIngredients_No</bpmn:outgoing>
+      <bpmn:outgoing>Flow_EnoughIngredients_Yes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1ht4w89" sourceRef="Gateway_1qoma8d" targetRef="Task_BuildShoppingList" />
+    <bpmn:complexGateway id="Gateway_1qoma8d">
+      <bpmn:incoming>Flow_EnoughIngredients_No</bpmn:incoming>
+      <bpmn:incoming>Flow_EstimateList_to_BuildList</bpmn:incoming>
+      <bpmn:incoming>Flow_StillBuyExtras_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ht4w89</bpmn:outgoing>
+    </bpmn:complexGateway>
+    <bpmn:subProcess id="Task_BuildShoppingList" name="Build shopping list">
+      <bpmn:incoming>Flow_1ht4w89</bpmn:incoming>
+      <bpmn:outgoing>Flow_BuildList_to_Budget</bpmn:outgoing>
+      <bpmn:userTask id="Activity_1cjavic" name="Apply dietary requirements">
+        <bpmn:incoming>Flow_1kqfnwg</bpmn:incoming>
+        <bpmn:outgoing>Flow_01ade1p</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:userTask id="Activity_1gj6m8w" name="Identify who is eating">
+        <bpmn:incoming>Flow_0edbw1j</bpmn:incoming>
+        <bpmn:outgoing>Flow_0u8zx9t</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:userTask id="Activity_1lkavmg" name="Set budget">
+        <bpmn:incoming>Flow_1p8t19z</bpmn:incoming>
+        <bpmn:outgoing>Flow_0edbw1j</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:sequenceFlow id="Flow_01ade1p" sourceRef="Activity_1cjavic" targetRef="Gateway_0xm7i5f" />
+      <bpmn:sequenceFlow id="Flow_0u8zx9t" sourceRef="Activity_1gj6m8w" targetRef="Gateway_1ndw8cn" />
+      <bpmn:sequenceFlow id="Flow_0edbw1j" sourceRef="Activity_1lkavmg" targetRef="Activity_1gj6m8w" />
+      <bpmn:startEvent id="Event_150ho47">
+        <bpmn:outgoing>Flow_1p8t19z</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="Event_0mr43sp">
+        <bpmn:incoming>Flow_1ghnsth</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1p8t19z" sourceRef="Event_150ho47" targetRef="Activity_1lkavmg" />
+      <bpmn:exclusiveGateway id="Gateway_1ndw8cn">
+        <bpmn:incoming>Flow_0u8zx9t</bpmn:incoming>
+        <bpmn:outgoing>Flow_1kqfnwg</bpmn:outgoing>
+        <bpmn:outgoing>Flow_1t8rd9u</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_1kqfnwg" name="Yes" sourceRef="Gateway_1ndw8cn" targetRef="Activity_1cjavic" />
+      <bpmn:userTask id="Activity_0wycq1j" name="Apply dietary requirements">
+        <bpmn:incoming>Flow_0vt4292</bpmn:incoming>
+        <bpmn:outgoing>Flow_1ghnsth</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:sequenceFlow id="Flow_1t8rd9u" name="No" sourceRef="Gateway_1ndw8cn" targetRef="Gateway_0xm7i5f" />
+      <bpmn:exclusiveGateway id="Gateway_0xm7i5f">
+        <bpmn:incoming>Flow_01ade1p</bpmn:incoming>
+        <bpmn:incoming>Flow_1t8rd9u</bpmn:incoming>
+        <bpmn:outgoing>Flow_0vt4292</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_0vt4292" sourceRef="Gateway_0xm7i5f" targetRef="Activity_0wycq1j" />
+      <bpmn:sequenceFlow id="Flow_1ghnsth" sourceRef="Activity_0wycq1j" targetRef="Event_0mr43sp" />
+      <bpmn:textAnnotation id="TextAnnotation_1mb88zh">
+        <bpmn:text>Happens at time of purchase for families</bpmn:text>
+      </bpmn:textAnnotation>
+      <bpmn:association id="Association_1ghr1a1" associationDirection="None" sourceRef="Activity_1lkavmg" targetRef="TextAnnotation_1mb88zh" />
+    </bpmn:subProcess>
+    <bpmn:task id="Task_Trigger_ProblemDriven" name="Problem-driven">
+      <bpmn:incoming>Flow_Trigger_to_ProblemDriven</bpmn:incoming>
+      <bpmn:outgoing>Flow_0s3y1cl</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_Trigger_Occasion" name="Occasion">
+      <bpmn:incoming>Flow_FamilyRequest_to_TriggerOccasion</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xktkqn</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_Trigger_Routine" name="Routine">
+      <bpmn:incoming>Flow_Trigger_to_Routine</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zl07jr</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_Trigger_Discovery" name="Discovery / inspiration">
+      <bpmn:incoming>Flow_SocialMedia_to_TriggerDiscovery</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gstlw0</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:intermediateCatchEvent id="Event_SocialMediaTrigger" name="Social media inspiration">
+      <bpmn:incoming>Flow_Trigger_to_SocialMedia</bpmn:incoming>
+      <bpmn:outgoing>Flow_SocialMedia_to_TriggerDiscovery</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_SocialMedia" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:complexGateway id="Gateway_TriggerType" name="Trigger type?">
+      <bpmn:incoming>Flow_Capture_to_TriggerGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_Trigger_to_Emotional</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Trigger_to_ProblemDriven</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Trigger_to_FamilyRequest</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Trigger_to_Routine</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Trigger_to_SocialMedia</bpmn:outgoing>
+    </bpmn:complexGateway>
+    <bpmn:intermediateCatchEvent id="Event_FamilyRequest" name="Family request">
+      <bpmn:incoming>Flow_Trigger_to_FamilyRequest</bpmn:incoming>
+      <bpmn:outgoing>Flow_FamilyRequest_to_TriggerOccasion</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_FamilyRequest" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:complexGateway id="Gateway_0iedjuu">
+      <bpmn:incoming>Flow_0zl07jr</bpmn:incoming>
+      <bpmn:incoming>Flow_0gstlw0</bpmn:incoming>
+      <bpmn:incoming>Flow_TriggerEmotional_to_Goal</bpmn:incoming>
+      <bpmn:incoming>Flow_0s3y1cl</bpmn:incoming>
+      <bpmn:incoming>Flow_1xktkqn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0levdjz</bpmn:outgoing>
+    </bpmn:complexGateway>
+    <bpmn:userTask id="Task_SetPlanningHorizon" name="Set planning horizon">
+      <bpmn:incoming>Flow_Goal_to_Planning</bpmn:incoming>
+      <bpmn:outgoing>Flow_Planning_to_Clarity</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_StillBuyExtras" name="Still buy extras?">
+      <bpmn:incoming>Flow_EnoughIngredients_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_StillBuyExtras_No</bpmn:outgoing>
+      <bpmn:outgoing>Flow_StillBuyExtras_Yes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_CookConsume" name="Cook/consume">
+      <bpmn:incoming>Flow_StillBuyExtras_No</bpmn:incoming>
+      <bpmn:outgoing>Flow_CookConsume_to_End</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EndEvent_NoPurchase" name="End purchase">
+      <bpmn:incoming>Flow_CookConsume_to_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:complexGateway id="Gateway_FulfillmentMode" name="Fulfillment mode?">
+      <bpmn:incoming>Flow_BuildList_to_Budget</bpmn:incoming>
+      <bpmn:outgoing>Flow_Fulfillment_Abandon</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Fulfillment_QuickCommerce</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Fulfillment_ClickCollect</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Fulfillment_Online</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Fulfillment_InStore</bpmn:outgoing>
+    </bpmn:complexGateway>
+    <bpmn:task id="Task_HandleOutOfStock" name="Choose substitution">
+      <bpmn:incoming>Flow_OutOfStock_to_Handle</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:task id="Task_HandleTimeConstraint" name="Switch to urgent option">
+      <bpmn:incoming>Flow_TimeConstraint_to_Handle</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:intermediateCatchEvent id="Event_InAppPromo" name="In-app promotion">
+      <bpmn:incoming>Flow_Fulfillment_Online</bpmn:incoming>
+      <bpmn:outgoing>Flow_InAppPromo_to_Online</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_InAppPromo" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="EndEvent_Abandon" name="End purchase">
+      <bpmn:incoming>Flow_Abandon_to_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:complexGateway id="Gateway_ItemsObtained" name="Items obtained?">
+      <bpmn:incoming>Flow_QuickCommerce_to_ItemsObtained</bpmn:incoming>
+      <bpmn:incoming>Flow_ClickCollect_to_ItemsObtained</bpmn:incoming>
+      <bpmn:incoming>Flow_Online_to_ItemsObtained</bpmn:incoming>
+      <bpmn:incoming>Flow_InStore_to_ItemsObtained</bpmn:incoming>
+      <bpmn:outgoing>Flow_ItemsObtained_Yes</bpmn:outgoing>
+    </bpmn:complexGateway>
+    <bpmn:endEvent id="Event_0eqjw8p" name="End purchase">
+      <bpmn:incoming>Flow_1itn344</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_0c4ofje" name="End purchase">
+      <bpmn:incoming>Flow_0felilm</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="EndEvent_Completed" name="End (items consumed)">
+      <bpmn:incoming>Flow_PostPurchase_to_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:subProcess id="Subprocess_OnlineDelivery" name="Online delivery">
+      <bpmn:incoming>Flow_InAppPromo_to_Online</bpmn:incoming>
+      <bpmn:outgoing>Flow_Online_to_ItemsObtained</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="Subprocess_InStore" name="In-store purchase">
+      <bpmn:incoming>Flow_Fulfillment_InStore</bpmn:incoming>
+      <bpmn:outgoing>Flow_InStore_to_ItemsObtained</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="Subprocess_ClickCollect" name="Click &#38; collect">
+      <bpmn:incoming>Flow_Fulfillment_ClickCollect</bpmn:incoming>
+      <bpmn:outgoing>Flow_ClickCollect_to_ItemsObtained</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="Subprocess_QuickCommerce" name="Quick commerce / urgent">
+      <bpmn:incoming>Flow_Fulfillment_QuickCommerce</bpmn:incoming>
+      <bpmn:outgoing>Flow_QuickCommerce_to_ItemsObtained</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="Subprocess_AbandonAlternatives" name="Abandon or alternative plan">
+      <bpmn:incoming>Flow_Fulfillment_Abandon</bpmn:incoming>
+      <bpmn:outgoing>Flow_Abandon_to_End</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="Task_HandleMissedDelivery" name="Reschedule delivery">
+      <bpmn:incoming>Flow_MissedDelivery_to_Handle</bpmn:incoming>
+      <bpmn:outgoing>Flow_0felilm</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="Task_ProcessRefund" name="Process refund">
+      <bpmn:incoming>Flow_Refund_to_Process</bpmn:incoming>
+      <bpmn:outgoing>Flow_1itn344</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="Subprocess_PostPurchase" name="Post-purchase to consumption">
+      <bpmn:incoming>Flow_ItemsObtained_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_PostPurchase_to_End</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:boundaryEvent id="Boundary_RefundRequest" name="Refund request" attachedToRef="Subprocess_OnlineDelivery">
+      <bpmn:outgoing>Flow_Refund_to_Process</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_RefundRequest" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Boundary_MissedDelivery" name="Missed delivery slot" attachedToRef="Subprocess_OnlineDelivery">
+      <bpmn:outgoing>Flow_MissedDelivery_to_Handle</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration>PT2H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Boundary_OutOfStock" name="Out of stock" attachedToRef="Subprocess_InStore">
+      <bpmn:outgoing>Flow_OutOfStock_to_Handle</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_OutOfStock" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Boundary_TimeConstraint" name="Time constraint exceeded" attachedToRef="Subprocess_InStore">
+      <bpmn:outgoing>Flow_TimeConstraint_to_Handle</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration>PT20M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:association id="Association_PlanningHorizonOptions" sourceRef="Task_SetPlanningHorizon" targetRef="Annotation_PlanningHorizonOptions" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ConsumerPurchase">
+    <bpmndi:BPMNPlane id="BPMNPlane_ConsumerPurchase" bpmnElement="Collab_ConsumerPurchase">
+      <bpmndi:BPMNShape id="Participant_Consumer_di" bpmnElement="Participant_Consumer" isHorizontal="true">
+        <dc:Bounds x="160" y="90" width="3910" height="1440" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_CaptureTrigger_di" bpmnElement="Task_CaptureTrigger">
+        <dc:Bounds x="320" y="520" width="120" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_Need_di" bpmnElement="StartEvent_Need">
+        <dc:Bounds x="232" y="542" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="216" y="588" width="69" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SelectConsumptionGoal_di" bpmnElement="Task_SelectConsumptionGoal">
+        <dc:Bounds x="1140" y="520" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AssessDecisionClarity_di" bpmnElement="Task_AssessDecisionClarity">
+        <dc:Bounds x="1500" y="520" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_CheckInventory_di" bpmnElement="Gateway_CheckInventory" isMarkerVisible="true">
+        <dc:Bounds x="1715" y="535" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1700" y="594.5" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Trigger_Emotional_di" bpmnElement="Task_Trigger_Emotional">
+        <dc:Bounds x="830" y="910" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ScanInventory_di" bpmnElement="Task_ScanInventory">
+        <dc:Bounds x="1840" y="520" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_EstimateList_di" bpmnElement="Task_EstimateList">
+        <dc:Bounds x="1840" y="360" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_EnoughIngredients_di" bpmnElement="Gateway_EnoughIngredients" isMarkerVisible="true">
+        <dc:Bounds x="2015" y="535" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2012" y="485" width="55" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0eg8t9w_di" bpmnElement="Gateway_1qoma8d">
+        <dc:Bounds x="2195" y="535" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Trigger_ProblemDriven_di" bpmnElement="Task_Trigger_ProblemDriven">
+        <dc:Bounds x="830" y="790" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Trigger_Occasion_di" bpmnElement="Task_Trigger_Occasion">
+        <dc:Bounds x="830" y="670" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Trigger_Routine_di" bpmnElement="Task_Trigger_Routine">
+        <dc:Bounds x="830" y="550" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Trigger_Discovery_di" bpmnElement="Task_Trigger_Discovery">
+        <dc:Bounds x="830" y="430" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_SocialMediaTrigger_di" bpmnElement="Event_SocialMediaTrigger">
+        <dc:Bounds x="722" y="452" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="709" y="488" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1h9q1ck_di" bpmnElement="Gateway_TriggerType">
+        <dc:Bounds x="540" y="685" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="458" y="678" width="64" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_FamilyRequest_di" bpmnElement="Event_FamilyRequest">
+        <dc:Bounds x="712" y="692" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="693" y="728" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_09gwh8k_di" bpmnElement="Gateway_0iedjuu">
+        <dc:Bounds x="1035" y="685" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SetPlanningHorizon_di" bpmnElement="Task_SetPlanningHorizon">
+        <dc:Bounds x="1320" y="520" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_StillBuyExtras_di" bpmnElement="Gateway_StillBuyExtras" isMarkerVisible="true">
+        <dc:Bounds x="2105" y="655" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2091" y="631" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_CookConsume_di" bpmnElement="Task_CookConsume">
+        <dc:Bounds x="2070" y="770" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_NoPurchase_di" bpmnElement="EndEvent_NoPurchase">
+        <dc:Bounds x="2252" y="792" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2236" y="846" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1tmucjh_di" bpmnElement="Gateway_FulfillmentMode">
+        <dc:Bounds x="2505" y="535" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2564.5" y="553" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_HandleOutOfStock_di" bpmnElement="Task_HandleOutOfStock">
+        <dc:Bounds x="3060" y="180" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_HandleTimeConstraint_di" bpmnElement="Task_HandleTimeConstraint">
+        <dc:Bounds x="3060" y="408" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_InAppPromo_di" bpmnElement="Event_InAppPromo">
+        <dc:Bounds x="2622" y="642" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2598" y="678" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Abandon_di" bpmnElement="EndEvent_Abandon">
+        <dc:Bounds x="3042" y="1292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3026" y="1335" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1vg173b_di" bpmnElement="Gateway_ItemsObtained">
+        <dc:Bounds x="3415" y="635" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3470" y="618" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0eqjw8p_di" bpmnElement="Event_0eqjw8p">
+        <dc:Bounds x="3222" y="542" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3206" y="585" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0c4ofje_di" bpmnElement="Event_0c4ofje">
+        <dc:Bounds x="3222" y="762" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3206" y="805" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Completed_di" bpmnElement="EndEvent_Completed">
+        <dc:Bounds x="3882" y="642" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3873" y="691" width="55" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hrxqqr_di" bpmnElement="Task_BuildShoppingList">
+        <dc:Bounds x="2300" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Association_PlanningHorizonOptions" bpmnElement="Association_PlanningHorizonOptions">
+        <di:waypoint x="1380" y="520" />
+        <di:waypoint x="1460" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Subprocess_OnlineDelivery_di" bpmnElement="Subprocess_OnlineDelivery" isExpanded="false">
+        <dc:Bounds x="2750" y="600" width="220" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Subprocess_InStore_di" bpmnElement="Subprocess_InStore" isExpanded="false">
+        <dc:Bounds x="2750" y="290" width="220" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Subprocess_ClickCollect_di" bpmnElement="Subprocess_ClickCollect" isExpanded="false">
+        <dc:Bounds x="2750" y="890" width="220" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Subprocess_QuickCommerce_di" bpmnElement="Subprocess_QuickCommerce" isExpanded="false">
+        <dc:Bounds x="2750" y="1070" width="220" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Subprocess_AbandonAlternatives_di" bpmnElement="Subprocess_AbandonAlternatives" isExpanded="false">
+        <dc:Bounds x="2750" y="1250" width="220" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_065mbff_di" bpmnElement="Task_HandleMissedDelivery">
+        <dc:Bounds x="3070" y="740" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_082q35s_di" bpmnElement="Task_ProcessRefund">
+        <dc:Bounds x="3070" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Subprocess_PostPurchase_di" bpmnElement="Subprocess_PostPurchase" isExpanded="false">
+        <dc:Bounds x="3590" y="600" width="220" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Boundary_RefundRequest_di" bpmnElement="Boundary_RefundRequest">
+        <dc:Bounds x="2920" y="580" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2931" y="542" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Boundary_MissedDelivery_di" bpmnElement="Boundary_MissedDelivery">
+        <dc:Bounds x="2920" y="700" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2951" y="746" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Boundary_OutOfStock_di" bpmnElement="Boundary_OutOfStock">
+        <dc:Bounds x="2920" y="270" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2970" y="233" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Boundary_TimeConstraint_di" bpmnElement="Boundary_TimeConstraint">
+        <dc:Bounds x="2920" y="390" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2901" y="456" width="75" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_Start_to_Capture" bpmnElement="Flow_Start_to_Capture">
+        <di:waypoint x="268" y="560" />
+        <di:waypoint x="320" y="559" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Capture_to_TriggerGateway" bpmnElement="Flow_Capture_to_TriggerGateway">
+        <di:waypoint x="380" y="600" />
+        <di:waypoint x="380" y="710" />
+        <di:waypoint x="540" y="710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Trigger_to_Emotional" bpmnElement="Flow_Trigger_to_Emotional">
+        <di:waypoint x="565" y="735" />
+        <di:waypoint x="565" y="950" />
+        <di:waypoint x="830" y="950" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="675" y="965" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Trigger_to_ProblemDriven" bpmnElement="Flow_Trigger_to_ProblemDriven">
+        <di:waypoint x="565" y="735" />
+        <di:waypoint x="565" y="830" />
+        <di:waypoint x="830" y="830" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="660" y="838" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Trigger_to_FamilyRequest" bpmnElement="Flow_Trigger_to_FamilyRequest">
+        <di:waypoint x="590" y="710" />
+        <di:waypoint x="712" y="710" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="616" y="727" width="46" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Trigger_to_Routine" bpmnElement="Flow_Trigger_to_Routine">
+        <di:waypoint x="565" y="685" />
+        <di:waypoint x="565" y="590" />
+        <di:waypoint x="830" y="590" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="672" y="604" width="38" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Trigger_to_SocialMedia" bpmnElement="Flow_Trigger_to_SocialMedia">
+        <di:waypoint x="565" y="685" />
+        <di:waypoint x="565" y="470" />
+        <di:waypoint x="722" y="470" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="622" y="483" width="49" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_FamilyRequest_to_TriggerOccasion" bpmnElement="Flow_FamilyRequest_to_TriggerOccasion">
+        <di:waypoint x="748" y="709" />
+        <di:waypoint x="830" y="709" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xktkqn_di" bpmnElement="Flow_1xktkqn">
+        <di:waypoint x="950" y="710" />
+        <di:waypoint x="1035" y="710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s3y1cl_di" bpmnElement="Flow_0s3y1cl">
+        <di:waypoint x="950" y="830" />
+        <di:waypoint x="1060" y="830" />
+        <di:waypoint x="1060" y="735" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zl07jr_di" bpmnElement="Flow_0zl07jr">
+        <di:waypoint x="950" y="590" />
+        <di:waypoint x="1060" y="590" />
+        <di:waypoint x="1060" y="685" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gstlw0_di" bpmnElement="Flow_0gstlw0">
+        <di:waypoint x="950" y="470" />
+        <di:waypoint x="1060" y="470" />
+        <di:waypoint x="1060" y="685" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_TriggerEmotional_to_Goal" bpmnElement="Flow_TriggerEmotional_to_Goal">
+        <di:waypoint x="950" y="950" />
+        <di:waypoint x="1060" y="950" />
+        <di:waypoint x="1060" y="735" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0levdjz_di" bpmnElement="Flow_0levdjz">
+        <di:waypoint x="1085" y="710" />
+        <di:waypoint x="1200" y="710" />
+        <di:waypoint x="1200" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Goal_to_Planning" bpmnElement="Flow_Goal_to_Planning">
+        <di:waypoint x="1260" y="560" />
+        <di:waypoint x="1320" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Planning_to_Clarity" bpmnElement="Flow_Planning_to_Clarity">
+        <di:waypoint x="1440" y="560" />
+        <di:waypoint x="1500" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Clarity_to_Inventory" bpmnElement="Flow_Clarity_to_Inventory">
+        <di:waypoint x="1620" y="560" />
+        <di:waypoint x="1715" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SocialMedia_to_TriggerDiscovery" bpmnElement="Flow_SocialMedia_to_TriggerDiscovery">
+        <di:waypoint x="758" y="469" />
+        <di:waypoint x="830" y="469" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CheckInventory_No" bpmnElement="Flow_CheckInventory_No">
+        <di:waypoint x="1740" y="535" />
+        <di:waypoint x="1740" y="400" />
+        <di:waypoint x="1840" y="400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1771" y="378" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CheckInventory_Yes" bpmnElement="Flow_CheckInventory_Yes">
+        <di:waypoint x="1765" y="560" />
+        <di:waypoint x="1840" y="560" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1781" y="533" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ScanInventory_to_Enough" bpmnElement="Flow_ScanInventory_to_Enough">
+        <di:waypoint x="1960" y="560" />
+        <di:waypoint x="2015" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_EnoughIngredients_No" bpmnElement="Flow_EnoughIngredients_No">
+        <di:waypoint x="2065" y="560" />
+        <di:waypoint x="2195" y="560" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2127" y="542" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_EnoughIngredients_Yes" bpmnElement="Flow_EnoughIngredients_Yes">
+        <di:waypoint x="2040" y="585" />
+        <di:waypoint x="2040" y="680" />
+        <di:waypoint x="2105" y="680" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2011" y="618" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_EstimateList_to_BuildList" bpmnElement="Flow_EstimateList_to_BuildList">
+        <di:waypoint x="1960" y="400" />
+        <di:waypoint x="2220" y="400" />
+        <di:waypoint x="2220" y="535" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_StillBuyExtras_No" bpmnElement="Flow_StillBuyExtras_No">
+        <di:waypoint x="2130" y="705" />
+        <di:waypoint x="2130" y="770" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2152" y="728" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_StillBuyExtras_Yes" bpmnElement="Flow_StillBuyExtras_Yes">
+        <di:waypoint x="2155" y="680" />
+        <di:waypoint x="2220" y="680" />
+        <di:waypoint x="2220" y="585" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2176" y="656" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_BuildList_to_Budget" bpmnElement="Flow_BuildList_to_Budget">
+        <di:waypoint x="2400" y="560" />
+        <di:waypoint x="2505" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Fulfillment_Abandon" bpmnElement="Flow_Fulfillment_Abandon">
+        <di:waypoint x="2530" y="585" />
+        <di:waypoint x="2530" y="1310" />
+        <di:waypoint x="2750" y="1310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2511" y="921" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Fulfillment_QuickCommerce" bpmnElement="Flow_Fulfillment_QuickCommerce">
+        <di:waypoint x="2530" y="585" />
+        <di:waypoint x="2530" y="1130" />
+        <di:waypoint x="2750" y="1130" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2493" y="830" width="83" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Fulfillment_ClickCollect" bpmnElement="Flow_Fulfillment_ClickCollect">
+        <di:waypoint x="2530" y="585" />
+        <di:waypoint x="2530" y="950" />
+        <di:waypoint x="2750" y="950" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2502" y="740" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Fulfillment_Online" bpmnElement="Flow_Fulfillment_Online">
+        <di:waypoint x="2530" y="585" />
+        <di:waypoint x="2530" y="660" />
+        <di:waypoint x="2622" y="660" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2504" y="605" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Fulfillment_InStore" bpmnElement="Flow_Fulfillment_InStore">
+        <di:waypoint x="2530" y="535" />
+        <di:waypoint x="2530" y="350" />
+        <di:waypoint x="2750" y="350" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2496" y="421" width="38" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_OutOfStock_to_Handle" bpmnElement="Flow_OutOfStock_to_Handle">
+        <di:waypoint x="2938" y="270" />
+        <di:waypoint x="2938" y="220" />
+        <di:waypoint x="3060" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_TimeConstraint_to_Handle" bpmnElement="Flow_TimeConstraint_to_Handle">
+        <di:waypoint x="2938" y="426" />
+        <di:waypoint x="2938" y="448" />
+        <di:waypoint x="3060" y="448" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_InAppPromo_to_Online" bpmnElement="Flow_InAppPromo_to_Online">
+        <di:waypoint x="2658" y="660" />
+        <di:waypoint x="2750" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Abandon_to_End" bpmnElement="Flow_Abandon_to_End">
+        <di:waypoint x="2970" y="1310" />
+        <di:waypoint x="3042" y="1310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_QuickCommerce_to_ItemsObtained" bpmnElement="Flow_QuickCommerce_to_ItemsObtained">
+        <di:waypoint x="2970" y="1130" />
+        <di:waypoint x="3440" y="1130" />
+        <di:waypoint x="3440" y="685" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ClickCollect_to_ItemsObtained" bpmnElement="Flow_ClickCollect_to_ItemsObtained">
+        <di:waypoint x="2970" y="950" />
+        <di:waypoint x="3440" y="950" />
+        <di:waypoint x="3440" y="685" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Online_to_ItemsObtained" bpmnElement="Flow_Online_to_ItemsObtained">
+        <di:waypoint x="2970" y="660" />
+        <di:waypoint x="3415" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_InStore_to_ItemsObtained" bpmnElement="Flow_InStore_to_ItemsObtained">
+        <di:waypoint x="2970" y="350" />
+        <di:waypoint x="3440" y="350" />
+        <di:waypoint x="3440" y="635" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ItemsObtained_Yes" bpmnElement="Flow_ItemsObtained_Yes">
+        <di:waypoint x="3465" y="660" />
+        <di:waypoint x="3590" y="660" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3506" y="633" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1itn344_di" bpmnElement="Flow_1itn344">
+        <di:waypoint x="3170" y="560" />
+        <di:waypoint x="3222" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0felilm_di" bpmnElement="Flow_0felilm">
+        <di:waypoint x="3170" y="780" />
+        <di:waypoint x="3222" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PostPurchase_to_End" bpmnElement="Flow_PostPurchase_to_End">
+        <di:waypoint x="3810" y="660" />
+        <di:waypoint x="3882" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_MissedDelivery_to_Handle" bpmnElement="Flow_MissedDelivery_to_Handle">
+        <di:waypoint x="2938" y="736" />
+        <di:waypoint x="2938" y="780" />
+        <di:waypoint x="3070" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Refund_to_Process" bpmnElement="Flow_Refund_to_Process">
+        <di:waypoint x="2938" y="580" />
+        <di:waypoint x="2938" y="560" />
+        <di:waypoint x="3070" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CookConsume_to_End" bpmnElement="Flow_CookConsume_to_End">
+        <di:waypoint x="2190" y="810" />
+        <di:waypoint x="2252" y="810" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ht4w89_di" bpmnElement="Flow_1ht4w89">
+        <di:waypoint x="2245" y="560" />
+        <di:waypoint x="2300" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Association_ConsumptionGoalOptions" bpmnElement="Association_ConsumptionGoalOptions">
+        <di:waypoint x="1200" y="600" />
+        <di:waypoint x="1292" y="770" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Association_DecisionClarityOptions" bpmnElement="Association_DecisionClarityOptions">
+        <di:waypoint x="1560" y="600" />
+        <di:waypoint x="1502" y="645" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1dut3a2_di" bpmnElement="Association_1dut3a2">
+        <di:waypoint x="1939" y="360" />
+        <di:waypoint x="1987" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Association_TriggerOptions" bpmnElement="Association_TriggerOptions">
+        <di:waypoint x="550" y="720" />
+        <di:waypoint x="381" y="790" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Association_InStoreDetails" bpmnElement="Association_InStoreDetails">
+        <di:waypoint x="2860" y="290" />
+        <di:waypoint x="2700" y="253" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Association_AbandonDetails" bpmnElement="Association_AbandonDetails">
+        <di:waypoint x="2843" y="1370" />
+        <di:waypoint x="2834" y="1430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Association_ClickCollectDetails" bpmnElement="Association_ClickCollectDetails">
+        <di:waypoint x="2860" y="890" />
+        <di:waypoint x="2807" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Association_QuickCommerceDetails" bpmnElement="Association_QuickCommerceDetails">
+        <di:waypoint x="2860" y="1070" />
+        <di:waypoint x="3040" y="1031" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Association_OnlineDetails" bpmnElement="Association_OnlineDetails">
+        <di:waypoint x="2860" y="600" />
+        <di:waypoint x="2715" y="513" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Association_PostPurchaseDetails" bpmnElement="Association_PostPurchaseDetails">
+        <di:waypoint x="3664" y="600" />
+        <di:waypoint x="3648" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Association_ListMethodOptions" bpmnElement="Association_ListMethodOptions">
+        <di:waypoint x="2370" y="520" />
+        <di:waypoint x="2357" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Annotation_ConsumptionGoalOptions_di" bpmnElement="Annotation_ConsumptionGoalOptions">
+        <dc:Bounds x="1190" y="770" width="230" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annotation_DecisionClarityOptions_di" bpmnElement="Annotation_DecisionClarityOptions">
+        <dc:Bounds x="1470" y="645" width="230" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annotation_PlanningHorizonOptions_di" bpmnElement="Annotation_PlanningHorizonOptions">
+        <dc:Bounds x="1460" y="410" width="188" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1kbssyw_di" bpmnElement="TextAnnotation_1kbssyw">
+        <dc:Bounds x="1980" y="250" width="169.99831309041835" height="59.990721997300945" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annotation_TriggerOptions_di" bpmnElement="Annotation_TriggerOptions">
+        <dc:Bounds x="320" y="790" width="190" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annotation_InStoreDetails_di" bpmnElement="Annotation_InStoreDetails">
+        <dc:Bounds x="2570" y="180" width="260" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annotation_AbandonDetails_di" bpmnElement="Annotation_AbandonDetails">
+        <dc:Bounds x="2720" y="1430" width="210" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annotation_ClickCollectDetails_di" bpmnElement="Annotation_ClickCollectDetails">
+        <dc:Bounds x="2680" y="770" width="210" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annotation_QuickCommerceDetails_di" bpmnElement="Annotation_QuickCommerceDetails">
+        <dc:Bounds x="3040" y="990" width="240" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annotation_OnlineDetails_di" bpmnElement="Annotation_OnlineDetails">
+        <dc:Bounds x="2590" y="450" width="250" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annotation_PostPurchaseDetails_di" bpmnElement="Annotation_PostPurchaseDetails">
+        <dc:Bounds x="3480" y="490" width="280" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annotation_ListMethodOptions_di" bpmnElement="Annotation_ListMethodOptions">
+        <dc:Bounds x="2270" y="390" width="170" height="60" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="Subprocess_PostPurchase" />
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1vgjd7v">
+    <bpmndi:BPMNPlane id="BPMNPlane_1ajdvyw" bpmnElement="Task_ProcessRefund" />
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1lb3ucu">
+    <bpmndi:BPMNPlane id="BPMNPlane_09ijnlf" bpmnElement="Task_HandleMissedDelivery" />
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="Subprocess_AbandonAlternatives" />
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="Subprocess_QuickCommerce" />
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="Subprocess_ClickCollect" />
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="Subprocess_InStore" />
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="Subprocess_OnlineDelivery" />
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_0g3jamm">
+    <bpmndi:BPMNPlane id="BPMNPlane_0czv9es" bpmnElement="Task_BuildShoppingList">
+      <bpmndi:BPMNShape id="BPMNShape_0jtp4ou" bpmnElement="Activity_1gj6m8w">
+        <dc:Bounds x="390" y="170" width="120" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0ju8ar0" bpmnElement="Activity_1lkavmg">
+        <dc:Bounds x="230" y="170" width="120" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_150ho47_di" bpmnElement="Event_150ho47">
+        <dc:Bounds x="152" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ndw8cn_di" bpmnElement="Gateway_1ndw8cn" isMarkerVisible="true">
+        <dc:Bounds x="555" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1vdhvqg" bpmnElement="Activity_1cjavic">
+        <dc:Bounds x="690" y="170" width="120" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0xm7i5f_di" bpmnElement="Gateway_0xm7i5f" isMarkerVisible="true">
+        <dc:Bounds x="875" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0mr43sp_di" bpmnElement="Event_0mr43sp">
+        <dc:Bounds x="1142" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_19eci0r" bpmnElement="Activity_0wycq1j">
+        <dc:Bounds x="970" y="170" width="120" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1ghr1a1_di" bpmnElement="Association_1ghr1a1">
+        <di:waypoint x="325" y="170" />
+        <di:waypoint x="369" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_1mb88zh_di" bpmnElement="TextAnnotation_1mb88zh">
+        <dc:Bounds x="350" y="70" width="190" height="50" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_1gw1ovf" bpmnElement="Flow_0edbw1j">
+        <di:waypoint x="350" y="210" />
+        <di:waypoint x="390" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_1qgaa76" bpmnElement="Flow_0u8zx9t">
+        <di:waypoint x="510" y="210" />
+        <di:waypoint x="555" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p8t19z_di" bpmnElement="Flow_1p8t19z">
+        <di:waypoint x="188" y="210" />
+        <di:waypoint x="230" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kqfnwg_di" bpmnElement="Flow_1kqfnwg">
+        <di:waypoint x="605" y="210" />
+        <di:waypoint x="690" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="621" y="192" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1t8rd9u_di" bpmnElement="Flow_1t8rd9u">
+        <di:waypoint x="580" y="235" />
+        <di:waypoint x="580" y="340" />
+        <di:waypoint x="900" y="340" />
+        <di:waypoint x="900" y="235" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="718" y="323" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_1genv5s" bpmnElement="Flow_01ade1p">
+        <di:waypoint x="810" y="210" />
+        <di:waypoint x="875" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vt4292_di" bpmnElement="Flow_0vt4292">
+        <di:waypoint x="925" y="210" />
+        <di:waypoint x="970" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ghnsth_di" bpmnElement="Flow_1ghnsth">
+        <di:waypoint x="1090" y="210" />
+        <di:waypoint x="1142" y="210" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

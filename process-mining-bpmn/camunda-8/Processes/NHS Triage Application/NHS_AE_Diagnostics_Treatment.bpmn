@@ -1,0 +1,320 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ns0:definitions xmlns:ns0="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns1="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:ns2="http://www.omg.org/spec/DD/20100524/DC" xmlns:ns3="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_NHS_AE_Diagnostics_Treatment" targetNamespace="http://example.com/schema/bpmn">
+  <ns0:process id="Process_NHS_AE_Diagnostics_Treatment" name="Diagnostics and Treatment" isExecutable="false">
+    <ns0:laneSet id="LaneSet_DT">
+      <ns0:lane id="Lane_Patient_DT" name="Patient">
+        <ns0:flowNodeRef>StartEvent_DT</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_ArriveInArea</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_PatientConsent</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_CommunicatePlan_DT</ns0:flowNodeRef>
+        <ns0:flowNodeRef>EndEvent_DT</ns0:flowNodeRef>
+      </ns0:lane>
+      <ns0:lane id="Lane_Clinical_DT" name="Clinical Decision Maker">
+        <ns0:flowNodeRef>Task_AssignClinician</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_ImmediateStabilisation</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_EmergencyIntervention</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_ReturnPostStabilisation</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_DiagnosticSplit</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_DiagnosticJoin</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_ReviewResults</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_ResultsComplete</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_SpecialistAdvice</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_UpdatePlan</ns0:flowNodeRef>
+      </ns0:lane>
+      <ns0:lane id="Lane_Nursing_DT" name="Nursing &amp; Observation">
+        <ns0:flowNodeRef>Task_NurseAssessment</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_DrawBloods</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_AdministerAnalgesia</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_AdministerFluids</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_Observations</ns0:flowNodeRef>
+      </ns0:lane>
+      <ns0:lane id="Lane_Diagnostics_DT" name="Diagnostics (Lab/Imaging)">
+        <ns0:flowNodeRef>Task_OrderLabs</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_SendLabs</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_OrderImaging</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_PrepareImaging</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_PerformImaging</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Intermediate_AwaitResults</ns0:flowNodeRef>
+      </ns0:lane>
+    </ns0:laneSet>
+    <ns0:startEvent id="StartEvent_DT" name="Streamed to clinical area" />
+    <ns0:userTask id="Task_ArriveInArea" name="Arrive and orient in area" />
+    <ns0:userTask id="Task_AssignClinician" name="Assign responsible clinician" />
+    <ns0:userTask id="Task_NurseAssessment" name="Nursing assessment &amp; baseline" />
+    <ns0:userTask id="Task_PatientConsent" name="Gain consent for tests &amp; treatment" />
+    <ns0:exclusiveGateway id="Gateway_ImmediateStabilisation" name="Needs immediate stabilisation?" />
+    <ns0:userTask id="Task_EmergencyIntervention" name="Emergency intervention / resus" />
+    <ns0:exclusiveGateway id="Gateway_ReturnPostStabilisation" name="Proceed to diagnostics" />
+    <ns0:parallelGateway id="Gateway_DiagnosticSplit" name="Start diagnostics" />
+    <ns0:userTask id="Task_OrderLabs" name="Order labs" />
+    <ns0:userTask id="Task_DrawBloods" name="Draw bloods / specimens" />
+    <ns0:userTask id="Task_SendLabs" name="Send to lab" />
+    <ns0:userTask id="Task_OrderImaging" name="Order imaging" />
+    <ns0:userTask id="Task_PrepareImaging" name="Prepare patient for imaging" />
+    <ns0:userTask id="Task_PerformImaging" name="Imaging performed" />
+    <ns0:userTask id="Task_AdministerAnalgesia" name="Analgesia / antiemetics" />
+    <ns0:userTask id="Task_AdministerFluids" name="Fluids / IV access" />
+    <ns0:parallelGateway id="Gateway_DiagnosticJoin" name="Diagnostics complete" />
+    <ns0:userTask id="Task_Observations" name="Repeat observations" />
+    <ns0:userTask id="Task_ReviewResults" name="Review results &amp; response" />
+    <ns0:exclusiveGateway id="Gateway_ResultsComplete" name="All critical results back?" />
+    <ns0:intermediateCatchEvent id="Intermediate_AwaitResults" name="Await results">
+      <ns0:timerEventDefinition />
+    </ns0:intermediateCatchEvent>
+    <ns0:userTask id="Task_SpecialistAdvice" name="Request specialist advice" />
+    <ns0:userTask id="Task_UpdatePlan" name="Update treatment plan" />
+    <ns0:userTask id="Task_CommunicatePlan_DT" name="Communicate plan to patient" />
+    <ns0:endEvent id="EndEvent_DT" name="Ready for disposition" />
+    <ns0:sequenceFlow id="Flow_DT_StartToArrive" sourceRef="StartEvent_DT" targetRef="Task_ArriveInArea" />
+    <ns0:sequenceFlow id="Flow_DT_ArriveToAssign" sourceRef="Task_ArriveInArea" targetRef="Task_AssignClinician" />
+    <ns0:sequenceFlow id="Flow_DT_AssignToNurse" sourceRef="Task_AssignClinician" targetRef="Task_NurseAssessment" />
+    <ns0:sequenceFlow id="Flow_DT_NurseToConsent" sourceRef="Task_NurseAssessment" targetRef="Task_PatientConsent" />
+    <ns0:sequenceFlow id="Flow_DT_ConsentToGateway" sourceRef="Task_PatientConsent" targetRef="Gateway_ImmediateStabilisation" />
+    <ns0:sequenceFlow id="Flow_DT_GatewayYes" sourceRef="Gateway_ImmediateStabilisation" targetRef="Task_EmergencyIntervention" name="Yes" />
+    <ns0:sequenceFlow id="Flow_DT_GatewayNo" sourceRef="Gateway_ImmediateStabilisation" targetRef="Gateway_ReturnPostStabilisation" name="No" />
+    <ns0:sequenceFlow id="Flow_DT_InterventionToReturn" sourceRef="Task_EmergencyIntervention" targetRef="Gateway_ReturnPostStabilisation" />
+    <ns0:sequenceFlow id="Flow_DT_ReturnToSplit" sourceRef="Gateway_ReturnPostStabilisation" targetRef="Gateway_DiagnosticSplit" />
+    <ns0:sequenceFlow id="Flow_DT_SplitToLabs" sourceRef="Gateway_DiagnosticSplit" targetRef="Task_OrderLabs" />
+    <ns0:sequenceFlow id="Flow_DT_SplitToImaging" sourceRef="Gateway_DiagnosticSplit" targetRef="Task_OrderImaging" />
+    <ns0:sequenceFlow id="Flow_DT_SplitToAnalgesia" sourceRef="Gateway_DiagnosticSplit" targetRef="Task_AdministerAnalgesia" />
+    <ns0:sequenceFlow id="Flow_DT_OrderLabsToDraw" sourceRef="Task_OrderLabs" targetRef="Task_DrawBloods" />
+    <ns0:sequenceFlow id="Flow_DT_DrawToSend" sourceRef="Task_DrawBloods" targetRef="Task_SendLabs" />
+    <ns0:sequenceFlow id="Flow_DT_SendToJoin" sourceRef="Task_SendLabs" targetRef="Gateway_DiagnosticJoin" />
+    <ns0:sequenceFlow id="Flow_DT_OrderImagingToPrep" sourceRef="Task_OrderImaging" targetRef="Task_PrepareImaging" />
+    <ns0:sequenceFlow id="Flow_DT_PrepToPerform" sourceRef="Task_PrepareImaging" targetRef="Task_PerformImaging" />
+    <ns0:sequenceFlow id="Flow_DT_PerformToJoin" sourceRef="Task_PerformImaging" targetRef="Gateway_DiagnosticJoin" />
+    <ns0:sequenceFlow id="Flow_DT_AnalgesiaToFluids" sourceRef="Task_AdministerAnalgesia" targetRef="Task_AdministerFluids" />
+    <ns0:sequenceFlow id="Flow_DT_FluidsToJoin" sourceRef="Task_AdministerFluids" targetRef="Gateway_DiagnosticJoin" />
+    <ns0:sequenceFlow id="Flow_DT_JoinToObservations" sourceRef="Gateway_DiagnosticJoin" targetRef="Task_Observations" />
+    <ns0:sequenceFlow id="Flow_DT_ObsToReview" sourceRef="Task_Observations" targetRef="Task_ReviewResults" />
+    <ns0:sequenceFlow id="Flow_DT_ReviewToGateway" sourceRef="Task_ReviewResults" targetRef="Gateway_ResultsComplete" />
+    <ns0:sequenceFlow id="Flow_DT_ResultsYes" sourceRef="Gateway_ResultsComplete" targetRef="Task_SpecialistAdvice" name="Need specialist" />
+    <ns0:sequenceFlow id="Flow_DT_ResultsNo" sourceRef="Gateway_ResultsComplete" targetRef="Task_UpdatePlan" name="Plan clear" />
+    <ns0:sequenceFlow id="Flow_DT_SpecialistToUpdate" sourceRef="Task_SpecialistAdvice" targetRef="Task_UpdatePlan" />
+    <ns0:sequenceFlow id="Flow_DT_UpdateToCommunicate" sourceRef="Task_UpdatePlan" targetRef="Task_CommunicatePlan_DT" />
+    <ns0:sequenceFlow id="Flow_DT_CommunicateToEnd" sourceRef="Task_CommunicatePlan_DT" targetRef="EndEvent_DT" />
+    <ns0:sequenceFlow id="Flow_DT_ResultsWait" sourceRef="Gateway_ResultsComplete" targetRef="Intermediate_AwaitResults" name="Await results" />
+    <ns0:sequenceFlow id="Flow_DT_WaitToReview" sourceRef="Intermediate_AwaitResults" targetRef="Task_ReviewResults" />
+  </ns0:process>
+  <ns0:collaboration id="Collab_NHS_AE_Diagnostics_Treatment" name="Diagnostics &amp; Treatment Collaboration">
+    <ns0:participant id="Participant_NHS_AE_Diagnostics" name="NHS A&amp;E" processRef="Process_NHS_AE_Diagnostics_Treatment" />
+  </ns0:collaboration>
+  <ns1:BPMNDiagram id="BPMNDiagram_DT">
+    <ns1:BPMNPlane id="BPMNPlane_DT" bpmnElement="Collab_NHS_AE_Diagnostics_Treatment">
+      <ns1:BPMNShape id="Shape_Participant_DT" bpmnElement="Participant_NHS_AE_Diagnostics" isHorizontal="true">
+        <ns2:Bounds x="40" y="80" width="1900" height="620" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Patient_DT" bpmnElement="Lane_Patient_DT" isHorizontal="true">
+        <ns2:Bounds x="40" y="80" width="1900" height="120" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Clinical_DT" bpmnElement="Lane_Clinical_DT" isHorizontal="true">
+        <ns2:Bounds x="40" y="200" width="1900" height="170" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Nursing_DT" bpmnElement="Lane_Nursing_DT" isHorizontal="true">
+        <ns2:Bounds x="40" y="370" width="1900" height="160" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Diagnostics_DT" bpmnElement="Lane_Diagnostics_DT" isHorizontal="true">
+        <ns2:Bounds x="40" y="530" width="1900" height="170" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_StartEvent_DT" bpmnElement="StartEvent_DT">
+        <ns2:Bounds x="80" y="110" width="36" height="36" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_ArriveInArea" bpmnElement="Task_ArriveInArea">
+        <ns2:Bounds x="140" y="100" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_AssignClinician" bpmnElement="Task_AssignClinician">
+        <ns2:Bounds x="350" y="230" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_NurseAssessment" bpmnElement="Task_NurseAssessment">
+        <ns2:Bounds x="560" y="410" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_PatientConsent" bpmnElement="Task_PatientConsent">
+        <ns2:Bounds x="350" y="100" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_ImmediateStabilisation" bpmnElement="Gateway_ImmediateStabilisation" isMarkerVisible="true">
+        <ns2:Bounds x="590" y="240" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_EmergencyIntervention" bpmnElement="Task_EmergencyIntervention">
+        <ns2:Bounds x="760" y="230" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_ReturnPostStabilisation" bpmnElement="Gateway_ReturnPostStabilisation" isMarkerVisible="true">
+        <ns2:Bounds x="990" y="240" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_DiagnosticSplit" bpmnElement="Gateway_DiagnosticSplit" isMarkerVisible="true">
+        <ns2:Bounds x="760" y="320" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_OrderLabs" bpmnElement="Task_OrderLabs">
+        <ns2:Bounds x="960" y="550" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_DrawBloods" bpmnElement="Task_DrawBloods">
+        <ns2:Bounds x="1160" y="410" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_SendLabs" bpmnElement="Task_SendLabs">
+        <ns2:Bounds x="1360" y="550" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_OrderImaging" bpmnElement="Task_OrderImaging">
+        <ns2:Bounds x="960" y="640" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_PrepareImaging" bpmnElement="Task_PrepareImaging">
+        <ns2:Bounds x="1160" y="640" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_PerformImaging" bpmnElement="Task_PerformImaging">
+        <ns2:Bounds x="1360" y="640" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_AdministerAnalgesia" bpmnElement="Task_AdministerAnalgesia">
+        <ns2:Bounds x="960" y="410" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_AdministerFluids" bpmnElement="Task_AdministerFluids">
+        <ns2:Bounds x="1360" y="410" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_DiagnosticJoin" bpmnElement="Gateway_DiagnosticJoin" isMarkerVisible="true">
+        <ns2:Bounds x="1560" y="320" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_Observations" bpmnElement="Task_Observations">
+        <ns2:Bounds x="1740" y="410" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_ReviewResults" bpmnElement="Task_ReviewResults">
+        <ns2:Bounds x="1740" y="230" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_ResultsComplete" bpmnElement="Gateway_ResultsComplete" isMarkerVisible="true">
+        <ns2:Bounds x="1740" y="140" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Intermediate_AwaitResults" bpmnElement="Intermediate_AwaitResults">
+        <ns2:Bounds x="1560" y="140" width="36" height="36" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_SpecialistAdvice" bpmnElement="Task_SpecialistAdvice">
+        <ns2:Bounds x="1560" y="210" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_UpdatePlan" bpmnElement="Task_UpdatePlan">
+        <ns2:Bounds x="1360" y="210" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_CommunicatePlan_DT" bpmnElement="Task_CommunicatePlan_DT">
+        <ns2:Bounds x="1160" y="110" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_EndEvent_DT" bpmnElement="EndEvent_DT">
+        <ns2:Bounds x="1360" y="120" width="36" height="36" />
+      </ns1:BPMNShape>
+      <ns1:BPMNEdge id="Edge_Flow_DT_StartToArrive" bpmnElement="Flow_DT_StartToArrive">
+        <ns3:waypoint x="116" y="128" />
+        <ns3:waypoint x="140" y="130" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_ArriveToAssign" bpmnElement="Flow_DT_ArriveToAssign">
+        <ns3:waypoint x="330" y="130" />
+        <ns3:waypoint x="350" y="265" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_AssignToNurse" bpmnElement="Flow_DT_AssignToNurse">
+        <ns3:waypoint x="540" y="265" />
+        <ns3:waypoint x="560" y="445" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_NurseToConsent" bpmnElement="Flow_DT_NurseToConsent">
+        <ns3:waypoint x="750" y="445" />
+        <ns3:waypoint x="780" y="160" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_ConsentToGateway" bpmnElement="Flow_DT_ConsentToGateway">
+        <ns3:waypoint x="540" y="130" />
+        <ns3:waypoint x="615" y="265" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_GatewayYes" bpmnElement="Flow_DT_GatewayYes">
+        <ns3:waypoint x="640" y="265" />
+        <ns3:waypoint x="760" y="265" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_GatewayNo" bpmnElement="Flow_DT_GatewayNo">
+        <ns3:waypoint x="640" y="265" />
+        <ns3:waypoint x="1015" y="265" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_InterventionToReturn" bpmnElement="Flow_DT_InterventionToReturn">
+        <ns3:waypoint x="950" y="265" />
+        <ns3:waypoint x="990" y="265" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_ReturnToSplit" bpmnElement="Flow_DT_ReturnToSplit">
+        <ns3:waypoint x="1040" y="265" />
+        <ns3:waypoint x="1100" y="345" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_SplitToLabs" bpmnElement="Flow_DT_SplitToLabs">
+        <ns3:waypoint x="785" y="345" />
+        <ns3:waypoint x="960" y="585" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_SplitToImaging" bpmnElement="Flow_DT_SplitToImaging">
+        <ns3:waypoint x="785" y="345" />
+        <ns3:waypoint x="960" y="675" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_SplitToAnalgesia" bpmnElement="Flow_DT_SplitToAnalgesia">
+        <ns3:waypoint x="785" y="345" />
+        <ns3:waypoint x="960" y="445" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_OrderLabsToDraw" bpmnElement="Flow_DT_OrderLabsToDraw">
+        <ns3:waypoint x="1130" y="585" />
+        <ns3:waypoint x="1160" y="445" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_DrawToSend" bpmnElement="Flow_DT_DrawToSend">
+        <ns3:waypoint x="1330" y="445" />
+        <ns3:waypoint x="1360" y="585" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_SendToJoin" bpmnElement="Flow_DT_SendToJoin">
+        <ns3:waypoint x="1530" y="585" />
+        <ns3:waypoint x="1585" y="345" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_OrderImagingToPrep" bpmnElement="Flow_DT_OrderImagingToPrep">
+        <ns3:waypoint x="1130" y="675" />
+        <ns3:waypoint x="1160" y="675" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_PrepToPerform" bpmnElement="Flow_DT_PrepToPerform">
+        <ns3:waypoint x="1330" y="675" />
+        <ns3:waypoint x="1360" y="675" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_PerformToJoin" bpmnElement="Flow_DT_PerformToJoin">
+        <ns3:waypoint x="1530" y="675" />
+        <ns3:waypoint x="1585" y="345" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_AnalgesiaToFluids" bpmnElement="Flow_DT_AnalgesiaToFluids">
+        <ns3:waypoint x="1130" y="445" />
+        <ns3:waypoint x="1360" y="445" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_FluidsToJoin" bpmnElement="Flow_DT_FluidsToJoin">
+        <ns3:waypoint x="1530" y="445" />
+        <ns3:waypoint x="1585" y="345" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_JoinToObservations" bpmnElement="Flow_DT_JoinToObservations">
+        <ns3:waypoint x="1585" y="345" />
+        <ns3:waypoint x="1740" y="445" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_ObsToReview" bpmnElement="Flow_DT_ObsToReview">
+        <ns3:waypoint x="1825" y="445" />
+        <ns3:waypoint x="1825" y="265" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_ReviewToGateway" bpmnElement="Flow_DT_ReviewToGateway">
+        <ns3:waypoint x="1825" y="265" />
+        <ns3:waypoint x="1825" y="165" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_ResultsYes" bpmnElement="Flow_DT_ResultsYes">
+        <ns3:waypoint x="1825" y="165" />
+        <ns3:waypoint x="1825" y="245" />
+        <ns3:waypoint x="1825" y="245" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_ResultsNo" bpmnElement="Flow_DT_ResultsNo">
+        <ns3:waypoint x="1825" y="165" />
+        <ns3:waypoint x="1825" y="245" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_SpecialistToUpdate" bpmnElement="Flow_DT_SpecialistToUpdate">
+        <ns3:waypoint x="1825" y="245" />
+        <ns3:waypoint x="1825" y="245" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_UpdateToCommunicate" bpmnElement="Flow_DT_UpdateToCommunicate">
+        <ns3:waypoint x="1825" y="245" />
+        <ns3:waypoint x="1825" y="140" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_CommunicateToEnd" bpmnElement="Flow_DT_CommunicateToEnd">
+        <ns3:waypoint x="1350" y="140" />
+        <ns3:waypoint x="1360" y="138" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_ResultsWait" bpmnElement="Flow_DT_ResultsWait">
+        <ns3:waypoint x="1825" y="165" />
+        <ns3:waypoint x="1825" y="158" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DT_WaitToReview" bpmnElement="Flow_DT_WaitToReview">
+        <ns3:waypoint x="1596" y="158" />
+        <ns3:waypoint x="1740" y="265" />
+      </ns1:BPMNEdge>
+    </ns1:BPMNPlane>
+  </ns1:BPMNDiagram>
+</ns0:definitions>

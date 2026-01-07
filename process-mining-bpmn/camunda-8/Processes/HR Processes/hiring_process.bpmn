@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_Hiring" targetNamespace="http://example.com/schema/bpmn/hiring" exporter="Camunda Modeler" exporterVersion="5.40.1">
+  <bpmn:collaboration id="Collab_Hiring">
+    <bpmn:participant id="Participant_Hiring" name="Hiring Process" processRef="Process_Hiring" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Hiring" name="New Employee Hiring" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Hiring">
+      <bpmn:lane id="Lane_Recruiter" name="Recruiter">
+        <bpmn:flowNodeRef>StartEvent_ApplicationReceived</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_LogApplication</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ScreenResume</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_BasicCriteria</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ConductPhone</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SchedulePhone</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_PhonePass</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SendAssessment</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ArrangePanel</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_AssessmentResult</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1d5fjgu</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SendRejection</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_ApplicationClosed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SendOffer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CaptureDecline</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_OfferDeclined</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Candidate" name="Candidate">
+        <bpmn:flowNodeRef>Task_CompleteAssessment</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ReviewOffer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_OfferDecision</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_HR" name="HR">
+        <bpmn:flowNodeRef>Task_CollectReferences</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RunBackgroundCheck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_BackgroundClear</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PrepareOfferTerms</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_StartOnboarding</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_EnrollBenefits</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Hired</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ScheduleStartDate</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_HiringManager" name="Hiring Manager">
+        <bpmn:flowNodeRef>Task_EvaluateAssessment</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ConductPanel</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_PanelResult</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ApproveOffer</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Facilities" name="Facilities">
+        <bpmn:flowNodeRef>Task_PrepareWorkspace</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_IT" name="IT">
+        <bpmn:flowNodeRef>Task_ProvisionAccounts</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_OnboardSplit</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_OnboardJoin</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_ApplicationReceived" name="Application received">
+      <bpmn:outgoing>Flow_Start_Log</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_LogApplication" name="Log application in ATS">
+      <bpmn:incoming>Flow_Start_Log</bpmn:incoming>
+      <bpmn:outgoing>Flow_Log_Screen</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_ScreenResume" name="Screen resume">
+      <bpmn:incoming>Flow_Log_Screen</bpmn:incoming>
+      <bpmn:outgoing>Flow_Screen_Basic</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_BasicCriteria" name="Meets basic criteria?">
+      <bpmn:incoming>Flow_Screen_Basic</bpmn:incoming>
+      <bpmn:outgoing>Flow_Basic_No_Reject</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Basic_Yes_Schedule</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_CompleteAssessment" name="Complete assessment">
+      <bpmn:incoming>Flow_SendAssessment_To_AssessmentTask</bpmn:incoming>
+      <bpmn:outgoing>Flow_AssessmentTask_To_Eval</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_EvaluateAssessment" name="Evaluate assessment">
+      <bpmn:incoming>Flow_AssessmentTask_To_Eval</bpmn:incoming>
+      <bpmn:outgoing>Flow_Eval_To_AssessmentGateway</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_CollectReferences" name="Collect references">
+      <bpmn:incoming>Flow_Panel_Pass_References</bpmn:incoming>
+      <bpmn:outgoing>Flow_References_To_Background</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_RunBackgroundCheck" name="Run background check">
+      <bpmn:incoming>Flow_References_To_Background</bpmn:incoming>
+      <bpmn:outgoing>Flow_Background_To_BackgroundGateway</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_BackgroundClear" name="Background clear?">
+      <bpmn:incoming>Flow_Background_To_BackgroundGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_Background_Fail_Reject</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Background_Pass_PrepareOffer</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_ConductPhone" name="Conduct phone screen">
+      <bpmn:incoming>Flow_Schedule_Conduct</bpmn:incoming>
+      <bpmn:outgoing>Flow_Conduct_PhoneGateway</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_SchedulePhone" name="Schedule phone screen">
+      <bpmn:incoming>Flow_Basic_Yes_Schedule</bpmn:incoming>
+      <bpmn:outgoing>Flow_Schedule_Conduct</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_PhonePass" name="Phone screen passed?">
+      <bpmn:incoming>Flow_Conduct_PhoneGateway</bpmn:incoming>
+      <bpmn:incoming>Flow_Basic_No_Reject</bpmn:incoming>
+      <bpmn:outgoing>Flow_Phone_Pass_SendAssessment</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1kjjuho</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sendTask id="Task_SendAssessment" name="Send assessment">
+      <bpmn:incoming>Flow_Phone_Pass_SendAssessment</bpmn:incoming>
+      <bpmn:outgoing>Flow_SendAssessment_To_AssessmentTask</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:userTask id="Task_ArrangePanel" name="Arrange panel interview">
+      <bpmn:incoming>Flow_Assessment_Pass_ArrangePanel</bpmn:incoming>
+      <bpmn:outgoing>Flow_ArrangePanel_To_ConductPanel</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_AssessmentResult" name="Assessment adequate?">
+      <bpmn:incoming>Flow_Eval_To_AssessmentGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_Assessment_Fail_Reject</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Assessment_Pass_ArrangePanel</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_ConductPanel" name="Conduct panel interview">
+      <bpmn:incoming>Flow_ArrangePanel_To_ConductPanel</bpmn:incoming>
+      <bpmn:outgoing>Flow_ConductPanel_To_PanelGateway</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_1d5fjgu">
+      <bpmn:incoming>Flow_Assessment_Fail_Reject</bpmn:incoming>
+      <bpmn:incoming>Flow_Panel_Fail_Reject</bpmn:incoming>
+      <bpmn:outgoing>Flow_1aznkx5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_PanelResult" name="Panel outcome?">
+      <bpmn:incoming>Flow_ConductPanel_To_PanelGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_Panel_Fail_Reject</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Panel_Pass_References</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_SendRejection" name="Send rejection notice">
+      <bpmn:incoming>Flow_Background_Fail_Reject</bpmn:incoming>
+      <bpmn:incoming>Flow_1kjjuho</bpmn:incoming>
+      <bpmn:incoming>Flow_1aznkx5</bpmn:incoming>
+      <bpmn:outgoing>Flow_Rejection_To_End</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_ApplicationClosed" name="Application closed">
+      <bpmn:incoming>Flow_Rejection_To_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Task_PrepareOfferTerms" name="Prepare offer terms">
+      <bpmn:incoming>Flow_Background_Pass_PrepareOffer</bpmn:incoming>
+      <bpmn:outgoing>Flow_PrepareOffer_To_ApproveOffer</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_ApproveOffer" name="Approve offer terms">
+      <bpmn:incoming>Flow_PrepareOffer_To_ApproveOffer</bpmn:incoming>
+      <bpmn:outgoing>Flow_ApproveOffer_To_SendOffer</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sendTask id="Task_SendOffer" name="Send offer to candidate">
+      <bpmn:incoming>Flow_ApproveOffer_To_SendOffer</bpmn:incoming>
+      <bpmn:outgoing>Flow_SendOffer_To_ReviewOffer</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:userTask id="Task_ReviewOffer" name="Review and sign offer">
+      <bpmn:incoming>Flow_SendOffer_To_ReviewOffer</bpmn:incoming>
+      <bpmn:outgoing>Flow_ReviewOffer_To_OfferGateway</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_OfferDecision" name="Offer accepted?">
+      <bpmn:incoming>Flow_ReviewOffer_To_OfferGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_Offer_Decline_To_CaptureDecline</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Offer_Accept_To_StartOnboarding</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_CaptureDecline" name="Capture decline reasons">
+      <bpmn:incoming>Flow_Offer_Decline_To_CaptureDecline</bpmn:incoming>
+      <bpmn:outgoing>Flow_CaptureDecline_To_EndDecline</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_OfferDeclined" name="Offer declined">
+      <bpmn:incoming>Flow_CaptureDecline_To_EndDecline</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Task_StartOnboarding" name="Start onboarding checklist">
+      <bpmn:incoming>Flow_Offer_Accept_To_StartOnboarding</bpmn:incoming>
+      <bpmn:outgoing>Flow_StartOnboarding_To_OnboardSplit</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_EnrollBenefits" name="Enroll payroll and benefits">
+      <bpmn:incoming>Flow_Split_To_EnrollBenefits</bpmn:incoming>
+      <bpmn:outgoing>Flow_Benefits_To_Join</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_Hired" name="Hired">
+      <bpmn:incoming>Flow_ScheduleStart_To_EndHired</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Task_ProvisionAccounts" name="Provision accounts">
+      <bpmn:incoming>Flow_Split_To_ProvisionAccounts</bpmn:incoming>
+      <bpmn:outgoing>Flow_Provision_To_Join</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_PrepareWorkspace" name="Prepare workspace">
+      <bpmn:incoming>Flow_Split_To_PrepareWorkspace</bpmn:incoming>
+      <bpmn:outgoing>Flow_Workspace_To_Join</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="Gateway_OnboardSplit" name="Launch onboarding setup">
+      <bpmn:incoming>Flow_StartOnboarding_To_OnboardSplit</bpmn:incoming>
+      <bpmn:outgoing>Flow_Split_To_ProvisionAccounts</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Split_To_PrepareWorkspace</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Split_To_EnrollBenefits</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:parallelGateway id="Gateway_OnboardJoin" name="Onboarding ready">
+      <bpmn:incoming>Flow_Provision_To_Join</bpmn:incoming>
+      <bpmn:incoming>Flow_Workspace_To_Join</bpmn:incoming>
+      <bpmn:incoming>Flow_Benefits_To_Join</bpmn:incoming>
+      <bpmn:outgoing>Flow_Join_To_ScheduleStart</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="Task_ScheduleStartDate" name="Schedule start date &#38; orientation">
+      <bpmn:incoming>Flow_Join_To_ScheduleStart</bpmn:incoming>
+      <bpmn:outgoing>Flow_ScheduleStart_To_EndHired</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Start_Log" sourceRef="StartEvent_ApplicationReceived" targetRef="Task_LogApplication" />
+    <bpmn:sequenceFlow id="Flow_Log_Screen" sourceRef="Task_LogApplication" targetRef="Task_ScreenResume" />
+    <bpmn:sequenceFlow id="Flow_Screen_Basic" sourceRef="Task_ScreenResume" targetRef="Gateway_BasicCriteria" />
+    <bpmn:sequenceFlow id="Flow_Basic_No_Reject" name="No" sourceRef="Gateway_BasicCriteria" targetRef="Gateway_PhonePass" />
+    <bpmn:sequenceFlow id="Flow_Basic_Yes_Schedule" name="Yes" sourceRef="Gateway_BasicCriteria" targetRef="Task_SchedulePhone" />
+    <bpmn:sequenceFlow id="Flow_SendAssessment_To_AssessmentTask" sourceRef="Task_SendAssessment" targetRef="Task_CompleteAssessment" />
+    <bpmn:sequenceFlow id="Flow_AssessmentTask_To_Eval" sourceRef="Task_CompleteAssessment" targetRef="Task_EvaluateAssessment" />
+    <bpmn:sequenceFlow id="Flow_Eval_To_AssessmentGateway" sourceRef="Task_EvaluateAssessment" targetRef="Gateway_AssessmentResult" />
+    <bpmn:sequenceFlow id="Flow_Panel_Pass_References" name="Proceed" sourceRef="Gateway_PanelResult" targetRef="Task_CollectReferences" />
+    <bpmn:sequenceFlow id="Flow_References_To_Background" sourceRef="Task_CollectReferences" targetRef="Task_RunBackgroundCheck" />
+    <bpmn:sequenceFlow id="Flow_Background_To_BackgroundGateway" sourceRef="Task_RunBackgroundCheck" targetRef="Gateway_BackgroundClear" />
+    <bpmn:sequenceFlow id="Flow_Background_Fail_Reject" name="Issues found" sourceRef="Gateway_BackgroundClear" targetRef="Task_SendRejection" />
+    <bpmn:sequenceFlow id="Flow_Background_Pass_PrepareOffer" name="Clear" sourceRef="Gateway_BackgroundClear" targetRef="Task_PrepareOfferTerms" />
+    <bpmn:sequenceFlow id="Flow_Schedule_Conduct" sourceRef="Task_SchedulePhone" targetRef="Task_ConductPhone" />
+    <bpmn:sequenceFlow id="Flow_Conduct_PhoneGateway" sourceRef="Task_ConductPhone" targetRef="Gateway_PhonePass" />
+    <bpmn:sequenceFlow id="Flow_Phone_Pass_SendAssessment" name="Pass" sourceRef="Gateway_PhonePass" targetRef="Task_SendAssessment" />
+    <bpmn:sequenceFlow id="Flow_1kjjuho" sourceRef="Gateway_PhonePass" targetRef="Task_SendRejection" />
+    <bpmn:sequenceFlow id="Flow_Assessment_Pass_ArrangePanel" name="Pass" sourceRef="Gateway_AssessmentResult" targetRef="Task_ArrangePanel" />
+    <bpmn:sequenceFlow id="Flow_ArrangePanel_To_ConductPanel" sourceRef="Task_ArrangePanel" targetRef="Task_ConductPanel" />
+    <bpmn:sequenceFlow id="Flow_Assessment_Fail_Reject" name="Insufficient" sourceRef="Gateway_AssessmentResult" targetRef="Gateway_1d5fjgu" />
+    <bpmn:sequenceFlow id="Flow_ConductPanel_To_PanelGateway" sourceRef="Task_ConductPanel" targetRef="Gateway_PanelResult" />
+    <bpmn:sequenceFlow id="Flow_Panel_Fail_Reject" name="Not suitable" sourceRef="Gateway_PanelResult" targetRef="Gateway_1d5fjgu" />
+    <bpmn:sequenceFlow id="Flow_1aznkx5" sourceRef="Gateway_1d5fjgu" targetRef="Task_SendRejection" />
+    <bpmn:sequenceFlow id="Flow_Rejection_To_End" sourceRef="Task_SendRejection" targetRef="End_ApplicationClosed" />
+    <bpmn:sequenceFlow id="Flow_PrepareOffer_To_ApproveOffer" sourceRef="Task_PrepareOfferTerms" targetRef="Task_ApproveOffer" />
+    <bpmn:sequenceFlow id="Flow_ApproveOffer_To_SendOffer" sourceRef="Task_ApproveOffer" targetRef="Task_SendOffer" />
+    <bpmn:sequenceFlow id="Flow_SendOffer_To_ReviewOffer" sourceRef="Task_SendOffer" targetRef="Task_ReviewOffer" />
+    <bpmn:sequenceFlow id="Flow_ReviewOffer_To_OfferGateway" sourceRef="Task_ReviewOffer" targetRef="Gateway_OfferDecision" />
+    <bpmn:sequenceFlow id="Flow_Offer_Decline_To_CaptureDecline" name="Declined" sourceRef="Gateway_OfferDecision" targetRef="Task_CaptureDecline" />
+    <bpmn:sequenceFlow id="Flow_Offer_Accept_To_StartOnboarding" name="Accepted" sourceRef="Gateway_OfferDecision" targetRef="Task_StartOnboarding" />
+    <bpmn:sequenceFlow id="Flow_CaptureDecline_To_EndDecline" sourceRef="Task_CaptureDecline" targetRef="End_OfferDeclined" />
+    <bpmn:sequenceFlow id="Flow_StartOnboarding_To_OnboardSplit" sourceRef="Task_StartOnboarding" targetRef="Gateway_OnboardSplit" />
+    <bpmn:sequenceFlow id="Flow_Split_To_EnrollBenefits" sourceRef="Gateway_OnboardSplit" targetRef="Task_EnrollBenefits" />
+    <bpmn:sequenceFlow id="Flow_Benefits_To_Join" sourceRef="Task_EnrollBenefits" targetRef="Gateway_OnboardJoin" />
+    <bpmn:sequenceFlow id="Flow_ScheduleStart_To_EndHired" sourceRef="Task_ScheduleStartDate" targetRef="End_Hired" />
+    <bpmn:sequenceFlow id="Flow_Split_To_ProvisionAccounts" sourceRef="Gateway_OnboardSplit" targetRef="Task_ProvisionAccounts" />
+    <bpmn:sequenceFlow id="Flow_Provision_To_Join" sourceRef="Task_ProvisionAccounts" targetRef="Gateway_OnboardJoin" />
+    <bpmn:sequenceFlow id="Flow_Split_To_PrepareWorkspace" sourceRef="Gateway_OnboardSplit" targetRef="Task_PrepareWorkspace" />
+    <bpmn:sequenceFlow id="Flow_Workspace_To_Join" sourceRef="Task_PrepareWorkspace" targetRef="Gateway_OnboardJoin" />
+    <bpmn:sequenceFlow id="Flow_Join_To_ScheduleStart" sourceRef="Gateway_OnboardJoin" targetRef="Task_ScheduleStartDate" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Hiring">
+    <bpmndi:BPMNPlane id="BPMNPlane_Hiring" bpmnElement="Collab_Hiring">
+      <bpmndi:BPMNShape id="Shape_Participant_Hiring" bpmnElement="Participant_Hiring" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="4440" height="960" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Recruiter" bpmnElement="Lane_Recruiter" isHorizontal="true">
+        <dc:Bounds x="160" y="200" width="4440" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Candidate" bpmnElement="Lane_Candidate" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="4440" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_HR" bpmnElement="Lane_HR" isHorizontal="true">
+        <dc:Bounds x="160" y="570" width="4440" height="230" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_HiringManager" bpmnElement="Lane_HiringManager" isHorizontal="true">
+        <dc:Bounds x="160" y="450" width="4440" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Facilities" bpmnElement="Lane_Facilities" isHorizontal="true">
+        <dc:Bounds x="160" y="920" width="4440" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_IT" bpmnElement="Lane_IT" isHorizontal="true">
+        <dc:Bounds x="160" y="800" width="4440" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_StartEvent_ApplicationReceived" bpmnElement="StartEvent_ApplicationReceived">
+        <dc:Bounds x="220" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="212" y="278" width="53" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_LogApplication" bpmnElement="Task_LogApplication">
+        <dc:Bounds x="300" y="220" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ScreenResume" bpmnElement="Task_ScreenResume">
+        <dc:Bounds x="470" y="220" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_BasicCriteria" bpmnElement="Gateway_BasicCriteria" isMarkerVisible="true">
+        <dc:Bounds x="640" y="235" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="635" y="197.5" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CompleteAssessment" bpmnElement="Task_CompleteAssessment">
+        <dc:Bounds x="1460" y="100" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_EvaluateAssessment" bpmnElement="Task_EvaluateAssessment">
+        <dc:Bounds x="1630" y="470" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CollectReferences" bpmnElement="Task_CollectReferences">
+        <dc:Bounds x="2460" y="590" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RunBackgroundCheck" bpmnElement="Task_RunBackgroundCheck">
+        <dc:Bounds x="2630" y="590" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_BackgroundClear" bpmnElement="Gateway_BackgroundClear" isMarkerVisible="true">
+        <dc:Bounds x="2800" y="605" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2859.5" y="616.5" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ConductPhone" bpmnElement="Task_ConductPhone">
+        <dc:Bounds x="960" y="340" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SchedulePhone" bpmnElement="Task_SchedulePhone">
+        <dc:Bounds x="750" y="340" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_PhonePass" bpmnElement="Gateway_PhonePass" isMarkerVisible="true">
+        <dc:Bounds x="1130" y="235" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1190" y="246.5" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SendAssessment" bpmnElement="Task_SendAssessment">
+        <dc:Bounds x="1290" y="220" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ArrangePanel" bpmnElement="Task_ArrangePanel">
+        <dc:Bounds x="1870" y="320" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_AssessmentResult" bpmnElement="Gateway_AssessmentResult" isMarkerVisible="true">
+        <dc:Bounds x="1745" y="235" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1740" y="197.5" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ConductPanel" bpmnElement="Task_ConductPanel">
+        <dc:Bounds x="1870" y="470" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1d5fjgu_di" bpmnElement="Gateway_1d5fjgu" isMarkerVisible="true">
+        <dc:Bounds x="2335" y="235" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_PanelResult" bpmnElement="Gateway_PanelResult" isMarkerVisible="true">
+        <dc:Bounds x="2335" y="485" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2395" y="503" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SendRejection" bpmnElement="Task_SendRejection">
+        <dc:Bounds x="2765" y="220" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_ApplicationClosed" bpmnElement="End_ApplicationClosed">
+        <dc:Bounds x="2992" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2966" y="278" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PrepareOfferTerms" bpmnElement="Task_PrepareOfferTerms">
+        <dc:Bounds x="2990" y="690" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ApproveOffer" bpmnElement="Task_ApproveOffer">
+        <dc:Bounds x="2990" y="470" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SendOffer" bpmnElement="Task_SendOffer">
+        <dc:Bounds x="3200" y="220" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ReviewOffer" bpmnElement="Task_ReviewOffer">
+        <dc:Bounds x="3200" y="100" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_OfferDecision" bpmnElement="Gateway_OfferDecision" isMarkerVisible="true">
+        <dc:Bounds x="3420" y="115" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3405" y="91" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CaptureDecline" bpmnElement="Task_CaptureDecline">
+        <dc:Bounds x="3590" y="220" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_OfferDeclined" bpmnElement="End_OfferDeclined">
+        <dc:Bounds x="3750" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3734" y="278" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_StartOnboarding" bpmnElement="Task_StartOnboarding">
+        <dc:Bounds x="3590" y="590" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_EnrollBenefits" bpmnElement="Task_EnrollBenefits">
+        <dc:Bounds x="3930" y="590" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Hired" bpmnElement="End_Hired">
+        <dc:Bounds x="4500" y="612" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4505" y="648" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ProvisionAccounts" bpmnElement="Task_ProvisionAccounts">
+        <dc:Bounds x="3930" y="820" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PrepareWorkspace" bpmnElement="Task_PrepareWorkspace">
+        <dc:Bounds x="3930" y="940" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_OnboardSplit" bpmnElement="Gateway_OnboardSplit" isMarkerVisible="true">
+        <dc:Bounds x="3760" y="835" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3664" y="846.5" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_OnboardJoin" bpmnElement="Gateway_OnboardJoin" isMarkerVisible="true">
+        <dc:Bounds x="4155" y="835" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4214.5" y="873" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ScheduleStartDate" bpmnElement="Task_ScheduleStartDate">
+        <dc:Bounds x="4280" y="590" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_Start_Log" bpmnElement="Flow_Start_Log">
+        <di:waypoint x="256" y="260" />
+        <di:waypoint x="300" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Log_Screen" bpmnElement="Flow_Log_Screen">
+        <di:waypoint x="420" y="260" />
+        <di:waypoint x="470" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Screen_Basic" bpmnElement="Flow_Screen_Basic">
+        <di:waypoint x="590" y="260" />
+        <di:waypoint x="640" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Basic_No_Reject" bpmnElement="Flow_Basic_No_Reject">
+        <di:waypoint x="690" y="260" />
+        <di:waypoint x="1130" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1803" y="260" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Basic_Yes_Schedule" bpmnElement="Flow_Basic_Yes_Schedule">
+        <di:waypoint x="665" y="285" />
+        <di:waypoint x="665" y="380" />
+        <di:waypoint x="750" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="699" y="355" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SendAssessment_To_AssessmentTask" bpmnElement="Flow_SendAssessment_To_AssessmentTask">
+        <di:waypoint x="1350" y="220" />
+        <di:waypoint x="1350" y="140" />
+        <di:waypoint x="1460" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AssessmentTask_To_Eval" bpmnElement="Flow_AssessmentTask_To_Eval">
+        <di:waypoint x="1520" y="180" />
+        <di:waypoint x="1520" y="510" />
+        <di:waypoint x="1630" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Eval_To_AssessmentGateway" bpmnElement="Flow_Eval_To_AssessmentGateway">
+        <di:waypoint x="1690" y="470" />
+        <di:waypoint x="1690" y="260" />
+        <di:waypoint x="1745" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Panel_Pass_References" bpmnElement="Flow_Panel_Pass_References">
+        <di:waypoint x="2360" y="535" />
+        <di:waypoint x="2360" y="630" />
+        <di:waypoint x="2460" y="630" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2379" y="603" width="41" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_References_To_Background" bpmnElement="Flow_References_To_Background">
+        <di:waypoint x="2580" y="630" />
+        <di:waypoint x="2630" y="630" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Background_To_BackgroundGateway" bpmnElement="Flow_Background_To_BackgroundGateway">
+        <di:waypoint x="2750" y="630" />
+        <di:waypoint x="2800" y="630" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Background_Fail_Reject" bpmnElement="Flow_Background_Fail_Reject">
+        <di:waypoint x="2825" y="605" />
+        <di:waypoint x="2825" y="300" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2838" y="343" width="63" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Background_Pass_PrepareOffer" bpmnElement="Flow_Background_Pass_PrepareOffer">
+        <di:waypoint x="2825" y="655" />
+        <di:waypoint x="2825" y="730" />
+        <di:waypoint x="2990" y="730" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2894" y="705" width="28" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Schedule_Conduct" bpmnElement="Flow_Schedule_Conduct">
+        <di:waypoint x="870" y="380" />
+        <di:waypoint x="960" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Conduct_PhoneGateway" bpmnElement="Flow_Conduct_PhoneGateway">
+        <di:waypoint x="1080" y="380" />
+        <di:waypoint x="1155" y="380" />
+        <di:waypoint x="1155" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Phone_Pass_SendAssessment" bpmnElement="Flow_Phone_Pass_SendAssessment">
+        <di:waypoint x="1180" y="260" />
+        <di:waypoint x="1290" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1223" y="235" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kjjuho_di" bpmnElement="Flow_1kjjuho">
+        <di:waypoint x="1155" y="235" />
+        <di:waypoint x="1155" y="160" />
+        <di:waypoint x="2825" y="160" />
+        <di:waypoint x="2825" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Assessment_Pass_ArrangePanel" bpmnElement="Flow_Assessment_Pass_ArrangePanel">
+        <di:waypoint x="1770" y="285" />
+        <di:waypoint x="1770" y="360" />
+        <di:waypoint x="1870" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1771" y="365" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ArrangePanel_To_ConductPanel" bpmnElement="Flow_ArrangePanel_To_ConductPanel">
+        <di:waypoint x="1930" y="400" />
+        <di:waypoint x="1930" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Assessment_Fail_Reject" bpmnElement="Flow_Assessment_Fail_Reject">
+        <di:waypoint x="1795" y="260" />
+        <di:waypoint x="2335" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2411.9999999999995" y="268" width="54" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ConductPanel_To_PanelGateway" bpmnElement="Flow_ConductPanel_To_PanelGateway">
+        <di:waypoint x="1990" y="510" />
+        <di:waypoint x="2335" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Panel_Fail_Reject" bpmnElement="Flow_Panel_Fail_Reject">
+        <di:waypoint x="2360" y="485" />
+        <di:waypoint x="2360" y="285" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2370" y="323" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aznkx5_di" bpmnElement="Flow_1aznkx5">
+        <di:waypoint x="2385" y="260" />
+        <di:waypoint x="2765" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Rejection_To_End" bpmnElement="Flow_Rejection_To_End">
+        <di:waypoint x="2885" y="260" />
+        <di:waypoint x="2992" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PrepareOffer_To_ApproveOffer" bpmnElement="Flow_PrepareOffer_To_ApproveOffer">
+        <di:waypoint x="3050" y="690" />
+        <di:waypoint x="3050" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ApproveOffer_To_SendOffer" bpmnElement="Flow_ApproveOffer_To_SendOffer">
+        <di:waypoint x="3110" y="510" />
+        <di:waypoint x="3260" y="510" />
+        <di:waypoint x="3260" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SendOffer_To_ReviewOffer" bpmnElement="Flow_SendOffer_To_ReviewOffer">
+        <di:waypoint x="3260" y="220" />
+        <di:waypoint x="3260" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ReviewOffer_To_OfferGateway" bpmnElement="Flow_ReviewOffer_To_OfferGateway">
+        <di:waypoint x="3320" y="140" />
+        <di:waypoint x="3420" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Offer_Decline_To_CaptureDecline" bpmnElement="Flow_Offer_Decline_To_CaptureDecline">
+        <di:waypoint x="3470" y="140" />
+        <di:waypoint x="3650" y="140" />
+        <di:waypoint x="3650" y="220" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3528" y="123" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Offer_Accept_To_StartOnboarding" bpmnElement="Flow_Offer_Accept_To_StartOnboarding">
+        <di:waypoint x="3445" y="165" />
+        <di:waypoint x="3445" y="630" />
+        <di:waypoint x="3590" y="630" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3457" y="233" width="45" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CaptureDecline_To_EndDecline" bpmnElement="Flow_CaptureDecline_To_EndDecline">
+        <di:waypoint x="3710" y="260" />
+        <di:waypoint x="3750" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_StartOnboarding_To_OnboardSplit" bpmnElement="Flow_StartOnboarding_To_OnboardSplit">
+        <di:waypoint x="3650" y="670" />
+        <di:waypoint x="3650" y="860" />
+        <di:waypoint x="3760" y="860" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Split_To_EnrollBenefits" bpmnElement="Flow_Split_To_EnrollBenefits">
+        <di:waypoint x="3785" y="835" />
+        <di:waypoint x="3785" y="630" />
+        <di:waypoint x="3930" y="630" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Benefits_To_Join" bpmnElement="Flow_Benefits_To_Join">
+        <di:waypoint x="4050" y="630" />
+        <di:waypoint x="4180" y="630" />
+        <di:waypoint x="4180" y="835" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ScheduleStart_To_EndHired" bpmnElement="Flow_ScheduleStart_To_EndHired">
+        <di:waypoint x="4400" y="630" />
+        <di:waypoint x="4500" y="630" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Split_To_ProvisionAccounts" bpmnElement="Flow_Split_To_ProvisionAccounts">
+        <di:waypoint x="3810" y="860" />
+        <di:waypoint x="3930" y="860" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Provision_To_Join" bpmnElement="Flow_Provision_To_Join">
+        <di:waypoint x="4050" y="860" />
+        <di:waypoint x="4155" y="860" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Split_To_PrepareWorkspace" bpmnElement="Flow_Split_To_PrepareWorkspace">
+        <di:waypoint x="3785" y="885" />
+        <di:waypoint x="3785" y="980" />
+        <di:waypoint x="3930" y="980" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Workspace_To_Join" bpmnElement="Flow_Workspace_To_Join">
+        <di:waypoint x="4050" y="980" />
+        <di:waypoint x="4180" y="980" />
+        <di:waypoint x="4180" y="885" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Join_To_ScheduleStart" bpmnElement="Flow_Join_To_ScheduleStart">
+        <di:waypoint x="4205" y="860" />
+        <di:waypoint x="4340" y="860" />
+        <di:waypoint x="4340" y="670" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

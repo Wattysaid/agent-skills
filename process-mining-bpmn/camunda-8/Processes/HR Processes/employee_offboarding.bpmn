@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_Offboarding" targetNamespace="http://example.com/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.1">
+  <bpmn:collaboration id="Collaboration_Offboarding">
+    <bpmn:participant id="Participant_Offboarding" name="Employee Offboarding Process" processRef="Process_Offboarding" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Offboarding" name="Employee Offboarding" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Offboarding">
+      <bpmn:lane id="Lane_IT" name="IT">
+        <bpmn:flowNodeRef>Task_DeactivateAccounts</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Manager" name="Manager">
+        <bpmn:flowNodeRef>Task_PlanKnowledgeTransfer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CollectAssets</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Tasks_Done</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Split_Offboard</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_HR" name="HR">
+        <bpmn:flowNodeRef>StartEvent_Resignation</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AcknowledgeResignation</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ExitInterview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ProcessFinalPay</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_OffboardingComplete</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_Resignation" name="Employee Resigns">
+      <bpmn:outgoing>Flow_Start_to_Acknowledge</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_AcknowledgeResignation" name="Acknowledge Resignation and Inform relevant parties">
+      <bpmn:incoming>Flow_Start_to_Acknowledge</bpmn:incoming>
+      <bpmn:outgoing>Flow_Acknowledge_to_Split</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_PlanKnowledgeTransfer" name="Plan and oversee knowledge transfer">
+      <bpmn:incoming>Flow_Split_to_Plan</bpmn:incoming>
+      <bpmn:outgoing>Flow_Plan_to_Collect</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_CollectAssets" name="Collect Company Assets">
+      <bpmn:incoming>Flow_Plan_to_Collect</bpmn:incoming>
+      <bpmn:outgoing>Flow_Collect_to_Join</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_DeactivateAccounts" name="Deactivate User Accounts">
+      <bpmn:incoming>Flow_Split_to_Deactivate</bpmn:incoming>
+      <bpmn:outgoing>Flow_Deactivate_to_Join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_ExitInterview" name="Conduct Exit Interview">
+      <bpmn:incoming>Flow_Split_to_Interview</bpmn:incoming>
+      <bpmn:outgoing>Flow_Interview_to_Join</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="Gateway_Tasks_Done">
+      <bpmn:incoming>Flow_Collect_to_Join</bpmn:incoming>
+      <bpmn:incoming>Flow_Deactivate_to_Join</bpmn:incoming>
+      <bpmn:incoming>Flow_Interview_to_Join</bpmn:incoming>
+      <bpmn:outgoing>Flow_Join_to_FinalPay</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="Task_ProcessFinalPay" name="Process Final Pay">
+      <bpmn:incoming>Flow_Join_to_FinalPay</bpmn:incoming>
+      <bpmn:outgoing>Flow_FinalPay_to_End</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_OffboardingComplete" name="Offboarding Complete">
+      <bpmn:incoming>Flow_FinalPay_to_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:parallelGateway id="Gateway_Split_Offboard">
+      <bpmn:incoming>Flow_Acknowledge_to_Split</bpmn:incoming>
+      <bpmn:outgoing>Flow_Split_to_Plan</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Split_to_Deactivate</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Split_to_Interview</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_Start_to_Acknowledge" sourceRef="StartEvent_Resignation" targetRef="Task_AcknowledgeResignation" />
+    <bpmn:sequenceFlow id="Flow_Acknowledge_to_Split" sourceRef="Task_AcknowledgeResignation" targetRef="Gateway_Split_Offboard" />
+    <bpmn:sequenceFlow id="Flow_Split_to_Plan" sourceRef="Gateway_Split_Offboard" targetRef="Task_PlanKnowledgeTransfer" />
+    <bpmn:sequenceFlow id="Flow_Plan_to_Collect" sourceRef="Task_PlanKnowledgeTransfer" targetRef="Task_CollectAssets" />
+    <bpmn:sequenceFlow id="Flow_Collect_to_Join" sourceRef="Task_CollectAssets" targetRef="Gateway_Tasks_Done" />
+    <bpmn:sequenceFlow id="Flow_Split_to_Deactivate" sourceRef="Gateway_Split_Offboard" targetRef="Task_DeactivateAccounts" />
+    <bpmn:sequenceFlow id="Flow_Deactivate_to_Join" sourceRef="Task_DeactivateAccounts" targetRef="Gateway_Tasks_Done" />
+    <bpmn:sequenceFlow id="Flow_Split_to_Interview" sourceRef="Gateway_Split_Offboard" targetRef="Task_ExitInterview" />
+    <bpmn:sequenceFlow id="Flow_Interview_to_Join" sourceRef="Task_ExitInterview" targetRef="Gateway_Tasks_Done" />
+    <bpmn:sequenceFlow id="Flow_Join_to_FinalPay" sourceRef="Gateway_Tasks_Done" targetRef="Task_ProcessFinalPay" />
+    <bpmn:sequenceFlow id="Flow_FinalPay_to_End" sourceRef="Task_ProcessFinalPay" targetRef="EndEvent_OffboardingComplete" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Offboarding">
+    <bpmndi:BPMNPlane id="BPMNPlane_Offboarding" bpmnElement="Collaboration_Offboarding">
+      <bpmndi:BPMNShape id="Shape_Participant_Offboarding" bpmnElement="Participant_Offboarding" isHorizontal="true">
+        <dc:Bounds x="160" y="50" width="1200" height="600" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_IT" bpmnElement="Lane_IT" isHorizontal="true">
+        <dc:Bounds x="190" y="450" width="1170" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Manager" bpmnElement="Lane_Manager" isHorizontal="true">
+        <dc:Bounds x="190" y="250" width="1170" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_HR" bpmnElement="Lane_HR" isHorizontal="true">
+        <dc:Bounds x="190" y="50" width="1170" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_StartEvent_Resignation" bpmnElement="StartEvent_Resignation">
+        <dc:Bounds x="240" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="234" y="168" width="49" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AcknowledgeResignation" bpmnElement="Task_AcknowledgeResignation">
+        <dc:Bounds x="320" y="110" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PlanKnowledgeTransfer" bpmnElement="Task_PlanKnowledgeTransfer">
+        <dc:Bounds x="570" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CollectAssets" bpmnElement="Task_CollectAssets">
+        <dc:Bounds x="730" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_DeactivateAccounts" bpmnElement="Task_DeactivateAccounts">
+        <dc:Bounds x="570" y="510" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ExitInterview" bpmnElement="Task_ExitInterview">
+        <dc:Bounds x="570" y="110" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Tasks_Done" bpmnElement="Gateway_Tasks_Done">
+        <dc:Bounds x="890" y="325" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ProcessFinalPay" bpmnElement="Task_ProcessFinalPay">
+        <dc:Bounds x="980" y="110" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_OffboardingComplete" bpmnElement="EndEvent_OffboardingComplete">
+        <dc:Bounds x="1140" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1129" y="168" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Split_Offboard" bpmnElement="Gateway_Split_Offboard">
+        <dc:Bounds x="480" y="325" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_Start_to_Acknowledge" bpmnElement="Flow_Start_to_Acknowledge">
+        <di:waypoint x="276" y="150" />
+        <di:waypoint x="320" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Acknowledge_to_Split" bpmnElement="Flow_Acknowledge_to_Split">
+        <di:waypoint x="380" y="190" />
+        <di:waypoint x="380" y="350" />
+        <di:waypoint x="480" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Split_to_Plan" bpmnElement="Flow_Split_to_Plan">
+        <di:waypoint x="530" y="350" />
+        <di:waypoint x="570" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Split_to_Deactivate" bpmnElement="Flow_Split_to_Deactivate">
+        <di:waypoint x="505" y="375" />
+        <di:waypoint x="505" y="550" />
+        <di:waypoint x="570" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Split_to_Interview" bpmnElement="Flow_Split_to_Interview">
+        <di:waypoint x="505" y="325" />
+        <di:waypoint x="505" y="150" />
+        <di:waypoint x="570" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Plan_to_Collect" bpmnElement="Flow_Plan_to_Collect">
+        <di:waypoint x="690" y="350" />
+        <di:waypoint x="730" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Collect_to_Join" bpmnElement="Flow_Collect_to_Join">
+        <di:waypoint x="850" y="350" />
+        <di:waypoint x="890" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Deactivate_to_Join" bpmnElement="Flow_Deactivate_to_Join">
+        <di:waypoint x="690" y="550" />
+        <di:waypoint x="915" y="550" />
+        <di:waypoint x="915" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Interview_to_Join" bpmnElement="Flow_Interview_to_Join">
+        <di:waypoint x="690" y="150" />
+        <di:waypoint x="915" y="150" />
+        <di:waypoint x="915" y="325" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Join_to_FinalPay" bpmnElement="Flow_Join_to_FinalPay">
+        <di:waypoint x="940" y="350" />
+        <di:waypoint x="1040" y="350" />
+        <di:waypoint x="1040" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_FinalPay_to_End" bpmnElement="Flow_FinalPay_to_End">
+        <di:waypoint x="1100" y="150" />
+        <di:waypoint x="1140" y="150" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

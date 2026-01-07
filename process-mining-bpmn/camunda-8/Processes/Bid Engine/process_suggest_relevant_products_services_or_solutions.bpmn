@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+  id="Definitions_Suggest_relevant_products_services_or_solutions" targetNamespace="http://example.com/schema/bpmn">
+  <bpmn:collaboration id="Collab_Suggest_relevant_products_services_or_solutions">
+    <bpmn:participant id="Participant_Suggest_relevant_products_services_or_solutions" name="Suggest relevant products, services, or solutions" processRef="Process_Suggest_relevant_products_services_or_solutions" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Suggest_relevant_products_services_or_solutions" name="Suggest relevant products, services, or solutions" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Suggest_relevant_products_services_or_solutions">
+      <bpmn:lane id="Lane_Platform_Suggest_relevant_products_services_or_solutions" name="AI Bid Platform">
+        <bpmn:flowNodeRef>StartEvent_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CaptureContext_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ValidateSignals_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ContextReady_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ContextMerge_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CoreAction_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AIEnrich_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Rerun_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_AcceptMerge_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Personalize_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_UpdateSystem_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Notify_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Sync_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_UpdateDashboard_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Success_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Team_Suggest_relevant_products_services_or_solutions" name="Bid Team / Stakeholders">
+        <bpmn:flowNodeRef>Task_RequestContext_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_WaitContext_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Review_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Accept_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Corrections_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Compliance_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Compliance_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Rework_Suggest_relevant_products_services_or_solutions</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="StartEvent_Suggest_relevant_products_services_or_solutions" name="Start - Suggest relevant products, services, or ">
+      <bpmn:outgoing>Flow_Start_to_Capture_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_CaptureContext_Suggest_relevant_products_services_or_solutions" name="Capture request and objectives">
+      <bpmn:incoming>Flow_Start_to_Capture_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Capture_to_Validate_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_ValidateSignals_Suggest_relevant_products_services_or_solutions" name="Validate inputs & data signals">
+      <bpmn:incoming>Flow_Capture_to_Validate_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Validate_to_ContextGW_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_ContextReady_Suggest_relevant_products_services_or_solutions" name="Context complete?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Validate_to_ContextGW_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_ContextReady_Yes_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ContextReady_No_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_RequestContext_Suggest_relevant_products_services_or_solutions" name="Request missing inputs from team">
+      <bpmn:incoming>Flow_ContextReady_No_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_RequestContext_to_Wait_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="Event_WaitContext_Suggest_relevant_products_services_or_solutions" name="Wait for context/approvals">
+      <bpmn:incoming>Flow_RequestContext_to_Wait_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Wait_to_ContextMerge_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+      <bpmn:timerEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="Gateway_ContextMerge_Suggest_relevant_products_services_or_solutions" name="Context resolved" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_ContextReady_Yes_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:incoming>Flow_Wait_to_ContextMerge_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_ContextMerge_to_Core_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_CoreAction_Suggest_relevant_products_services_or_solutions" name="Suggest relevant products, services, or solutions">
+      <bpmn:incoming>Flow_ContextMerge_to_Core_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Core_to_AI_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_AIEnrich_Suggest_relevant_products_services_or_solutions" name="AI enrich & structure output">
+      <bpmn:incoming>Flow_Core_to_AI_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_AI_to_Review_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_Review_Suggest_relevant_products_services_or_solutions" name="Team review & annotate">
+      <bpmn:incoming>Flow_AI_to_Review_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Review_to_Accept_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_Accept_Suggest_relevant_products_services_or_solutions" name="Accept draft?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Review_to_Accept_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Accept_Yes_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Accept_No_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_Corrections_Suggest_relevant_products_services_or_solutions" name="Apply corrections & guidance">
+      <bpmn:incoming>Flow_Accept_No_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Corrections_to_Rerun_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_Rerun_Suggest_relevant_products_services_or_solutions" name="Re-run generation with feedback">
+      <bpmn:incoming>Flow_Corrections_to_Rerun_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Rerun_to_AcceptMerge_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_AcceptMerge_Suggest_relevant_products_services_or_solutions" name="Draft resolved" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_Accept_Yes_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:incoming>Flow_Rerun_to_AcceptMerge_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_AcceptMerge_to_Personalize_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_Personalize_Suggest_relevant_products_services_or_solutions" name="Personalize & tailor outputs">
+      <bpmn:incoming>Flow_AcceptMerge_to_Personalize_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Personalize_to_Compliance_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_Compliance_Suggest_relevant_products_services_or_solutions" name="Compliance / quality review">
+      <bpmn:incoming>Flow_Personalize_to_Compliance_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Compliance_to_Gateway_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_Compliance_Suggest_relevant_products_services_or_solutions" name="Passed checks?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Compliance_to_Gateway_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Compliance_Yes_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Compliance_No_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_UpdateSystem_Suggest_relevant_products_services_or_solutions" name="Update systems of record">
+      <bpmn:incoming>Flow_Compliance_Yes_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_UpdateSystem_to_Notify_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_Notify_Suggest_relevant_products_services_or_solutions" name="Notify stakeholders & logs">
+      <bpmn:incoming>Flow_UpdateSystem_to_Notify_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Notify_to_Sync_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_Sync_Suggest_relevant_products_services_or_solutions" name="Sync CRM / attach artefacts">
+      <bpmn:incoming>Flow_Notify_to_Sync_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Sync_to_Dashboard_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_UpdateDashboard_Suggest_relevant_products_services_or_solutions" name="Update dashboard/status">
+      <bpmn:incoming>Flow_Sync_to_Dashboard_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+      <bpmn:outgoing>Flow_Dashboard_to_End_Suggest_relevant_products_services_or_solutions</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_Success_Suggest_relevant_products_services_or_solutions" name="End - Completed">
+      <bpmn:incoming>Flow_Dashboard_to_End_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="EndEvent_Rework_Suggest_relevant_products_services_or_solutions" name="End - Rework/stop">
+      <bpmn:incoming>Flow_Compliance_No_Suggest_relevant_products_services_or_solutions</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_Start_to_Capture_Suggest_relevant_products_services_or_solutions" sourceRef="StartEvent_Suggest_relevant_products_services_or_solutions" targetRef="Task_CaptureContext_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_Capture_to_Validate_Suggest_relevant_products_services_or_solutions" sourceRef="Task_CaptureContext_Suggest_relevant_products_services_or_solutions" targetRef="Task_ValidateSignals_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_Validate_to_ContextGW_Suggest_relevant_products_services_or_solutions" sourceRef="Task_ValidateSignals_Suggest_relevant_products_services_or_solutions" targetRef="Gateway_ContextReady_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_ContextReady_Yes_Suggest_relevant_products_services_or_solutions" sourceRef="Gateway_ContextReady_Suggest_relevant_products_services_or_solutions" targetRef="Gateway_ContextMerge_Suggest_relevant_products_services_or_solutions" name="Ready" />
+    <bpmn:sequenceFlow id="Flow_ContextReady_No_Suggest_relevant_products_services_or_solutions" sourceRef="Gateway_ContextReady_Suggest_relevant_products_services_or_solutions" targetRef="Task_RequestContext_Suggest_relevant_products_services_or_solutions" name="Missing" />
+    <bpmn:sequenceFlow id="Flow_RequestContext_to_Wait_Suggest_relevant_products_services_or_solutions" sourceRef="Task_RequestContext_Suggest_relevant_products_services_or_solutions" targetRef="Event_WaitContext_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_Wait_to_ContextMerge_Suggest_relevant_products_services_or_solutions" sourceRef="Event_WaitContext_Suggest_relevant_products_services_or_solutions" targetRef="Gateway_ContextMerge_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_ContextMerge_to_Core_Suggest_relevant_products_services_or_solutions" sourceRef="Gateway_ContextMerge_Suggest_relevant_products_services_or_solutions" targetRef="Task_CoreAction_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_Core_to_AI_Suggest_relevant_products_services_or_solutions" sourceRef="Task_CoreAction_Suggest_relevant_products_services_or_solutions" targetRef="Task_AIEnrich_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_AI_to_Review_Suggest_relevant_products_services_or_solutions" sourceRef="Task_AIEnrich_Suggest_relevant_products_services_or_solutions" targetRef="Task_Review_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_Review_to_Accept_Suggest_relevant_products_services_or_solutions" sourceRef="Task_Review_Suggest_relevant_products_services_or_solutions" targetRef="Gateway_Accept_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_Accept_Yes_Suggest_relevant_products_services_or_solutions" sourceRef="Gateway_Accept_Suggest_relevant_products_services_or_solutions" targetRef="Gateway_AcceptMerge_Suggest_relevant_products_services_or_solutions" name="Yes" />
+    <bpmn:sequenceFlow id="Flow_Accept_No_Suggest_relevant_products_services_or_solutions" sourceRef="Gateway_Accept_Suggest_relevant_products_services_or_solutions" targetRef="Task_Corrections_Suggest_relevant_products_services_or_solutions" name="No" />
+    <bpmn:sequenceFlow id="Flow_Corrections_to_Rerun_Suggest_relevant_products_services_or_solutions" sourceRef="Task_Corrections_Suggest_relevant_products_services_or_solutions" targetRef="Task_Rerun_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_Rerun_to_AcceptMerge_Suggest_relevant_products_services_or_solutions" sourceRef="Task_Rerun_Suggest_relevant_products_services_or_solutions" targetRef="Gateway_AcceptMerge_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_AcceptMerge_to_Personalize_Suggest_relevant_products_services_or_solutions" sourceRef="Gateway_AcceptMerge_Suggest_relevant_products_services_or_solutions" targetRef="Task_Personalize_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_Personalize_to_Compliance_Suggest_relevant_products_services_or_solutions" sourceRef="Task_Personalize_Suggest_relevant_products_services_or_solutions" targetRef="Task_Compliance_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_Compliance_to_Gateway_Suggest_relevant_products_services_or_solutions" sourceRef="Task_Compliance_Suggest_relevant_products_services_or_solutions" targetRef="Gateway_Compliance_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_Compliance_Yes_Suggest_relevant_products_services_or_solutions" sourceRef="Gateway_Compliance_Suggest_relevant_products_services_or_solutions" targetRef="Task_UpdateSystem_Suggest_relevant_products_services_or_solutions" name="Pass" />
+    <bpmn:sequenceFlow id="Flow_Compliance_No_Suggest_relevant_products_services_or_solutions" sourceRef="Gateway_Compliance_Suggest_relevant_products_services_or_solutions" targetRef="EndEvent_Rework_Suggest_relevant_products_services_or_solutions" name="Fail" />
+    <bpmn:sequenceFlow id="Flow_UpdateSystem_to_Notify_Suggest_relevant_products_services_or_solutions" sourceRef="Task_UpdateSystem_Suggest_relevant_products_services_or_solutions" targetRef="Task_Notify_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_Notify_to_Sync_Suggest_relevant_products_services_or_solutions" sourceRef="Task_Notify_Suggest_relevant_products_services_or_solutions" targetRef="Task_Sync_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_Sync_to_Dashboard_Suggest_relevant_products_services_or_solutions" sourceRef="Task_Sync_Suggest_relevant_products_services_or_solutions" targetRef="Task_UpdateDashboard_Suggest_relevant_products_services_or_solutions" />
+    <bpmn:sequenceFlow id="Flow_Dashboard_to_End_Suggest_relevant_products_services_or_solutions" sourceRef="Task_UpdateDashboard_Suggest_relevant_products_services_or_solutions" targetRef="EndEvent_Success_Suggest_relevant_products_services_or_solutions" />
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Suggest_relevant_products_services_or_solutions">
+    <bpmndi:BPMNPlane id="BPMNPlane_Suggest_relevant_products_services_or_solutions" bpmnElement="Collab_Suggest_relevant_products_services_or_solutions">
+      <bpmndi:BPMNShape id="ParticipantShape_Suggest_relevant_products_services_or_solutions" bpmnElement="Participant_Suggest_relevant_products_services_or_solutions" isHorizontal="true">
+        <dc:Bounds x="80" y="120" width="3200" height="440" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_Platform_Suggest_relevant_products_services_or_solutions" bpmnElement="Lane_Platform_Suggest_relevant_products_services_or_solutions" isHorizontal="true">
+        <dc:Bounds x="80" y="140" width="3200" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_Team_Suggest_relevant_products_services_or_solutions" bpmnElement="Lane_Team_Suggest_relevant_products_services_or_solutions" isHorizontal="true">
+        <dc:Bounds x="80" y="340" width="3200" height="200" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_StartEvent_Suggest_relevant_products_services_or_solutions" bpmnElement="StartEvent_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="120" y="220" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CaptureContext_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_CaptureContext_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="220" y="200" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ValidateSignals_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_ValidateSignals_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="370" y="200" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ContextReady_Suggest_relevant_products_services_or_solutions" bpmnElement="Gateway_ContextReady_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="520" y="215" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RequestContext_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_RequestContext_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="520" y="400" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Event_WaitContext_Suggest_relevant_products_services_or_solutions" bpmnElement="Event_WaitContext_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="670" y="420" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ContextMerge_Suggest_relevant_products_services_or_solutions" bpmnElement="Gateway_ContextMerge_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="820" y="215" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CoreAction_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_CoreAction_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="970" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AIEnrich_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_AIEnrich_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="1120" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Review_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_Review_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="1270" y="400" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Accept_Suggest_relevant_products_services_or_solutions" bpmnElement="Gateway_Accept_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="1420" y="415" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Corrections_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_Corrections_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="1570" y="400" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rerun_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_Rerun_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="1720" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_AcceptMerge_Suggest_relevant_products_services_or_solutions" bpmnElement="Gateway_AcceptMerge_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="1870" y="215" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Personalize_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_Personalize_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="2020" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Compliance_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_Compliance_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="2170" y="400" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Compliance_Suggest_relevant_products_services_or_solutions" bpmnElement="Gateway_Compliance_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="2320" y="415" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_Rework_Suggest_relevant_products_services_or_solutions" bpmnElement="EndEvent_Rework_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="2320" y="470" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_UpdateSystem_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_UpdateSystem_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="2470" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Notify_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_Notify_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="2620" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Sync_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_Sync_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="2770" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_UpdateDashboard_Suggest_relevant_products_services_or_solutions" bpmnElement="Task_UpdateDashboard_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="2920" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_Success_Suggest_relevant_products_services_or_solutions" bpmnElement="EndEvent_Success_Suggest_relevant_products_services_or_solutions">
+        <dc:Bounds x="3070" y="220" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Edge_Flow_Start_to_Capture_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Start_to_Capture_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="156" y="238" />
+        <di:waypoint x="220" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Capture_to_Validate_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Capture_to_Validate_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="340" y="240" />
+        <di:waypoint x="370" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Validate_to_ContextGW_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Validate_to_ContextGW_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="490" y="240" />
+        <di:waypoint x="520" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ContextReady_Yes_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_ContextReady_Yes_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="570" y="240" />
+        <di:waypoint x="820" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ContextReady_No_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_ContextReady_No_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="545" y="240" />
+        <di:waypoint x="545" y="440" />
+        <di:waypoint x="520" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RequestContext_to_Wait_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_RequestContext_to_Wait_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="640" y="440" />
+        <di:waypoint x="670" y="438" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Wait_to_ContextMerge_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Wait_to_ContextMerge_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="706" y="438" />
+        <di:waypoint x="820" y="438" />
+        <di:waypoint x="820" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ContextMerge_to_Core_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_ContextMerge_to_Core_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="870" y="240" />
+        <di:waypoint x="970" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Core_to_AI_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Core_to_AI_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="1110" y="240" />
+        <di:waypoint x="1120" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AI_to_Review_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_AI_to_Review_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="1260" y="240" />
+        <di:waypoint x="1270" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Review_to_Accept_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Review_to_Accept_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="1410" y="440" />
+        <di:waypoint x="1420" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Accept_Yes_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Accept_Yes_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="1470" y="440" />
+        <di:waypoint x="1870" y="440" />
+        <di:waypoint x="1870" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Accept_No_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Accept_No_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="1445" y="465" />
+        <di:waypoint x="1570" y="465" />
+        <di:waypoint x="1570" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Corrections_to_Rerun_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Corrections_to_Rerun_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="1710" y="440" />
+        <di:waypoint x="1720" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Rerun_to_AcceptMerge_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Rerun_to_AcceptMerge_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="1860" y="240" />
+        <di:waypoint x="1870" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AcceptMerge_to_Personalize_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_AcceptMerge_to_Personalize_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="1920" y="240" />
+        <di:waypoint x="2020" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Personalize_to_Compliance_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Personalize_to_Compliance_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="2160" y="240" />
+        <di:waypoint x="2170" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Compliance_to_Gateway_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Compliance_to_Gateway_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="2310" y="440" />
+        <di:waypoint x="2320" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Compliance_Yes_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Compliance_Yes_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="2370" y="440" />
+        <di:waypoint x="2470" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Compliance_No_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Compliance_No_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="2345" y="465" />
+        <di:waypoint x="2345" y="490" />
+        <di:waypoint x="2320" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_UpdateSystem_to_Notify_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_UpdateSystem_to_Notify_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="2610" y="240" />
+        <di:waypoint x="2620" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Notify_to_Sync_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Notify_to_Sync_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="2760" y="240" />
+        <di:waypoint x="2770" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Sync_to_Dashboard_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Sync_to_Dashboard_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="2910" y="240" />
+        <di:waypoint x="2920" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Dashboard_to_End_Suggest_relevant_products_services_or_solutions" bpmnElement="Flow_Dashboard_to_End_Suggest_relevant_products_services_or_solutions">
+        <di:waypoint x="3060" y="240" />
+        <di:waypoint x="3070" y="238" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

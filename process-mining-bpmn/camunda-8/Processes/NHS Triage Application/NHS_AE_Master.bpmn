@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_NHS_AE_Master" targetNamespace="http://example.com/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.1">
+  <bpmn:process id="Process_NHS_AE_Master" name="NHS A&#38;E Triage Master Process" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Master">
+      <bpmn:lane id="Lane_Patient" name="Patient">
+        <bpmn:flowNodeRef>Task_PatientArrives</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_Arrival</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ReceiveDischargeInfo</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Reception" name="Reception &#38; Registration">
+        <bpmn:flowNodeRef>Task_Register</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Triage" name="Triage">
+        <bpmn:flowNodeRef>Task_InitialTriage</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Clinical" name="Clinical Care &#38; Diagnostics">
+        <bpmn:flowNodeRef>Gateway_StreamMerge</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_EarlyTreatment</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Diagnostics</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_StreamingDecision</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Disposition</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AdmitOrTransfer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Discharge</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_DispositionMerge</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Exit</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:userTask id="Task_PatientArrives" name="Request help / present to A&#38;E" />
+    <bpmn:startEvent id="StartEvent_Arrival" name="Patient arrival" />
+    <bpmn:userTask id="Task_Register" name="Register and capture demographics" />
+    <bpmn:userTask id="Task_InitialTriage" name="Initial triage and acuity" />
+    <bpmn:exclusiveGateway id="Gateway_StreamMerge" name="Streaming paths merge" />
+    <bpmn:userTask id="Task_EarlyTreatment" name="Immediate care (pain relief, resus if needed)" />
+    <bpmn:userTask id="Task_Diagnostics" name="Diagnostics and focused treatment">
+      <bpmn:outgoing>Flow_0n77l8n</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_StreamingDecision" name="Where should patient be streamed?" />
+    <bpmn:sequenceFlow id="Flow_StartToArrival" sourceRef="StartEvent_Arrival" targetRef="Task_PatientArrives" />
+    <bpmn:sequenceFlow id="Flow_ArrivalToRegister" sourceRef="Task_PatientArrives" targetRef="Task_Register" />
+    <bpmn:sequenceFlow id="Flow_RegisterToTriage" sourceRef="Task_Register" targetRef="Task_InitialTriage" />
+    <bpmn:sequenceFlow id="Flow_TriageToGateway" sourceRef="Task_InitialTriage" targetRef="Gateway_StreamingDecision" />
+    <bpmn:sequenceFlow id="Flow_GatewayToMerge" name="Majors/minors/paeds" sourceRef="Gateway_StreamingDecision" targetRef="Gateway_StreamMerge" />
+    <bpmn:sequenceFlow id="Flow_EarlyCareToMerge" sourceRef="Task_EarlyTreatment" targetRef="Gateway_StreamMerge" />
+    <bpmn:sequenceFlow id="Flow_MergeToDiagnostics" sourceRef="Gateway_StreamMerge" targetRef="Task_Diagnostics" />
+    <bpmn:sequenceFlow id="Flow_GatewayToEarlyCare" name="Resus/urgent" sourceRef="Gateway_StreamingDecision" targetRef="Task_EarlyTreatment" />
+    <bpmn:sequenceFlow id="Flow_0n77l8n" sourceRef="Task_Diagnostics" targetRef="Gateway_Disposition" />
+    <bpmn:sequenceFlow id="Flow_DischargeToPatient" sourceRef="Task_Discharge" targetRef="Task_ReceiveDischargeInfo" />
+    <bpmn:sequenceFlow id="Flow_PatientToMerge" sourceRef="Task_ReceiveDischargeInfo" targetRef="Gateway_DispositionMerge" />
+    <bpmn:sequenceFlow id="Flow_DispositionToAdmission" name="Admit/transfer" sourceRef="Gateway_Disposition" targetRef="Task_AdmitOrTransfer" />
+    <bpmn:sequenceFlow id="Flow_AdmitToMerge" sourceRef="Task_AdmitOrTransfer" targetRef="Gateway_DispositionMerge" />
+    <bpmn:exclusiveGateway id="Gateway_Disposition" name="Is disposition decision ready?">
+      <bpmn:incoming>Flow_0n77l8n</bpmn:incoming>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_DispositionToDischarge" name="Safe to discharge" sourceRef="Gateway_Disposition" targetRef="Task_Discharge" />
+    <bpmn:sequenceFlow id="Flow_1j6lkx2" sourceRef="Gateway_DispositionMerge" targetRef="EndEvent_Exit" />
+    <bpmn:userTask id="Task_ReceiveDischargeInfo" name="Receive instructions / transport" />
+    <bpmn:userTask id="Task_AdmitOrTransfer" name="Arrange admission or transfer" />
+    <bpmn:userTask id="Task_Discharge" name="Prepare discharge &#38; safety netting" />
+    <bpmn:exclusiveGateway id="Gateway_DispositionMerge" name="Paths merge before exit">
+      <bpmn:outgoing>Flow_1j6lkx2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="EndEvent_Exit" name="Exit A&#38;E">
+      <bpmn:incoming>Flow_1j6lkx2</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:collaboration id="Collab_NHS_AE_Master" name="NHS A&#38;E Triage Collaboration">
+    <bpmn:participant id="Participant_NHS_AE" name="NHS A&#38;E" processRef="Process_NHS_AE_Master" />
+  </bpmn:collaboration>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Master">
+    <bpmndi:BPMNPlane id="BPMNPlane_Master" bpmnElement="Collab_NHS_AE_Master">
+      <bpmndi:BPMNShape id="Shape_Participant_NHS_AE" bpmnElement="Participant_NHS_AE" isHorizontal="true">
+        <dc:Bounds x="160" y="100" width="1270" height="710" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Patient" bpmnElement="Lane_Patient" isHorizontal="true">
+        <dc:Bounds x="160" y="100" width="1270" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Reception" bpmnElement="Lane_Reception" isHorizontal="true">
+        <dc:Bounds x="160" y="220" width="1270" height="110" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Triage" bpmnElement="Lane_Triage" isHorizontal="true">
+        <dc:Bounds x="160" y="330" width="1270" height="110" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Clinical" bpmnElement="Lane_Clinical" isHorizontal="true">
+        <dc:Bounds x="160" y="440" width="1270" height="370" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PatientArrives" bpmnElement="Task_PatientArrives">
+        <dc:Bounds x="300" y="120" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_StartEvent_Arrival" bpmnElement="StartEvent_Arrival">
+        <dc:Bounds x="220" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="204" y="178" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Register" bpmnElement="Task_Register">
+        <dc:Bounds x="300" y="240" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_InitialTriage" bpmnElement="Task_InitialTriage">
+        <dc:Bounds x="300" y="350" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_StreamMerge" bpmnElement="Gateway_StreamMerge" isMarkerVisible="true">
+        <dc:Bounds x="595" y="485" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="579" y="447.5" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_EarlyTreatment" bpmnElement="Task_EarlyTreatment">
+        <dc:Bounds x="560" y="600" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Diagnostics" bpmnElement="Task_Diagnostics">
+        <dc:Bounds x="750" y="470" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_StreamingDecision" bpmnElement="Gateway_StreamingDecision" isMarkerVisible="true">
+        <dc:Bounds x="335" y="485" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="257.5" y="490" width="67" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Disposition" bpmnElement="Gateway_Disposition" isMarkerVisible="true">
+        <dc:Bounds x="785" y="615" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="697" y="626" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ReceiveDischargeInfo" bpmnElement="Task_ReceiveDischargeInfo">
+        <dc:Bounds x="980" y="120" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AdmitOrTransfer" bpmnElement="Task_AdmitOrTransfer">
+        <dc:Bounds x="980" y="700" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Discharge" bpmnElement="Task_Discharge">
+        <dc:Bounds x="980" y="600" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_DispositionMerge" bpmnElement="Gateway_DispositionMerge" isMarkerVisible="true">
+        <dc:Bounds x="1215" y="615" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1141.5" y="626" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_Exit" bpmnElement="EndEvent_Exit">
+        <dc:Bounds x="1322" y="622" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1318" y="658" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_StartToArrival" bpmnElement="Flow_StartToArrival">
+        <di:waypoint x="255" y="156" />
+        <di:waypoint x="300" y="156" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ArrivalToRegister" bpmnElement="Flow_ArrivalToRegister">
+        <di:waypoint x="360" y="200" />
+        <di:waypoint x="360" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RegisterToTriage" bpmnElement="Flow_RegisterToTriage">
+        <di:waypoint x="360" y="320" />
+        <di:waypoint x="360" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_TriageToGateway" bpmnElement="Flow_TriageToGateway">
+        <di:waypoint x="360" y="430" />
+        <di:waypoint x="360" y="485" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToMerge" bpmnElement="Flow_GatewayToMerge">
+        <di:waypoint x="385" y="510" />
+        <di:waypoint x="595" y="510" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="437" y="476" width="85" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_EarlyCareToMerge" bpmnElement="Flow_EarlyCareToMerge">
+        <di:waypoint x="620" y="600" />
+        <di:waypoint x="620" y="535" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_MergeToDiagnostics" bpmnElement="Flow_MergeToDiagnostics">
+        <di:waypoint x="645" y="510" />
+        <di:waypoint x="750" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToEarlyCare" bpmnElement="Flow_GatewayToEarlyCare">
+        <di:waypoint x="360" y="535" />
+        <di:waypoint x="360" y="640" />
+        <di:waypoint x="560" y="640" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="415" y="618" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n77l8n_di" bpmnElement="Flow_0n77l8n">
+        <di:waypoint x="810" y="550" />
+        <di:waypoint x="810" y="615" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_DischargeToPatient" bpmnElement="Flow_DischargeToPatient">
+        <di:waypoint x="1040" y="600" />
+        <di:waypoint x="1040" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PatientToMerge" bpmnElement="Flow_PatientToMerge">
+        <di:waypoint x="1100" y="160" />
+        <di:waypoint x="1240" y="160" />
+        <di:waypoint x="1240" y="615" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_DispositionToAdmission" bpmnElement="Flow_DispositionToAdmission">
+        <di:waypoint x="810" y="665" />
+        <di:waypoint x="810" y="740" />
+        <di:waypoint x="980" y="740" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="850" y="723" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AdmitToMerge" bpmnElement="Flow_AdmitToMerge">
+        <di:waypoint x="1100" y="740" />
+        <di:waypoint x="1240" y="740" />
+        <di:waypoint x="1240" y="665" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_DispositionToDischarge" bpmnElement="Flow_DispositionToDischarge">
+        <di:waypoint x="835" y="640" />
+        <di:waypoint x="980" y="640" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="847" y="618" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j6lkx2_di" bpmnElement="Flow_1j6lkx2">
+        <di:waypoint x="1265" y="640" />
+        <di:waypoint x="1322" y="640" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

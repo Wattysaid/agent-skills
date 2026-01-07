@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_BidApp" targetNamespace="http://example.com/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.1">
+  <bpmn:process id="Process_BidApp" name="Bid Automation Core Processes" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_BidApp">
+      <bpmn:lane id="Lane_Systems" name="Platform, CRM &#38; Notifications">
+        <bpmn:flowNodeRef>Task_RecordMeeting</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_UpdateDashboard</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_VersionControl</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_FollowUpFlags</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_IntegrateMessaging</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AutoNotifications</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CRMUpdate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AttachProposalCRM</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_GenerateReports</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_RiskDelayDecision</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_RiskDelayMerge</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_BidReady</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Governance" name="Finance, Legal &#38; Compliance">
+        <bpmn:flowNodeRef>Task_RetrievePricing</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ComplianceChecks</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Operations" name="Operations &#38; Delivery">
+        <bpmn:flowNodeRef>Task_CheckInventory</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_BuildProjectTeam</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_AIEngine" name="AI Multi-Agent Engine">
+        <bpmn:flowNodeRef>Task_ExtractInsights</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SpeechToText</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CustomizeProposal</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SuggestValueAdds</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RecordMinutes</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SuggestProducts</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_BidOwner" name="Bid Owner / Proposal Manager">
+        <bpmn:flowNodeRef>Task_PopulateTemplate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CentralizeDocs</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AssignTasks</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ScheduleTeamMeetings</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_EscalateDelays</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_BidInitiated</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_BidInitiated" name="Bid initiated">
+      <bpmn:outgoing>Flow_Start_to_RecordMeeting</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_RecordMeeting" name="Record meeting (audio/video)">
+      <bpmn:incoming>Flow_Start_to_RecordMeeting</bpmn:incoming>
+      <bpmn:outgoing>Flow_RecordMeeting_to_SpeechToText</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_SpeechToText" name="Speech-to-text transcription">
+      <bpmn:incoming>Flow_RecordMeeting_to_SpeechToText</bpmn:incoming>
+      <bpmn:outgoing>Flow_SpeechToText_to_ExtractInsights</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_ExtractInsights" name="Extract action items and pain points">
+      <bpmn:incoming>Flow_SpeechToText_to_ExtractInsights</bpmn:incoming>
+      <bpmn:outgoing>Flow_ExtractInsights_to_PopulateTemplate</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_PopulateTemplate" name="Populate proposal template">
+      <bpmn:incoming>Flow_ExtractInsights_to_PopulateTemplate</bpmn:incoming>
+      <bpmn:outgoing>Flow_PopulateTemplate_to_CustomizeProposal</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_CustomizeProposal" name="Customize proposal via keyword analysis">
+      <bpmn:incoming>Flow_PopulateTemplate_to_CustomizeProposal</bpmn:incoming>
+      <bpmn:outgoing>Flow_CustomizeProposal_to_SuggestProducts</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_SuggestProducts" name="Suggest products/services">
+      <bpmn:incoming>Flow_CustomizeProposal_to_SuggestProducts</bpmn:incoming>
+      <bpmn:outgoing>Flow_SuggestProducts_to_BuildProjectTeam</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_BuildProjectTeam" name="Build project team from resources">
+      <bpmn:incoming>Flow_SuggestProducts_to_BuildProjectTeam</bpmn:incoming>
+      <bpmn:outgoing>Flow_BuildProjectTeam_to_CheckInventory</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_CheckInventory" name="Check inventory and service windows">
+      <bpmn:incoming>Flow_BuildProjectTeam_to_CheckInventory</bpmn:incoming>
+      <bpmn:outgoing>Flow_CheckInventory_to_RetrievePricing</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_RetrievePricing" name="Retrieve &#38; optimize pricing (catalog + discounts)">
+      <bpmn:incoming>Flow_CheckInventory_to_RetrievePricing</bpmn:incoming>
+      <bpmn:outgoing>Flow_RetrievePricing_to_SuggestValueAdds</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_SuggestValueAdds" name="Suggest value-adds and upsells">
+      <bpmn:incoming>Flow_RetrievePricing_to_SuggestValueAdds</bpmn:incoming>
+      <bpmn:outgoing>Flow_SuggestValueAdds_to_ComplianceChecks</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_ComplianceChecks" name="Compliance checks (legal/financial/technical)">
+      <bpmn:incoming>Flow_SuggestValueAdds_to_ComplianceChecks</bpmn:incoming>
+      <bpmn:outgoing>Flow_ComplianceChecks_to_CentralizeDocs</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_CentralizeDocs" name="Centralize contracts, NDAs, specs">
+      <bpmn:incoming>Flow_ComplianceChecks_to_CentralizeDocs</bpmn:incoming>
+      <bpmn:outgoing>Flow_CentralizeDocs_to_VersionControl</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_VersionControl" name="Maintain proposal versions with audit trail">
+      <bpmn:incoming>Flow_CentralizeDocs_to_VersionControl</bpmn:incoming>
+      <bpmn:outgoing>Flow_VersionControl_to_UpdateDashboard</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_UpdateDashboard" name="Update bid dashboard (Gantt/timeline)">
+      <bpmn:incoming>Flow_VersionControl_to_UpdateDashboard</bpmn:incoming>
+      <bpmn:outgoing>Flow_UpdateDashboard_to_AssignTasks</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_AssignTasks" name="Assign tasks and track completion">
+      <bpmn:incoming>Flow_UpdateDashboard_to_AssignTasks</bpmn:incoming>
+      <bpmn:outgoing>Flow_AssignTasks_to_ScheduleTeamMeetings</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_ScheduleTeamMeetings" name="Schedule team meetings/calls">
+      <bpmn:incoming>Flow_AssignTasks_to_ScheduleTeamMeetings</bpmn:incoming>
+      <bpmn:outgoing>Flow_ScheduleTeamMeetings_to_RecordMinutes</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_RecordMinutes" name="Record minutes and transcript">
+      <bpmn:incoming>Flow_ScheduleTeamMeetings_to_RecordMinutes</bpmn:incoming>
+      <bpmn:outgoing>Flow_RecordMinutes_to_FollowUpFlags</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_FollowUpFlags" name="Flag required follow-ups">
+      <bpmn:incoming>Flow_RecordMinutes_to_FollowUpFlags</bpmn:incoming>
+      <bpmn:outgoing>Flow_FollowUpFlags_to_IntegrateMessaging</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_IntegrateMessaging" name="Integrate instant messaging">
+      <bpmn:incoming>Flow_FollowUpFlags_to_IntegrateMessaging</bpmn:incoming>
+      <bpmn:outgoing>Flow_IntegrateMessaging_to_AutoNotifications</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_AutoNotifications" name="Notify stakeholders and status updates">
+      <bpmn:incoming>Flow_IntegrateMessaging_to_AutoNotifications</bpmn:incoming>
+      <bpmn:outgoing>Flow_AutoNotifications_to_RiskDelayDecision</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_RiskDelayDecision" name="Delay or risk detected?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_AutoNotifications_to_RiskDelayDecision</bpmn:incoming>
+      <bpmn:outgoing>Flow_RiskDecision_Yes_to_Escalate</bpmn:outgoing>
+      <bpmn:outgoing>Flow_RiskDecision_No_to_Merge</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_EscalateDelays" name="Escalate delays or risks">
+      <bpmn:incoming>Flow_RiskDecision_Yes_to_Escalate</bpmn:incoming>
+      <bpmn:outgoing>Flow_Escalate_to_Merge</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_RiskDelayMerge" name="Risk handling complete" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_Escalate_to_Merge</bpmn:incoming>
+      <bpmn:incoming>Flow_RiskDecision_No_to_Merge</bpmn:incoming>
+      <bpmn:outgoing>Flow_Merge_to_CRMUpdate</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_CRMUpdate" name="Sync CRM with client profile and interactions">
+      <bpmn:incoming>Flow_Merge_to_CRMUpdate</bpmn:incoming>
+      <bpmn:outgoing>Flow_CRMUpdate_to_AttachProposal</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_AttachProposalCRM" name="Attach proposal and bid documents to CRM">
+      <bpmn:incoming>Flow_CRMUpdate_to_AttachProposal</bpmn:incoming>
+      <bpmn:outgoing>Flow_AttachProposal_to_GenerateReports</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_GenerateReports" name="Generate periodic bid reports">
+      <bpmn:incoming>Flow_AttachProposal_to_GenerateReports</bpmn:incoming>
+      <bpmn:outgoing>Flow_GenerateReports_to_End</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_BidReady" name="End - Bid packaged">
+      <bpmn:incoming>Flow_GenerateReports_to_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_Start_to_RecordMeeting" sourceRef="StartEvent_BidInitiated" targetRef="Task_RecordMeeting" />
+    <bpmn:sequenceFlow id="Flow_RecordMeeting_to_SpeechToText" sourceRef="Task_RecordMeeting" targetRef="Task_SpeechToText" />
+    <bpmn:sequenceFlow id="Flow_SpeechToText_to_ExtractInsights" sourceRef="Task_SpeechToText" targetRef="Task_ExtractInsights" />
+    <bpmn:sequenceFlow id="Flow_ExtractInsights_to_PopulateTemplate" sourceRef="Task_ExtractInsights" targetRef="Task_PopulateTemplate" />
+    <bpmn:sequenceFlow id="Flow_PopulateTemplate_to_CustomizeProposal" sourceRef="Task_PopulateTemplate" targetRef="Task_CustomizeProposal" />
+    <bpmn:sequenceFlow id="Flow_CustomizeProposal_to_SuggestProducts" sourceRef="Task_CustomizeProposal" targetRef="Task_SuggestProducts" />
+    <bpmn:sequenceFlow id="Flow_SuggestProducts_to_BuildProjectTeam" sourceRef="Task_SuggestProducts" targetRef="Task_BuildProjectTeam" />
+    <bpmn:sequenceFlow id="Flow_BuildProjectTeam_to_CheckInventory" sourceRef="Task_BuildProjectTeam" targetRef="Task_CheckInventory" />
+    <bpmn:sequenceFlow id="Flow_CheckInventory_to_RetrievePricing" sourceRef="Task_CheckInventory" targetRef="Task_RetrievePricing" />
+    <bpmn:sequenceFlow id="Flow_RetrievePricing_to_SuggestValueAdds" sourceRef="Task_RetrievePricing" targetRef="Task_SuggestValueAdds" />
+    <bpmn:sequenceFlow id="Flow_SuggestValueAdds_to_ComplianceChecks" sourceRef="Task_SuggestValueAdds" targetRef="Task_ComplianceChecks" />
+    <bpmn:sequenceFlow id="Flow_ComplianceChecks_to_CentralizeDocs" sourceRef="Task_ComplianceChecks" targetRef="Task_CentralizeDocs" />
+    <bpmn:sequenceFlow id="Flow_CentralizeDocs_to_VersionControl" sourceRef="Task_CentralizeDocs" targetRef="Task_VersionControl" />
+    <bpmn:sequenceFlow id="Flow_VersionControl_to_UpdateDashboard" sourceRef="Task_VersionControl" targetRef="Task_UpdateDashboard" />
+    <bpmn:sequenceFlow id="Flow_UpdateDashboard_to_AssignTasks" sourceRef="Task_UpdateDashboard" targetRef="Task_AssignTasks" />
+    <bpmn:sequenceFlow id="Flow_AssignTasks_to_ScheduleTeamMeetings" sourceRef="Task_AssignTasks" targetRef="Task_ScheduleTeamMeetings" />
+    <bpmn:sequenceFlow id="Flow_ScheduleTeamMeetings_to_RecordMinutes" sourceRef="Task_ScheduleTeamMeetings" targetRef="Task_RecordMinutes" />
+    <bpmn:sequenceFlow id="Flow_RecordMinutes_to_FollowUpFlags" sourceRef="Task_RecordMinutes" targetRef="Task_FollowUpFlags" />
+    <bpmn:sequenceFlow id="Flow_FollowUpFlags_to_IntegrateMessaging" sourceRef="Task_FollowUpFlags" targetRef="Task_IntegrateMessaging" />
+    <bpmn:sequenceFlow id="Flow_IntegrateMessaging_to_AutoNotifications" sourceRef="Task_IntegrateMessaging" targetRef="Task_AutoNotifications" />
+    <bpmn:sequenceFlow id="Flow_AutoNotifications_to_RiskDelayDecision" sourceRef="Task_AutoNotifications" targetRef="Gateway_RiskDelayDecision" />
+    <bpmn:sequenceFlow id="Flow_RiskDecision_Yes_to_Escalate" name="Yes" sourceRef="Gateway_RiskDelayDecision" targetRef="Task_EscalateDelays" />
+    <bpmn:sequenceFlow id="Flow_RiskDecision_No_to_Merge" name="No" sourceRef="Gateway_RiskDelayDecision" targetRef="Gateway_RiskDelayMerge" />
+    <bpmn:sequenceFlow id="Flow_Escalate_to_Merge" sourceRef="Task_EscalateDelays" targetRef="Gateway_RiskDelayMerge" />
+    <bpmn:sequenceFlow id="Flow_Merge_to_CRMUpdate" sourceRef="Gateway_RiskDelayMerge" targetRef="Task_CRMUpdate" />
+    <bpmn:sequenceFlow id="Flow_CRMUpdate_to_AttachProposal" sourceRef="Task_CRMUpdate" targetRef="Task_AttachProposalCRM" />
+    <bpmn:sequenceFlow id="Flow_AttachProposal_to_GenerateReports" sourceRef="Task_AttachProposalCRM" targetRef="Task_GenerateReports" />
+    <bpmn:sequenceFlow id="Flow_GenerateReports_to_End" sourceRef="Task_GenerateReports" targetRef="EndEvent_BidReady" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_BidApp">
+    <bpmndi:BPMNPlane id="BPMNPlane_BidApp" bpmnElement="Process_BidApp">
+      <bpmndi:BPMNShape id="LaneShape_Systems" bpmnElement="Lane_Systems" isHorizontal="true">
+        <dc:Bounds x="160" y="800" width="3830" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_Governance" bpmnElement="Lane_Governance" isHorizontal="true">
+        <dc:Bounds x="160" y="620" width="3830" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_Operations" bpmnElement="Lane_Operations" isHorizontal="true">
+        <dc:Bounds x="160" y="440" width="3830" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_AIEngine" bpmnElement="Lane_AIEngine" isHorizontal="true">
+        <dc:Bounds x="160" y="260" width="3830" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_BidOwner" bpmnElement="Lane_BidOwner" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="3830" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ExtractInsights" bpmnElement="Task_ExtractInsights">
+        <dc:Bounds x="570" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RecordMeeting" bpmnElement="Task_RecordMeeting">
+        <dc:Bounds x="220" y="850" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SpeechToText" bpmnElement="Task_SpeechToText">
+        <dc:Bounds x="360" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_StartEvent_BidInitiated" bpmnElement="StartEvent_BidInitiated">
+        <dc:Bounds x="262" y="150" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="251" y="126" width="57" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CustomizeProposal" bpmnElement="Task_CustomizeProposal">
+        <dc:Bounds x="740" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PopulateTemplate" bpmnElement="Task_PopulateTemplate">
+        <dc:Bounds x="740" y="130" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CheckInventory" bpmnElement="Task_CheckInventory">
+        <dc:Bounds x="1130" y="500" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RetrievePricing" bpmnElement="Task_RetrievePricing">
+        <dc:Bounds x="1280" y="680" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SuggestValueAdds" bpmnElement="Task_SuggestValueAdds">
+        <dc:Bounds x="1430" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_UpdateDashboard" bpmnElement="Task_UpdateDashboard">
+        <dc:Bounds x="2030" y="870" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_BuildProjectTeam" bpmnElement="Task_BuildProjectTeam">
+        <dc:Bounds x="940" y="500" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CentralizeDocs" bpmnElement="Task_CentralizeDocs">
+        <dc:Bounds x="1690" y="128" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_VersionControl" bpmnElement="Task_VersionControl">
+        <dc:Bounds x="1690" y="870" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ComplianceChecks" bpmnElement="Task_ComplianceChecks">
+        <dc:Bounds x="1560" y="680" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AssignTasks" bpmnElement="Task_AssignTasks">
+        <dc:Bounds x="2030" y="128" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ScheduleTeamMeetings" bpmnElement="Task_ScheduleTeamMeetings">
+        <dc:Bounds x="2270" y="128" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RecordMinutes" bpmnElement="Task_RecordMinutes">
+        <dc:Bounds x="2270" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_FollowUpFlags" bpmnElement="Task_FollowUpFlags">
+        <dc:Bounds x="2270" y="870" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_IntegrateMessaging" bpmnElement="Task_IntegrateMessaging">
+        <dc:Bounds x="2480" y="870" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AutoNotifications" bpmnElement="Task_AutoNotifications">
+        <dc:Bounds x="2690" y="870" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_RiskDelayDecision" bpmnElement="Gateway_RiskDelayDecision" isMarkerVisible="true">
+        <dc:Bounds x="2905" y="885" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2899" y="935" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_EscalateDelays" bpmnElement="Task_EscalateDelays">
+        <dc:Bounds x="3010" y="130" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_RiskDelayMerge" bpmnElement="Gateway_RiskDelayMerge" isMarkerVisible="true">
+        <dc:Bounds x="3143" y="885" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3135" y="935" width="67" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CRMUpdate" bpmnElement="Task_CRMUpdate">
+        <dc:Bounds x="3290" y="870" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AttachProposalCRM" bpmnElement="Task_AttachProposalCRM">
+        <dc:Bounds x="3480" y="870" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_GenerateReports" bpmnElement="Task_GenerateReports">
+        <dc:Bounds x="3670" y="870" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_BidReady" bpmnElement="EndEvent_BidReady">
+        <dc:Bounds x="3867" y="892" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3848" y="928" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SuggestProducts" bpmnElement="Task_SuggestProducts">
+        <dc:Bounds x="940" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_Start_to_RecordMeeting" bpmnElement="Flow_Start_to_RecordMeeting">
+        <di:waypoint x="280" y="186" />
+        <di:waypoint x="280" y="850" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SpeechToText_to_ExtractInsights" bpmnElement="Flow_SpeechToText_to_ExtractInsights">
+        <di:waypoint x="480" y="350" />
+        <di:waypoint x="570" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ExtractInsights_to_PopulateTemplate" bpmnElement="Flow_ExtractInsights_to_PopulateTemplate">
+        <di:waypoint x="630" y="310" />
+        <di:waypoint x="630" y="170" />
+        <di:waypoint x="740" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PopulateTemplate_to_CustomizeProposal" bpmnElement="Flow_PopulateTemplate_to_CustomizeProposal">
+        <di:waypoint x="800" y="210" />
+        <di:waypoint x="800" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CustomizeProposal_to_SuggestProducts" bpmnElement="Flow_CustomizeProposal_to_SuggestProducts">
+        <di:waypoint x="860" y="350" />
+        <di:waypoint x="940" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SuggestProducts_to_BuildProjectTeam" bpmnElement="Flow_SuggestProducts_to_BuildProjectTeam">
+        <di:waypoint x="1000" y="390" />
+        <di:waypoint x="1000" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_BuildProjectTeam_to_CheckInventory" bpmnElement="Flow_BuildProjectTeam_to_CheckInventory">
+        <di:waypoint x="1060" y="540" />
+        <di:waypoint x="1130" y="540" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CheckInventory_to_RetrievePricing" bpmnElement="Flow_CheckInventory_to_RetrievePricing">
+        <di:waypoint x="1190" y="580" />
+        <di:waypoint x="1190" y="720" />
+        <di:waypoint x="1280" y="720" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RetrievePricing_to_SuggestValueAdds" bpmnElement="Flow_RetrievePricing_to_SuggestValueAdds">
+        <di:waypoint x="1340" y="680" />
+        <di:waypoint x="1340" y="350" />
+        <di:waypoint x="1430" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SuggestValueAdds_to_ComplianceChecks" bpmnElement="Flow_SuggestValueAdds_to_ComplianceChecks">
+        <di:waypoint x="1490" y="390" />
+        <di:waypoint x="1490" y="720" />
+        <di:waypoint x="1560" y="720" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_VersionControl_to_UpdateDashboard" bpmnElement="Flow_VersionControl_to_UpdateDashboard">
+        <di:waypoint x="1810" y="910" />
+        <di:waypoint x="2030" y="910" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_UpdateDashboard_to_AssignTasks" bpmnElement="Flow_UpdateDashboard_to_AssignTasks">
+        <di:waypoint x="2090" y="870" />
+        <di:waypoint x="2090" y="208" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RecordMeeting_to_SpeechToText" bpmnElement="Flow_RecordMeeting_to_SpeechToText">
+        <di:waypoint x="340" y="890" />
+        <di:waypoint x="420" y="890" />
+        <di:waypoint x="420" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ComplianceChecks_to_CentralizeDocs" bpmnElement="Flow_ComplianceChecks_to_CentralizeDocs">
+        <di:waypoint x="1620" y="680" />
+        <di:waypoint x="1620" y="168" />
+        <di:waypoint x="1690" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CentralizeDocs_to_VersionControl" bpmnElement="Flow_CentralizeDocs_to_VersionControl">
+        <di:waypoint x="1750" y="208" />
+        <di:waypoint x="1750" y="870" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AssignTasks_to_ScheduleTeamMeetings" bpmnElement="Flow_AssignTasks_to_ScheduleTeamMeetings">
+        <di:waypoint x="2150" y="168" />
+        <di:waypoint x="2270" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ScheduleTeamMeetings_to_RecordMinutes" bpmnElement="Flow_ScheduleTeamMeetings_to_RecordMinutes">
+        <di:waypoint x="2330" y="208" />
+        <di:waypoint x="2330" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RecordMinutes_to_FollowUpFlags" bpmnElement="Flow_RecordMinutes_to_FollowUpFlags">
+        <di:waypoint x="2330" y="390" />
+        <di:waypoint x="2330" y="870" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_FollowUpFlags_to_IntegrateMessaging" bpmnElement="Flow_FollowUpFlags_to_IntegrateMessaging">
+        <di:waypoint x="2390" y="910" />
+        <di:waypoint x="2480" y="910" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_IntegrateMessaging_to_AutoNotifications" bpmnElement="Flow_IntegrateMessaging_to_AutoNotifications">
+        <di:waypoint x="2600" y="910" />
+        <di:waypoint x="2690" y="910" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AutoNotifications_to_RiskDelayDecision" bpmnElement="Flow_AutoNotifications_to_RiskDelayDecision">
+        <di:waypoint x="2810" y="910" />
+        <di:waypoint x="2905" y="910" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RiskDecision_Yes_to_Escalate" bpmnElement="Flow_RiskDecision_Yes_to_Escalate">
+        <di:waypoint x="2930" y="885" />
+        <di:waypoint x="2930" y="170" />
+        <di:waypoint x="3010" y="170" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2891" y="833" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RiskDecision_No_to_Merge" bpmnElement="Flow_RiskDecision_No_to_Merge">
+        <di:waypoint x="2955" y="910" />
+        <di:waypoint x="3143" y="910" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3041" y="885" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Escalate_to_Merge" bpmnElement="Flow_Escalate_to_Merge">
+        <di:waypoint x="3130" y="170" />
+        <di:waypoint x="3168" y="170" />
+        <di:waypoint x="3168" y="885" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Merge_to_CRMUpdate" bpmnElement="Flow_Merge_to_CRMUpdate">
+        <di:waypoint x="3192" y="909" />
+        <di:waypoint x="3290" y="909" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CRMUpdate_to_AttachProposal" bpmnElement="Flow_CRMUpdate_to_AttachProposal">
+        <di:waypoint x="3410" y="910" />
+        <di:waypoint x="3480" y="910" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AttachProposal_to_GenerateReports" bpmnElement="Flow_AttachProposal_to_GenerateReports">
+        <di:waypoint x="3600" y="910" />
+        <di:waypoint x="3670" y="910" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GenerateReports_to_End" bpmnElement="Flow_GenerateReports_to_End">
+        <di:waypoint x="3790" y="910" />
+        <di:waypoint x="3867" y="910" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

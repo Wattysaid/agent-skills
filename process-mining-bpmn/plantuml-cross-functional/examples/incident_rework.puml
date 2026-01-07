@@ -1,0 +1,27 @@
+@startuml
+|Customer|
+start
+:Report issue;
+|Support|
+repeat
+  :Log ticket;
+  if (Info complete?) then (yes)
+    break
+  else (no)
+    :Request info;
+    |Customer|
+    :Provide info;
+    |Support|
+  endif
+repeat while (Info complete? = no)
+:Diagnose;
+if (Fix type?) then (quick)
+  :Apply fix;
+else (escalate)
+  |Engineering|
+  :Develop patch;
+endif
+|Customer|
+:Confirm fix;
+stop
+@enduml

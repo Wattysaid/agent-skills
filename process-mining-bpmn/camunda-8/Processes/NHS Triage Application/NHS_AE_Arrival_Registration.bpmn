@@ -1,0 +1,280 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ns0:definitions xmlns:ns0="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns1="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:ns2="http://www.omg.org/spec/DD/20100524/DC" xmlns:ns3="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_NHS_AE_Arrival_Registration" targetNamespace="http://example.com/schema/bpmn">
+  <ns0:process id="Process_NHS_AE_Arrival_Registration" name="Arrival and Registration" isExecutable="false">
+    <ns0:laneSet id="LaneSet_Arrival">
+      <ns0:lane id="Lane_Patient_AR" name="Patient">
+        <ns0:flowNodeRef>StartEvent_AR</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_PatientPresents</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_CommunicateWaitTime</ns0:flowNodeRef>
+        <ns0:flowNodeRef>EndEvent_AR</ns0:flowNodeRef>
+      </ns0:lane>
+      <ns0:lane id="Lane_Ambulance_AR" name="Ambulance Crew">
+        <ns0:flowNodeRef>Event_PreAlert</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_AmbulanceHandover</ns0:flowNodeRef>
+      </ns0:lane>
+      <ns0:lane id="Lane_Reception_AR" name="Reception &amp; Registration">
+        <ns0:flowNodeRef>Gateway_ArrivalMode</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_WalkInQueue</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_CallPatient</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_CheckReferral</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_RejoinArrival</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_RecordDemographics</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_VerifyIdentity</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_LookupNHSNumber</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_SafeguardingScreen</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_DiversionNeeded</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_DiscussDiversion</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_DiversionReturn</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_CollectConsent</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_RegisterDependants</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_IssueWristband</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_PrintLabels</ns0:flowNodeRef>
+      </ns0:lane>
+      <ns0:lane id="Lane_Triage_AR" name="Triage Team">
+        <ns0:flowNodeRef>Gateway_ProceedToTriage</ns0:flowNodeRef>
+      </ns0:lane>
+    </ns0:laneSet>
+    <ns0:startEvent id="StartEvent_AR" name="Arrival at A&amp;E" />
+    <ns0:userTask id="Task_PatientPresents" name="Present to reception / ambulance bay" />
+    <ns0:exclusiveGateway id="Gateway_ArrivalMode" name="Arrival mode?" />
+    <ns0:intermediateCatchEvent id="Event_PreAlert" name="Receive pre-alert">
+      <ns0:messageEventDefinition messageRef="Message_AmbulancePreAlert" />
+    </ns0:intermediateCatchEvent>
+    <ns0:userTask id="Task_AmbulanceHandover" name="Ambulance handover &amp; obs" />
+    <ns0:userTask id="Task_WalkInQueue" name="Walk-in queue and symptom capture" />
+    <ns0:userTask id="Task_CallPatient" name="Call patient to desk" />
+    <ns0:userTask id="Task_CheckReferral" name="Verify GP/111 referral details" />
+    <ns0:exclusiveGateway id="Gateway_RejoinArrival" name="Join registration" />
+    <ns0:userTask id="Task_RecordDemographics" name="Record demographics &amp; contacts" />
+    <ns0:userTask id="Task_VerifyIdentity" name="Verify ID &amp; eligibility" />
+    <ns0:userTask id="Task_LookupNHSNumber" name="Lookup / confirm NHS number" />
+    <ns0:userTask id="Task_SafeguardingScreen" name="Safeguarding &amp; vulnerability screen" />
+    <ns0:exclusiveGateway id="Gateway_DiversionNeeded" name="Need diversion or redirect?" />
+    <ns0:userTask id="Task_DiscussDiversion" name="Discuss alternative service / site" />
+    <ns0:exclusiveGateway id="Gateway_DiversionReturn" name="Proceed with A&amp;E?" />
+    <ns0:userTask id="Task_CollectConsent" name="Collect consent &amp; privacy notice" />
+    <ns0:userTask id="Task_RegisterDependants" name="Register dependants / carers" />
+    <ns0:userTask id="Task_IssueWristband" name="Issue ID wristband" />
+    <ns0:userTask id="Task_PrintLabels" name="Print specimens / imaging labels" />
+    <ns0:exclusiveGateway id="Gateway_ProceedToTriage" name="Registration complete" />
+    <ns0:userTask id="Task_CommunicateWaitTime" name="Communicate wait time &amp; location" />
+    <ns0:endEvent id="EndEvent_AR" name="Hand over to triage" />
+    <ns0:sequenceFlow id="Flow_AR_StartToPresent" sourceRef="StartEvent_AR" targetRef="Task_PatientPresents" />
+    <ns0:sequenceFlow id="Flow_AR_PresentToGateway" sourceRef="Task_PatientPresents" targetRef="Gateway_ArrivalMode" />
+    <ns0:sequenceFlow id="Flow_AR_AmbulancePath" sourceRef="Gateway_ArrivalMode" targetRef="Event_PreAlert" name="Ambulance" />
+    <ns0:sequenceFlow id="Flow_AR_PreAlertToHandover" sourceRef="Event_PreAlert" targetRef="Task_AmbulanceHandover" />
+    <ns0:sequenceFlow id="Flow_AR_HandoverToRejoin" sourceRef="Task_AmbulanceHandover" targetRef="Gateway_RejoinArrival" />
+    <ns0:sequenceFlow id="Flow_AR_WalkInPath" sourceRef="Gateway_ArrivalMode" targetRef="Task_WalkInQueue" name="Walk-in" />
+    <ns0:sequenceFlow id="Flow_AR_QueueToCall" sourceRef="Task_WalkInQueue" targetRef="Task_CallPatient" />
+    <ns0:sequenceFlow id="Flow_AR_CallToRejoin" sourceRef="Task_CallPatient" targetRef="Gateway_RejoinArrival" />
+    <ns0:sequenceFlow id="Flow_AR_ReferralPath" sourceRef="Gateway_ArrivalMode" targetRef="Task_CheckReferral" name="GP/111" />
+    <ns0:sequenceFlow id="Flow_AR_ReferralToRejoin" sourceRef="Task_CheckReferral" targetRef="Gateway_RejoinArrival" />
+    <ns0:sequenceFlow id="Flow_AR_RejoinToRecord" sourceRef="Gateway_RejoinArrival" targetRef="Task_RecordDemographics" />
+    <ns0:sequenceFlow id="Flow_AR_RecordToVerify" sourceRef="Task_RecordDemographics" targetRef="Task_VerifyIdentity" />
+    <ns0:sequenceFlow id="Flow_AR_VerifyToNHS" sourceRef="Task_VerifyIdentity" targetRef="Task_LookupNHSNumber" />
+    <ns0:sequenceFlow id="Flow_AR_NHSToSafeguarding" sourceRef="Task_LookupNHSNumber" targetRef="Task_SafeguardingScreen" />
+    <ns0:sequenceFlow id="Flow_AR_SafeToDiversion" sourceRef="Task_SafeguardingScreen" targetRef="Gateway_DiversionNeeded" />
+    <ns0:sequenceFlow id="Flow_AR_DiversionYes" sourceRef="Gateway_DiversionNeeded" targetRef="Task_DiscussDiversion" name="Yes" />
+    <ns0:sequenceFlow id="Flow_AR_DiversionNo" sourceRef="Gateway_DiversionNeeded" targetRef="Gateway_DiversionReturn" name="No" />
+    <ns0:sequenceFlow id="Flow_AR_DiscussToReturn" sourceRef="Task_DiscussDiversion" targetRef="Gateway_DiversionReturn" />
+    <ns0:sequenceFlow id="Flow_AR_ReturnToConsent" sourceRef="Gateway_DiversionReturn" targetRef="Task_CollectConsent" />
+    <ns0:sequenceFlow id="Flow_AR_ConsentToDependants" sourceRef="Task_CollectConsent" targetRef="Task_RegisterDependants" />
+    <ns0:sequenceFlow id="Flow_AR_DependantsToWristband" sourceRef="Task_RegisterDependants" targetRef="Task_IssueWristband" />
+    <ns0:sequenceFlow id="Flow_AR_WristbandToLabels" sourceRef="Task_IssueWristband" targetRef="Task_PrintLabels" />
+    <ns0:sequenceFlow id="Flow_AR_LabelsToProceed" sourceRef="Task_PrintLabels" targetRef="Gateway_ProceedToTriage" />
+    <ns0:sequenceFlow id="Flow_AR_ProceedToWait" sourceRef="Gateway_ProceedToTriage" targetRef="Task_CommunicateWaitTime" />
+    <ns0:sequenceFlow id="Flow_AR_WaitToEnd" sourceRef="Task_CommunicateWaitTime" targetRef="EndEvent_AR" />
+  </ns0:process>
+  <ns0:collaboration id="Collab_NHS_AE_Arrival" name="Arrival and Registration Collaboration">
+    <ns0:participant id="Participant_NHS_AE_Arrival" name="NHS A&amp;E" processRef="Process_NHS_AE_Arrival_Registration" />
+  </ns0:collaboration>
+  <ns0:message id="Message_AmbulancePreAlert" name="Ambulance Pre-alert" />
+  <ns1:BPMNDiagram id="BPMNDiagram_Arrival">
+    <ns1:BPMNPlane id="BPMNPlane_Arrival" bpmnElement="Collab_NHS_AE_Arrival">
+      <ns1:BPMNShape id="Shape_Participant_Arrival" bpmnElement="Participant_NHS_AE_Arrival" isHorizontal="true">
+        <ns2:Bounds x="40" y="80" width="3200" height="620" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Patient_AR" bpmnElement="Lane_Patient_AR" isHorizontal="true">
+        <ns2:Bounds x="40" y="80" width="3200" height="130" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Ambulance_AR" bpmnElement="Lane_Ambulance_AR" isHorizontal="true">
+        <ns2:Bounds x="40" y="210" width="3200" height="130" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Reception_AR" bpmnElement="Lane_Reception_AR" isHorizontal="true">
+        <ns2:Bounds x="40" y="340" width="3200" height="200" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Triage_AR" bpmnElement="Lane_Triage_AR" isHorizontal="true">
+        <ns2:Bounds x="40" y="540" width="3200" height="160" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_StartEvent_AR" bpmnElement="StartEvent_AR">
+        <ns2:Bounds x="100" y="120" width="36" height="36" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_PatientPresents" bpmnElement="Task_PatientPresents">
+        <ns2:Bounds x="170" y="105" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_ArrivalMode" bpmnElement="Gateway_ArrivalMode" isMarkerVisible="true">
+        <ns2:Bounds x="380" y="115" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Event_PreAlert" bpmnElement="Event_PreAlert">
+        <ns2:Bounds x="540" y="250" width="36" height="36" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_AmbulanceHandover" bpmnElement="Task_AmbulanceHandover">
+        <ns2:Bounds x="620" y="230" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_WalkInQueue" bpmnElement="Task_WalkInQueue">
+        <ns2:Bounds x="520" y="375" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_CallPatient" bpmnElement="Task_CallPatient">
+        <ns2:Bounds x="740" y="375" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_CheckReferral" bpmnElement="Task_CheckReferral">
+        <ns2:Bounds x="520" y="485" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_RejoinArrival" bpmnElement="Gateway_RejoinArrival" isMarkerVisible="true">
+        <ns2:Bounds x="950" y="255" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_RecordDemographics" bpmnElement="Task_RecordDemographics">
+        <ns2:Bounds x="1060" y="375" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_VerifyIdentity" bpmnElement="Task_VerifyIdentity">
+        <ns2:Bounds x="1280" y="375" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_LookupNHSNumber" bpmnElement="Task_LookupNHSNumber">
+        <ns2:Bounds x="1500" y="375" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_SafeguardingScreen" bpmnElement="Task_SafeguardingScreen">
+        <ns2:Bounds x="1720" y="375" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_DiversionNeeded" bpmnElement="Gateway_DiversionNeeded" isMarkerVisible="true">
+        <ns2:Bounds x="1720" y="485" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_DiscussDiversion" bpmnElement="Task_DiscussDiversion">
+        <ns2:Bounds x="1860" y="495" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_DiversionReturn" bpmnElement="Gateway_DiversionReturn" isMarkerVisible="true">
+        <ns2:Bounds x="2040" y="495" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_CollectConsent" bpmnElement="Task_CollectConsent">
+        <ns2:Bounds x="2180" y="485" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_RegisterDependants" bpmnElement="Task_RegisterDependants">
+        <ns2:Bounds x="2340" y="485" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_IssueWristband" bpmnElement="Task_IssueWristband">
+        <ns2:Bounds x="2500" y="485" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_PrintLabels" bpmnElement="Task_PrintLabels">
+        <ns2:Bounds x="2660" y="485" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_ProceedToTriage" bpmnElement="Gateway_ProceedToTriage" isMarkerVisible="true">
+        <ns2:Bounds x="2820" y="585" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_CommunicateWaitTime" bpmnElement="Task_CommunicateWaitTime">
+        <ns2:Bounds x="2980" y="595" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_EndEvent_AR" bpmnElement="EndEvent_AR">
+        <ns2:Bounds x="3140" y="610" width="36" height="36" />
+      </ns1:BPMNShape>
+      <ns1:BPMNEdge id="Edge_Flow_AR_StartToPresent" bpmnElement="Flow_AR_StartToPresent">
+        <ns3:waypoint x="136" y="138" />
+        <ns3:waypoint x="170" y="140" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_PresentToGateway" bpmnElement="Flow_AR_PresentToGateway">
+        <ns3:waypoint x="350" y="140" />
+        <ns3:waypoint x="380" y="140" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_AmbulancePath" bpmnElement="Flow_AR_AmbulancePath">
+        <ns3:waypoint x="430" y="140" />
+        <ns3:waypoint x="520" y="263" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_PreAlertToHandover" bpmnElement="Flow_AR_PreAlertToHandover">
+        <ns3:waypoint x="556" y="263" />
+        <ns3:waypoint x="620" y="265" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_HandoverToRejoin" bpmnElement="Flow_AR_HandoverToRejoin">
+        <ns3:waypoint x="810" y="265" />
+        <ns3:waypoint x="975" y="280" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_WalkInPath" bpmnElement="Flow_AR_WalkInPath">
+        <ns3:waypoint x="430" y="140" />
+        <ns3:waypoint x="520" y="410" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_QueueToCall" bpmnElement="Flow_AR_QueueToCall">
+        <ns3:waypoint x="710" y="410" />
+        <ns3:waypoint x="740" y="410" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_CallToRejoin" bpmnElement="Flow_AR_CallToRejoin">
+        <ns3:waypoint x="920" y="410" />
+        <ns3:waypoint x="975" y="280" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_ReferralPath" bpmnElement="Flow_AR_ReferralPath">
+        <ns3:waypoint x="430" y="140" />
+        <ns3:waypoint x="520" y="520" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_ReferralToRejoin" bpmnElement="Flow_AR_ReferralToRejoin">
+        <ns3:waypoint x="710" y="520" />
+        <ns3:waypoint x="975" y="280" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_RejoinToRecord" bpmnElement="Flow_AR_RejoinToRecord">
+        <ns3:waypoint x="1000" y="280" />
+        <ns3:waypoint x="1060" y="410" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_RecordToVerify" bpmnElement="Flow_AR_RecordToVerify">
+        <ns3:waypoint x="1250" y="410" />
+        <ns3:waypoint x="1280" y="410" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_VerifyToNHS" bpmnElement="Flow_AR_VerifyToNHS">
+        <ns3:waypoint x="1470" y="410" />
+        <ns3:waypoint x="1500" y="410" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_NHSToSafeguarding" bpmnElement="Flow_AR_NHSToSafeguarding">
+        <ns3:waypoint x="1690" y="410" />
+        <ns3:waypoint x="1720" y="410" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_SafeToDiversion" bpmnElement="Flow_AR_SafeToDiversion">
+        <ns3:waypoint x="1910" y="410" />
+        <ns3:waypoint x="2000" y="510" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_DiversionYes" bpmnElement="Flow_AR_DiversionYes">
+        <ns3:waypoint x="1770" y="510" />
+        <ns3:waypoint x="1890" y="530" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_DiversionNo" bpmnElement="Flow_AR_DiversionNo">
+        <ns3:waypoint x="1770" y="510" />
+        <ns3:waypoint x="2065" y="520" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_DiscussToReturn" bpmnElement="Flow_AR_DiscussToReturn">
+        <ns3:waypoint x="1890" y="530" />
+        <ns3:waypoint x="2065" y="520" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_ReturnToConsent" bpmnElement="Flow_AR_ReturnToConsent">
+        <ns3:waypoint x="2065" y="520" />
+        <ns3:waypoint x="2240" y="520" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_ConsentToDependants" bpmnElement="Flow_AR_ConsentToDependants">
+        <ns3:waypoint x="2300" y="520" />
+        <ns3:waypoint x="2400" y="520" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_DependantsToWristband" bpmnElement="Flow_AR_DependantsToWristband">
+        <ns3:waypoint x="2460" y="520" />
+        <ns3:waypoint x="2560" y="520" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_WristbandToLabels" bpmnElement="Flow_AR_WristbandToLabels">
+        <ns3:waypoint x="2620" y="520" />
+        <ns3:waypoint x="2720" y="520" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_LabelsToProceed" bpmnElement="Flow_AR_LabelsToProceed">
+        <ns3:waypoint x="2780" y="520" />
+        <ns3:waypoint x="2845" y="610" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_ProceedToWait" bpmnElement="Flow_AR_ProceedToWait">
+        <ns3:waypoint x="2845" y="610" />
+        <ns3:waypoint x="3010" y="630" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_AR_WaitToEnd" bpmnElement="Flow_AR_WaitToEnd">
+        <ns3:waypoint x="3100" y="630" />
+        <ns3:waypoint x="3158" y="628" />
+      </ns1:BPMNEdge>
+    </ns1:BPMNPlane>
+  </ns1:BPMNDiagram>
+</ns0:definitions>

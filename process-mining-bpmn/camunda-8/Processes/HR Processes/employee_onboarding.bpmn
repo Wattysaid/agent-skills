@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_Onboarding" targetNamespace="http://example.com/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.1">
+  <bpmn:collaboration id="Collaboration_Onboarding">
+    <bpmn:participant id="Participant_HR" name="Human Resources" processRef="Process_Onboarding" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Onboarding" name="Employee Onboarding Process" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Onboarding">
+      <bpmn:lane id="Lane_HR" name="HR Department">
+        <bpmn:flowNodeRef>StartEvent_NewHire</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SendContract</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ReceiveSignedContract</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ContractSigned</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PrepareOnboardingKit</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ScheduleOrientation</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_SplitForNotifications</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_NotifyIT</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_NotifyManager</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_OnboardingCancelled</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_OnboardingPrepared</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_WelcomeNewEmployee</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_OnboardingComplete</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_NewHire" name="New Hire Agreed to Offer">
+      <bpmn:outgoing>Flow_Start_to_SendContract</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_SendContract" name="Send Contract to New Hire">
+      <bpmn:incoming>Flow_Start_to_SendContract</bpmn:incoming>
+      <bpmn:outgoing>Flow_SendContract_to_Receive</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:receiveTask id="Task_ReceiveSignedContract" name="Receive Signed Contract">
+      <bpmn:incoming>Flow_SendContract_to_Receive</bpmn:incoming>
+      <bpmn:outgoing>Flow_Receive_to_Gateway</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:exclusiveGateway id="Gateway_ContractSigned" name="Contract Signed?">
+      <bpmn:incoming>Flow_Receive_to_Gateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_Gateway_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Gateway_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_PrepareOnboardingKit" name="Prepare Onboarding Kit">
+      <bpmn:incoming>Flow_Gateway_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_Kit_to_Parallel</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_ScheduleOrientation" name="Schedule Orientation Session">
+      <bpmn:incoming>Flow_Kit_to_Parallel</bpmn:incoming>
+      <bpmn:outgoing>Flow_Schedule_to_Split</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="Gateway_SplitForNotifications">
+      <bpmn:incoming>Flow_Schedule_to_Split</bpmn:incoming>
+      <bpmn:outgoing>Flow_Split_to_IT</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Split_to_Manager</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:serviceTask id="Task_NotifyIT" name="Notify IT for Account Setup">
+      <bpmn:incoming>Flow_Split_to_IT</bpmn:incoming>
+      <bpmn:outgoing>Flow_IT_to_Join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_NotifyManager" name="Notify Hiring Manager">
+      <bpmn:incoming>Flow_Split_to_Manager</bpmn:incoming>
+      <bpmn:outgoing>Flow_Manager_to_Join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_OnboardingCancelled" name="Onboarding Cancelled">
+      <bpmn:incoming>Flow_Gateway_No</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:parallelGateway id="Gateway_OnboardingPrepared">
+      <bpmn:incoming>Flow_IT_to_Join</bpmn:incoming>
+      <bpmn:incoming>Flow_Manager_to_Join</bpmn:incoming>
+      <bpmn:outgoing>Flow_Join_to_Welcome</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="Task_WelcomeNewEmployee" name="Welcome New Employee">
+      <bpmn:incoming>Flow_Join_to_Welcome</bpmn:incoming>
+      <bpmn:outgoing>Flow_Welcome_to_End</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_OnboardingComplete" name="Onboarding Complete">
+      <bpmn:incoming>Flow_Welcome_to_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_Start_to_SendContract" sourceRef="StartEvent_NewHire" targetRef="Task_SendContract" />
+    <bpmn:sequenceFlow id="Flow_SendContract_to_Receive" sourceRef="Task_SendContract" targetRef="Task_ReceiveSignedContract" />
+    <bpmn:sequenceFlow id="Flow_Receive_to_Gateway" sourceRef="Task_ReceiveSignedContract" targetRef="Gateway_ContractSigned" />
+    <bpmn:sequenceFlow id="Flow_Gateway_Yes" name="Yes" sourceRef="Gateway_ContractSigned" targetRef="Task_PrepareOnboardingKit" />
+    <bpmn:sequenceFlow id="Flow_Gateway_No" name="No" sourceRef="Gateway_ContractSigned" targetRef="EndEvent_OnboardingCancelled" />
+    <bpmn:sequenceFlow id="Flow_Kit_to_Parallel" sourceRef="Task_PrepareOnboardingKit" targetRef="Task_ScheduleOrientation" />
+    <bpmn:sequenceFlow id="Flow_Schedule_to_Split" sourceRef="Task_ScheduleOrientation" targetRef="Gateway_SplitForNotifications" />
+    <bpmn:sequenceFlow id="Flow_Split_to_IT" sourceRef="Gateway_SplitForNotifications" targetRef="Task_NotifyIT" />
+    <bpmn:sequenceFlow id="Flow_Split_to_Manager" sourceRef="Gateway_SplitForNotifications" targetRef="Task_NotifyManager" />
+    <bpmn:sequenceFlow id="Flow_IT_to_Join" sourceRef="Task_NotifyIT" targetRef="Gateway_OnboardingPrepared" />
+    <bpmn:sequenceFlow id="Flow_Manager_to_Join" sourceRef="Task_NotifyManager" targetRef="Gateway_OnboardingPrepared" />
+    <bpmn:sequenceFlow id="Flow_Join_to_Welcome" sourceRef="Gateway_OnboardingPrepared" targetRef="Task_WelcomeNewEmployee" />
+    <bpmn:sequenceFlow id="Flow_Welcome_to_End" sourceRef="Task_WelcomeNewEmployee" targetRef="EndEvent_OnboardingComplete" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Onboarding">
+    <bpmndi:BPMNPlane id="BPMNPlane_Onboarding" bpmnElement="Collaboration_Onboarding">
+      <bpmndi:BPMNShape id="Shape_Participant_HR" bpmnElement="Participant_HR" isHorizontal="true">
+        <dc:Bounds x="160" y="50" width="1510" height="330" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_HR" bpmnElement="Lane_HR" isHorizontal="true">
+        <dc:Bounds x="190" y="50" width="1480" height="330" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_StartEvent_NewHire" bpmnElement="StartEvent_NewHire">
+        <dc:Bounds x="260" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="236" y="225" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SendContract" bpmnElement="Task_SendContract">
+        <dc:Bounds x="340" y="160" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ReceiveSignedContract" bpmnElement="Task_ReceiveSignedContract">
+        <dc:Bounds x="500" y="160" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ContractSigned" bpmnElement="Gateway_ContractSigned" isMarkerVisible="true">
+        <dc:Bounds x="660" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="719.5" y="193" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PrepareOnboardingKit" bpmnElement="Task_PrepareOnboardingKit">
+        <dc:Bounds x="750" y="80" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ScheduleOrientation" bpmnElement="Task_ScheduleOrientation">
+        <dc:Bounds x="910" y="80" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_SplitForNotifications" bpmnElement="Gateway_SplitForNotifications">
+        <dc:Bounds x="1070" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_NotifyIT" bpmnElement="Task_NotifyIT">
+        <dc:Bounds x="1160" y="80" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_NotifyManager" bpmnElement="Task_NotifyManager">
+        <dc:Bounds x="1160" y="180" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_OnboardingCancelled" bpmnElement="EndEvent_OnboardingCancelled">
+        <dc:Bounds x="792" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="781" y="325" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_OnboardingPrepared" bpmnElement="Gateway_OnboardingPrepared">
+        <dc:Bounds x="1320" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_WelcomeNewEmployee" bpmnElement="Task_WelcomeNewEmployee">
+        <dc:Bounds x="1420" y="80" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_OnboardingComplete" bpmnElement="EndEvent_OnboardingComplete">
+        <dc:Bounds x="1602" y="108" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1591" y="151" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_Start_to_SendContract" bpmnElement="Flow_Start_to_SendContract">
+        <di:waypoint x="296" y="200" />
+        <di:waypoint x="340" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SendContract_to_Receive" bpmnElement="Flow_SendContract_to_Receive">
+        <di:waypoint x="460" y="200" />
+        <di:waypoint x="500" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Receive_to_Gateway" bpmnElement="Flow_Receive_to_Gateway">
+        <di:waypoint x="620" y="200" />
+        <di:waypoint x="660" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Gateway_Yes" bpmnElement="Flow_Gateway_Yes">
+        <di:waypoint x="685" y="175" />
+        <di:waypoint x="685" y="120" />
+        <di:waypoint x="750" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="696" y="145" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Kit_to_Parallel" bpmnElement="Flow_Kit_to_Parallel">
+        <di:waypoint x="870" y="120" />
+        <di:waypoint x="910" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Schedule_to_Split" bpmnElement="Flow_Schedule_to_Split">
+        <di:waypoint x="1030" y="120" />
+        <di:waypoint x="1070" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Split_to_IT" bpmnElement="Flow_Split_to_IT">
+        <di:waypoint x="1120" y="120" />
+        <di:waypoint x="1160" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Split_to_Manager" bpmnElement="Flow_Split_to_Manager">
+        <di:waypoint x="1095" y="145" />
+        <di:waypoint x="1095" y="220" />
+        <di:waypoint x="1160" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_IT_to_Join" bpmnElement="Flow_IT_to_Join">
+        <di:waypoint x="1280" y="120" />
+        <di:waypoint x="1320" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Manager_to_Join" bpmnElement="Flow_Manager_to_Join">
+        <di:waypoint x="1280" y="220" />
+        <di:waypoint x="1345" y="220" />
+        <di:waypoint x="1345" y="145" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Join_to_Welcome" bpmnElement="Flow_Join_to_Welcome">
+        <di:waypoint x="1370" y="120" />
+        <di:waypoint x="1420" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Welcome_to_End" bpmnElement="Flow_Welcome_to_End">
+        <di:waypoint x="1540" y="123" />
+        <di:waypoint x="1602" y="123" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Gateway_No" bpmnElement="Flow_Gateway_No">
+        <di:waypoint x="685" y="225" />
+        <di:waypoint x="685" y="300" />
+        <di:waypoint x="792" y="300" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="695" y="260" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

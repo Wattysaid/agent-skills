@@ -1,0 +1,775 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_LeadGen" targetNamespace="http://example.com/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.1">
+  <bpmn:collaboration id="Collab_LeadGen">
+    <bpmn:participant id="Participant_LeadGen" name="Lead Generation" processRef="Process_LeadGen" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_LeadGen" name="Salesforce and Social Lead Generation" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_LeadGen">
+      <bpmn:lane id="Lane_SocialMarketing" name="Social Marketing">
+        <bpmn:flowNodeRef>Task_DefineAudience</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_BuildOffer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CraftPosts</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PrepareAds</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_AssetsApproved</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ApprovalMerge</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_EngageComments</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RequestComplianceReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_UpdateAssets</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_MonitorSpend</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_LaunchPaidAds</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_LaunchFork</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PublishOrganicPosts</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_LaunchJoin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_CampaignKickoff</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SchedulePostsAds</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_MarketingAutomation" name="Marketing Automation">
+        <bpmn:flowNodeRef>Task_EvaluateEngagement</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_InterestDecision</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AddNurtureDrip</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_TrackClicksVisits</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_WaitFormSubmission</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CaptureFormData</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_EnrichProfile</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ConsentCheck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SendConsentRequest</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ConsentMerge</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Nurture</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_WaitOneDay</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SendIntroEmailSequence</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_ConsentTimeout</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_ConsentReceived</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_SalesforceCRM" name="Salesforce CRM Ops">
+        <bpmn:flowNodeRef>Gateway_NewLeadDecision</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AssignSDRQueue</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_NotifyOwner</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CreateLeadRecord</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_UpdateExistingLead</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_DedupeMerge</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ConvertOpportunity</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_QualifiedDecision</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_NurtureInCampaign</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_NurtureSD</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_NoConsent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ScoreLead</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_DedupeLead</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_AccountExecutive" name="Account Executive">
+        <bpmn:flowNodeRef>Task_HandoffAE</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_QualifiedOpportunity</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_SalesDevelopment" name="Sales Development">
+        <bpmn:flowNodeRef>Task_ScheduleDiscoveryCall</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SDRDiscovery</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:userTask id="Task_DefineAudience" name="Define target personas and markets">
+      <bpmn:incoming>Flow_02r8vci</bpmn:incoming>
+      <bpmn:outgoing>Flow_Define_to_Build</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_BuildOffer" name="Design lead magnet and offer">
+      <bpmn:incoming>Flow_Define_to_Build</bpmn:incoming>
+      <bpmn:outgoing>Flow_Build_to_Craft</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_CraftPosts" name="Craft social posts and creatives">
+      <bpmn:incoming>Flow_Build_to_Craft</bpmn:incoming>
+      <bpmn:outgoing>Flow_Craft_to_Prepare</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_PrepareAds" name="Prepare ad sets and targeting">
+      <bpmn:incoming>Flow_Craft_to_Prepare</bpmn:incoming>
+      <bpmn:outgoing>Flow_Prepare_to_AssetsApproved</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_AssetsApproved" name="Assets approved?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Prepare_to_AssetsApproved</bpmn:incoming>
+      <bpmn:outgoing>Flow_AssetsApproved_to_ApprovalMerge</bpmn:outgoing>
+      <bpmn:outgoing>Flow_AssetsApproved_to_ComplianceReview</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_ApprovalMerge" name="Approval outcome" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_AssetsApproved_to_ApprovalMerge</bpmn:incoming>
+      <bpmn:incoming>Flow_UpdateAssets_to_ApprovalMerge</bpmn:incoming>
+      <bpmn:outgoing>Flow_ApprovalMerge_to_Schedule</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_EngageComments" name="Engage comments and DMs">
+      <bpmn:incoming>Flow_PublishOrganic_to_EngageComments</bpmn:incoming>
+      <bpmn:outgoing>Flow_EngageComments_to_LaunchJoin</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_RequestComplianceReview" name="Request compliance review">
+      <bpmn:incoming>Flow_AssetsApproved_to_ComplianceReview</bpmn:incoming>
+      <bpmn:outgoing>Flow_ComplianceReview_to_UpdateAssets</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_UpdateAssets" name="Update assets per feedback">
+      <bpmn:incoming>Flow_ComplianceReview_to_UpdateAssets</bpmn:incoming>
+      <bpmn:outgoing>Flow_UpdateAssets_to_ApprovalMerge</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:task id="Task_MonitorSpend" name="Monitor spend and pacing">
+      <bpmn:incoming>Flow_LaunchPaid_to_MonitorSpend</bpmn:incoming>
+      <bpmn:outgoing>Flow_MonitorSpend_to_LaunchJoin</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_LaunchPaidAds" name="Launch paid ads">
+      <bpmn:incoming>Flow_LaunchFork_to_LaunchPaid</bpmn:incoming>
+      <bpmn:outgoing>Flow_LaunchPaid_to_MonitorSpend</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:parallelGateway id="Gateway_LaunchFork" name="Launch channels" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Schedule_to_LaunchFork</bpmn:incoming>
+      <bpmn:outgoing>Flow_LaunchFork_to_PublishOrganic</bpmn:outgoing>
+      <bpmn:outgoing>Flow_LaunchFork_to_LaunchPaid</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:task id="Task_PublishOrganicPosts" name="Publish organic posts">
+      <bpmn:incoming>Flow_LaunchFork_to_PublishOrganic</bpmn:incoming>
+      <bpmn:outgoing>Flow_PublishOrganic_to_EngageComments</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:parallelGateway id="Gateway_LaunchJoin" name="Channel results synced" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_EngageComments_to_LaunchJoin</bpmn:incoming>
+      <bpmn:incoming>Flow_MonitorSpend_to_LaunchJoin</bpmn:incoming>
+      <bpmn:outgoing>Flow_LaunchJoin_to_TrackClicks</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_Define_to_Build" sourceRef="Task_DefineAudience" targetRef="Task_BuildOffer" />
+    <bpmn:sequenceFlow id="Flow_Build_to_Craft" sourceRef="Task_BuildOffer" targetRef="Task_CraftPosts" />
+    <bpmn:sequenceFlow id="Flow_Craft_to_Prepare" sourceRef="Task_CraftPosts" targetRef="Task_PrepareAds" />
+    <bpmn:sequenceFlow id="Flow_Prepare_to_AssetsApproved" sourceRef="Task_PrepareAds" targetRef="Gateway_AssetsApproved" />
+    <bpmn:sequenceFlow id="Flow_AssetsApproved_to_ApprovalMerge" name="Yes" sourceRef="Gateway_AssetsApproved" targetRef="Gateway_ApprovalMerge" />
+    <bpmn:sequenceFlow id="Flow_AssetsApproved_to_ComplianceReview" name="No" sourceRef="Gateway_AssetsApproved" targetRef="Task_RequestComplianceReview" />
+    <bpmn:sequenceFlow id="Flow_UpdateAssets_to_ApprovalMerge" sourceRef="Task_UpdateAssets" targetRef="Gateway_ApprovalMerge" />
+    <bpmn:sequenceFlow id="Flow_ApprovalMerge_to_Schedule" sourceRef="Gateway_ApprovalMerge" targetRef="Task_SchedulePostsAds" />
+    <bpmn:sequenceFlow id="Flow_Schedule_to_LaunchFork" sourceRef="Task_SchedulePostsAds" targetRef="Gateway_LaunchFork" />
+    <bpmn:sequenceFlow id="Flow_PublishOrganic_to_EngageComments" sourceRef="Task_PublishOrganicPosts" targetRef="Task_EngageComments" />
+    <bpmn:sequenceFlow id="Flow_EngageComments_to_LaunchJoin" sourceRef="Task_EngageComments" targetRef="Gateway_LaunchJoin" />
+    <bpmn:sequenceFlow id="Flow_WaitOneDay_to_EvaluateEngagement" sourceRef="Event_WaitOneDay" targetRef="Task_EvaluateEngagement" />
+    <bpmn:sequenceFlow id="Flow_EvaluateEngagement_to_InterestDecision" sourceRef="Task_EvaluateEngagement" targetRef="Gateway_InterestDecision" />
+    <bpmn:sequenceFlow id="Flow_InterestDecision_Yes_to_ScheduleDiscovery" name="Yes" sourceRef="Gateway_InterestDecision" targetRef="Task_ScheduleDiscoveryCall" />
+    <bpmn:sequenceFlow id="Flow_InterestDecision_No_to_AddNurtureDrip" name="No" sourceRef="Gateway_InterestDecision" targetRef="Task_AddNurtureDrip" />
+    <bpmn:sequenceFlow id="Flow_AddNurtureDrip_to_EndNurture" sourceRef="Task_AddNurtureDrip" targetRef="End_Nurture" />
+    <bpmn:sequenceFlow id="Flow_ComplianceReview_to_UpdateAssets" sourceRef="Task_RequestComplianceReview" targetRef="Task_UpdateAssets" />
+    <bpmn:sequenceFlow id="Flow_LaunchPaid_to_MonitorSpend" sourceRef="Task_LaunchPaidAds" targetRef="Task_MonitorSpend" />
+    <bpmn:sequenceFlow id="Flow_MonitorSpend_to_LaunchJoin" sourceRef="Task_MonitorSpend" targetRef="Gateway_LaunchJoin" />
+    <bpmn:sequenceFlow id="Flow_LaunchFork_to_LaunchPaid" sourceRef="Gateway_LaunchFork" targetRef="Task_LaunchPaidAds" />
+    <bpmn:sequenceFlow id="Flow_LaunchFork_to_PublishOrganic" sourceRef="Gateway_LaunchFork" targetRef="Task_PublishOrganicPosts" />
+    <bpmn:sequenceFlow id="Flow_LaunchJoin_to_TrackClicks" sourceRef="Gateway_LaunchJoin" targetRef="Task_TrackClicksVisits" />
+    <bpmn:sequenceFlow id="Flow_0gbocgz" sourceRef="Task_TrackClicksVisits" targetRef="Event_WaitFormSubmission" />
+    <bpmn:sequenceFlow id="Flow_1lqpftf" sourceRef="Event_WaitFormSubmission" targetRef="Task_CaptureFormData" />
+    <bpmn:sequenceFlow id="Flow_CaptureForm_to_EnrichProfile" sourceRef="Task_CaptureFormData" targetRef="Task_EnrichProfile" />
+    <bpmn:sequenceFlow id="Flow_EnrichProfile_to_ConsentCheck" sourceRef="Task_EnrichProfile" targetRef="Gateway_ConsentCheck" />
+    <bpmn:sequenceFlow id="Flow_ConsentCheck_Yes_to_ConsentMerge" name="Yes" sourceRef="Gateway_ConsentCheck" targetRef="Gateway_ConsentMerge" />
+    <bpmn:sequenceFlow id="Flow_ConsentCheck_No_to_SendConsent" name="No" sourceRef="Gateway_ConsentCheck" targetRef="Task_SendConsentRequest" />
+    <bpmn:sequenceFlow id="Flow_Dedupe_to_NewLeadDecision" sourceRef="Task_DedupeLead" targetRef="Gateway_NewLeadDecision" />
+    <bpmn:sequenceFlow id="Flow_NewLeadDecision_New_to_CreateLead" name="New" sourceRef="Gateway_NewLeadDecision" targetRef="Task_CreateLeadRecord" />
+    <bpmn:sequenceFlow id="Flow_NewLeadDecision_Existing_to_UpdateExisting" name="Existing" sourceRef="Gateway_NewLeadDecision" targetRef="Task_UpdateExistingLead" />
+    <bpmn:sequenceFlow id="Flow_CreateLead_to_AssignSDR" sourceRef="Task_CreateLeadRecord" targetRef="Task_AssignSDRQueue" />
+    <bpmn:sequenceFlow id="Flow_AssignSDR_to_DedupeMerge" sourceRef="Task_AssignSDRQueue" targetRef="Gateway_DedupeMerge" />
+    <bpmn:sequenceFlow id="Flow_ConsentReceived_to_ConsentMerge" sourceRef="Event_ConsentReceived" targetRef="Gateway_ConsentMerge" />
+    <bpmn:sequenceFlow id="Flow_ConsentMerge_to_ScoreLead" sourceRef="Gateway_ConsentMerge" targetRef="Task_ScoreLead" />
+    <bpmn:sequenceFlow id="Flow_ConvertOpportunity_to_HandoffAE" sourceRef="Task_ConvertOpportunity" targetRef="Task_HandoffAE" />
+    <bpmn:sequenceFlow id="Flow_HandoffAE_to_EndQualified" sourceRef="Task_HandoffAE" targetRef="End_QualifiedOpportunity" />
+    <bpmn:sequenceFlow id="Flow_UpdateExisting_to_NotifyOwner" sourceRef="Task_UpdateExistingLead" targetRef="Task_NotifyOwner" />
+    <bpmn:sequenceFlow id="Flow_NotifyOwner_to_DedupeMerge" sourceRef="Task_NotifyOwner" targetRef="Gateway_DedupeMerge" />
+    <bpmn:sequenceFlow id="Flow_DedupeMerge_to_SendIntroEmails" sourceRef="Gateway_DedupeMerge" targetRef="Task_SendIntroEmailSequence" />
+    <bpmn:sequenceFlow id="Flow_ScheduleDiscovery_to_SDRDiscovery" sourceRef="Task_ScheduleDiscoveryCall" targetRef="Task_SDRDiscovery" />
+    <bpmn:sequenceFlow id="Flow_SDRDiscovery_to_QualifiedDecision" sourceRef="Task_SDRDiscovery" targetRef="Gateway_QualifiedDecision" />
+    <bpmn:sequenceFlow id="Flow_QualifiedDecision_Yes_to_ConvertOpportunity" name="Yes" sourceRef="Gateway_QualifiedDecision" targetRef="Task_ConvertOpportunity" />
+    <bpmn:sequenceFlow id="Flow_QualifiedDecision_No_to_NurtureInCampaign" name="No" sourceRef="Gateway_QualifiedDecision" targetRef="Task_NurtureInCampaign" />
+    <bpmn:sequenceFlow id="Flow_NurtureInCampaign_to_EndNurtureSD" sourceRef="Task_NurtureInCampaign" targetRef="End_NurtureSD" />
+    <bpmn:sequenceFlow id="Flow_17ou4o0" sourceRef="Event_ConsentTimeout" targetRef="End_NoConsent" />
+    <bpmn:sequenceFlow id="Flow_ScoreLead_to_Dedupe" sourceRef="Task_ScoreLead" targetRef="Task_DedupeLead" />
+    <bpmn:sequenceFlow id="Flow_SendIntroEmails_to_WaitOneDay" sourceRef="Task_SendIntroEmailSequence" targetRef="Event_WaitOneDay" />
+    <bpmn:startEvent id="StartEvent_CampaignKickoff" name="Campaign kickoff">
+      <bpmn:outgoing>Flow_02r8vci</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_02r8vci" sourceRef="StartEvent_CampaignKickoff" targetRef="Task_DefineAudience" />
+    <bpmn:task id="Task_SchedulePostsAds" name="Schedule posts and ads">
+      <bpmn:incoming>Flow_ApprovalMerge_to_Schedule</bpmn:incoming>
+      <bpmn:outgoing>Flow_Schedule_to_LaunchFork</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:userTask id="Task_EvaluateEngagement" name="Evaluate engagement">
+      <bpmn:incoming>Flow_WaitOneDay_to_EvaluateEngagement</bpmn:incoming>
+      <bpmn:outgoing>Flow_EvaluateEngagement_to_InterestDecision</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_InterestDecision" name="Interested signal?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_EvaluateEngagement_to_InterestDecision</bpmn:incoming>
+      <bpmn:outgoing>Flow_InterestDecision_Yes_to_ScheduleDiscovery</bpmn:outgoing>
+      <bpmn:outgoing>Flow_InterestDecision_No_to_AddNurtureDrip</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_AddNurtureDrip" name="Add to nurture drip">
+      <bpmn:incoming>Flow_InterestDecision_No_to_AddNurtureDrip</bpmn:incoming>
+      <bpmn:outgoing>Flow_AddNurtureDrip_to_EndNurture</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:serviceTask id="Task_TrackClicksVisits" name="Track clicks and visits">
+      <bpmn:incoming>Flow_LaunchJoin_to_TrackClicks</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gbocgz</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="Event_WaitFormSubmission" name="Wait for form submission">
+      <bpmn:incoming>Flow_0gbocgz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lqpftf</bpmn:outgoing>
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="Task_CaptureFormData" name="Capture lead form data">
+      <bpmn:incoming>Flow_1lqpftf</bpmn:incoming>
+      <bpmn:outgoing>Flow_CaptureForm_to_EnrichProfile</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:serviceTask id="Task_EnrichProfile" name="Enrich profile with social data">
+      <bpmn:incoming>Flow_CaptureForm_to_EnrichProfile</bpmn:incoming>
+      <bpmn:outgoing>Flow_EnrichProfile_to_ConsentCheck</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_ConsentCheck" name="Marketing consent on file?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_EnrichProfile_to_ConsentCheck</bpmn:incoming>
+      <bpmn:outgoing>Flow_ConsentCheck_Yes_to_ConsentMerge</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ConsentCheck_No_to_SendConsent</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sendTask id="Task_SendConsentRequest" name="Send consent request">
+      <bpmn:incoming>Flow_ConsentCheck_No_to_SendConsent</bpmn:incoming>
+    </bpmn:sendTask>
+    <bpmn:exclusiveGateway id="Gateway_ConsentMerge" name="Consent resolved" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_ConsentCheck_Yes_to_ConsentMerge</bpmn:incoming>
+      <bpmn:incoming>Flow_ConsentReceived_to_ConsentMerge</bpmn:incoming>
+      <bpmn:outgoing>Flow_ConsentMerge_to_ScoreLead</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="End_Nurture" name="End - Nurture">
+      <bpmn:incoming>Flow_AddNurtureDrip_to_EndNurture</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateCatchEvent id="Event_WaitOneDay" name="Wait 1 day">
+      <bpmn:incoming>Flow_SendIntroEmails_to_WaitOneDay</bpmn:incoming>
+      <bpmn:outgoing>Flow_WaitOneDay_to_EvaluateEngagement</bpmn:outgoing>
+      <bpmn:timerEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="Task_SendIntroEmailSequence" name="Send intro email sequence">
+      <bpmn:incoming>Flow_DedupeMerge_to_SendIntroEmails</bpmn:incoming>
+      <bpmn:outgoing>Flow_SendIntroEmails_to_WaitOneDay</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:boundaryEvent id="Event_ConsentTimeout" name="Consent timeout" attachedToRef="Task_SendConsentRequest">
+      <bpmn:outgoing>Flow_17ou4o0</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1xjf17h" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Event_ConsentReceived" name="Consent received" attachedToRef="Task_SendConsentRequest">
+      <bpmn:outgoing>Flow_ConsentReceived_to_ConsentMerge</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1034gan" />
+    </bpmn:boundaryEvent>
+    <bpmn:exclusiveGateway id="Gateway_NewLeadDecision" name="Is this a new lead?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Dedupe_to_NewLeadDecision</bpmn:incoming>
+      <bpmn:outgoing>Flow_NewLeadDecision_New_to_CreateLead</bpmn:outgoing>
+      <bpmn:outgoing>Flow_NewLeadDecision_Existing_to_UpdateExisting</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_AssignSDRQueue" name="Assign SDR queue">
+      <bpmn:incoming>Flow_CreateLead_to_AssignSDR</bpmn:incoming>
+      <bpmn:outgoing>Flow_AssignSDR_to_DedupeMerge</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:userTask id="Task_HandoffAE" name="Handoff to Account Executive">
+      <bpmn:incoming>Flow_ConvertOpportunity_to_HandoffAE</bpmn:incoming>
+      <bpmn:outgoing>Flow_HandoffAE_to_EndQualified</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sendTask id="Task_NotifyOwner" name="Notify current owner">
+      <bpmn:incoming>Flow_UpdateExisting_to_NotifyOwner</bpmn:incoming>
+      <bpmn:outgoing>Flow_NotifyOwner_to_DedupeMerge</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:task id="Task_CreateLeadRecord" name="Create lead record">
+      <bpmn:incoming>Flow_NewLeadDecision_New_to_CreateLead</bpmn:incoming>
+      <bpmn:outgoing>Flow_CreateLead_to_AssignSDR</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_UpdateExistingLead" name="Update existing lead">
+      <bpmn:incoming>Flow_NewLeadDecision_Existing_to_UpdateExisting</bpmn:incoming>
+      <bpmn:outgoing>Flow_UpdateExisting_to_NotifyOwner</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_DedupeMerge" name="Lead routing ready" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_AssignSDR_to_DedupeMerge</bpmn:incoming>
+      <bpmn:incoming>Flow_NotifyOwner_to_DedupeMerge</bpmn:incoming>
+      <bpmn:outgoing>Flow_DedupeMerge_to_SendIntroEmails</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_ScheduleDiscoveryCall" name="Schedule discovery call">
+      <bpmn:incoming>Flow_InterestDecision_Yes_to_ScheduleDiscovery</bpmn:incoming>
+      <bpmn:outgoing>Flow_ScheduleDiscovery_to_SDRDiscovery</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_SDRDiscovery" name="Conduct discovery call">
+      <bpmn:incoming>Flow_ScheduleDiscovery_to_SDRDiscovery</bpmn:incoming>
+      <bpmn:outgoing>Flow_SDRDiscovery_to_QualifiedDecision</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_ConvertOpportunity" name="Convert to opportunity">
+      <bpmn:incoming>Flow_QualifiedDecision_Yes_to_ConvertOpportunity</bpmn:incoming>
+      <bpmn:outgoing>Flow_ConvertOpportunity_to_HandoffAE</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_QualifiedDecision" name="Qualified opportunity?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_SDRDiscovery_to_QualifiedDecision</bpmn:incoming>
+      <bpmn:outgoing>Flow_QualifiedDecision_Yes_to_ConvertOpportunity</bpmn:outgoing>
+      <bpmn:outgoing>Flow_QualifiedDecision_No_to_NurtureInCampaign</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_NurtureInCampaign" name="Add to nurture campaign">
+      <bpmn:incoming>Flow_QualifiedDecision_No_to_NurtureInCampaign</bpmn:incoming>
+      <bpmn:outgoing>Flow_NurtureInCampaign_to_EndNurtureSD</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_NurtureSD" name="End - Recycle for nurture">
+      <bpmn:incoming>Flow_NurtureInCampaign_to_EndNurtureSD</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="End_QualifiedOpportunity" name="End - Qualified opportunity">
+      <bpmn:incoming>Flow_HandoffAE_to_EndQualified</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="End_NoConsent" name="End - No consent">
+      <bpmn:incoming>Flow_17ou4o0</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Task_ScoreLead" name="Score lead in Salesforce">
+      <bpmn:incoming>Flow_ConsentMerge_to_ScoreLead</bpmn:incoming>
+      <bpmn:outgoing>Flow_ScoreLead_to_Dedupe</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_DedupeLead" name="Deduplicate against CRM">
+      <bpmn:incoming>Flow_ScoreLead_to_Dedupe</bpmn:incoming>
+      <bpmn:outgoing>Flow_Dedupe_to_NewLeadDecision</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_LeadGen">
+    <bpmndi:BPMNPlane id="BPMNPlane_LeadGen" bpmnElement="Collab_LeadGen">
+      <bpmndi:BPMNShape id="ParticipantShape_LeadGen" bpmnElement="Participant_LeadGen" isHorizontal="true">
+        <dc:Bounds x="160" y="120" width="5430" height="1360" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_SocialMarketing" bpmnElement="Lane_SocialMarketing" isHorizontal="true">
+        <dc:Bounds x="160" y="140" width="5430" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_MarketingAutomation" bpmnElement="Lane_MarketingAutomation" isHorizontal="true">
+        <dc:Bounds x="160" y="440" width="5430" height="310" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_SalesforceCRM" bpmnElement="Lane_SalesforceCRM" isHorizontal="true">
+        <dc:Bounds x="160" y="750" width="5430" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_AccountExecutive" bpmnElement="Lane_AccountExecutive" isHorizontal="true">
+        <dc:Bounds x="160" y="1240" width="5430" height="240" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_SalesDevelopment" bpmnElement="Lane_SalesDevelopment" isHorizontal="true">
+        <dc:Bounds x="160" y="1020" width="5430" height="220" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_DefineAudience" bpmnElement="Task_DefineAudience">
+        <dc:Bounds x="340" y="180" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_BuildOffer" bpmnElement="Task_BuildOffer">
+        <dc:Bounds x="490" y="180" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CraftPosts" bpmnElement="Task_CraftPosts">
+        <dc:Bounds x="640" y="180" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PrepareAds" bpmnElement="Task_PrepareAds">
+        <dc:Bounds x="790" y="180" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_AssetsApproved" bpmnElement="Gateway_AssetsApproved" isMarkerVisible="true">
+        <dc:Bounds x="940" y="195" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="921" y="171" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ApprovalMerge" bpmnElement="Gateway_ApprovalMerge" isMarkerVisible="true">
+        <dc:Bounds x="1240" y="195" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1221" y="171" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_EngageComments" bpmnElement="Task_EngageComments">
+        <dc:Bounds x="1840" y="180" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RequestComplianceReview" bpmnElement="Task_RequestComplianceReview">
+        <dc:Bounds x="905" y="300" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_UpdateAssets" bpmnElement="Task_UpdateAssets">
+        <dc:Bounds x="1205" y="300" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_MonitorSpend" bpmnElement="Task_MonitorSpend">
+        <dc:Bounds x="1840" y="320" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_LaunchPaidAds" bpmnElement="Task_LaunchPaidAds">
+        <dc:Bounds x="1670" y="320" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_LaunchFork" bpmnElement="Gateway_LaunchFork">
+        <dc:Bounds x="1545" y="195" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1528" y="171" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PublishOrganicPosts" bpmnElement="Task_PublishOrganicPosts">
+        <dc:Bounds x="1670" y="180" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_LaunchJoin" bpmnElement="Gateway_LaunchJoin">
+        <dc:Bounds x="2025" y="335" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2084.5" y="346" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_StartEvent_CampaignKickoff" bpmnElement="StartEvent_CampaignKickoff">
+        <dc:Bounds x="242" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="217" y="238" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SchedulePostsAds" bpmnElement="Task_SchedulePostsAds">
+        <dc:Bounds x="1360" y="180" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_EvaluateEngagement" bpmnElement="Task_EvaluateEngagement">
+        <dc:Bounds x="4390" y="520" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_InterestDecision" bpmnElement="Gateway_InterestDecision" isMarkerVisible="true">
+        <dc:Bounds x="4540" y="535" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4521" y="511" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AddNurtureDrip" bpmnElement="Task_AddNurtureDrip">
+        <dc:Bounds x="4690" y="520" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_TrackClicksVisits" bpmnElement="Task_TrackClicksVisits">
+        <dc:Bounds x="1990" y="504" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Event_WaitFormSubmission" bpmnElement="Event_WaitFormSubmission">
+        <dc:Bounds x="2192" y="526" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2179" y="562" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CaptureFormData" bpmnElement="Task_CaptureFormData">
+        <dc:Bounds x="2300" y="504" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_EnrichProfile" bpmnElement="Task_EnrichProfile">
+        <dc:Bounds x="2470" y="504" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ConsentCheck" bpmnElement="Gateway_ConsentCheck" isMarkerVisible="true">
+        <dc:Bounds x="2640" y="519" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2626" y="481.5" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SendConsentRequest" bpmnElement="Task_SendConsentRequest">
+        <dc:Bounds x="2605" y="618" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ConsentMerge" bpmnElement="Gateway_ConsentMerge" isMarkerVisible="true">
+        <dc:Bounds x="2962" y="519" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2944" y="495" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Nurture" bpmnElement="End_Nurture">
+        <dc:Bounds x="4882" y="540" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4867" y="576" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Event_WaitOneDay" bpmnElement="Event_WaitOneDay">
+        <dc:Bounds x="4252" y="542" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4244" y="578" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SendIntroEmailSequence" bpmnElement="Task_SendIntroEmailSequence">
+        <dc:Bounds x="4040" y="520" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_NewLeadDecision" bpmnElement="Gateway_NewLeadDecision" isMarkerVisible="true">
+        <dc:Bounds x="3490" y="805" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3483" y="767.5" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AssignSDRQueue" bpmnElement="Task_AssignSDRQueue">
+        <dc:Bounds x="3790" y="790" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_HandoffAE" bpmnElement="Task_HandoffAE">
+        <dc:Bounds x="5290" y="1280" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_NotifyOwner" bpmnElement="Task_NotifyOwner">
+        <dc:Bounds x="3790" y="910" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CreateLeadRecord" bpmnElement="Task_CreateLeadRecord">
+        <dc:Bounds x="3600" y="790" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_UpdateExistingLead" bpmnElement="Task_UpdateExistingLead">
+        <dc:Bounds x="3600" y="910" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_DedupeMerge" bpmnElement="Gateway_DedupeMerge" isMarkerVisible="true">
+        <dc:Bounds x="3965" y="805" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3959" y="767.5" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ScheduleDiscoveryCall" bpmnElement="Task_ScheduleDiscoveryCall">
+        <dc:Bounds x="4505" y="1040" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SDRDiscovery" bpmnElement="Task_SDRDiscovery">
+        <dc:Bounds x="4690" y="1040" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ConvertOpportunity" bpmnElement="Task_ConvertOpportunity">
+        <dc:Bounds x="5010" y="800" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_QualifiedDecision" bpmnElement="Gateway_QualifiedDecision" isMarkerVisible="true">
+        <dc:Bounds x="4865" y="815" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4859" y="777.5" width="61" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_NurtureInCampaign" bpmnElement="Task_NurtureInCampaign">
+        <dc:Bounds x="5010" y="920" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_NurtureSD" bpmnElement="End_NurtureSD">
+        <dc:Bounds x="5212" y="942" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5188" y="978" width="85" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_QualifiedOpportunity" bpmnElement="End_QualifiedOpportunity">
+        <dc:Bounds x="5482" y="1302" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5457" y="1338" width="86" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_NoConsent" bpmnElement="End_NoConsent">
+        <dc:Bounds x="2802" y="812" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2777" y="788" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ScoreLead" bpmnElement="Task_ScoreLead">
+        <dc:Bounds x="3120" y="790" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_DedupeLead" bpmnElement="Task_DedupeLead">
+        <dc:Bounds x="3310" y="790" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0t48y0z_di" bpmnElement="Event_ConsentTimeout">
+        <dc:Bounds x="2707" y="680" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2753" y="691" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1tynt6f_di" bpmnElement="Event_ConsentReceived">
+        <dc:Bounds x="2707" y="600" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2682" y="576" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_Define_to_Build" bpmnElement="Flow_Define_to_Build">
+        <di:waypoint x="460" y="220" />
+        <di:waypoint x="490" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Build_to_Craft" bpmnElement="Flow_Build_to_Craft">
+        <di:waypoint x="610" y="220" />
+        <di:waypoint x="640" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Craft_to_Prepare" bpmnElement="Flow_Craft_to_Prepare">
+        <di:waypoint x="760" y="220" />
+        <di:waypoint x="790" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Prepare_to_AssetsApproved" bpmnElement="Flow_Prepare_to_AssetsApproved">
+        <di:waypoint x="910" y="220" />
+        <di:waypoint x="940" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AssetsApproved_to_ApprovalMerge" bpmnElement="Flow_AssetsApproved_to_ApprovalMerge">
+        <di:waypoint x="990" y="220" />
+        <di:waypoint x="1240" y="220" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1107" y="202" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AssetsApproved_to_ComplianceReview" bpmnElement="Flow_AssetsApproved_to_ComplianceReview">
+        <di:waypoint x="965" y="245" />
+        <di:waypoint x="965" y="300" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="973" y="270" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_UpdateAssets_to_ApprovalMerge" bpmnElement="Flow_UpdateAssets_to_ApprovalMerge">
+        <di:waypoint x="1265" y="300" />
+        <di:waypoint x="1265" y="245" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ApprovalMerge_to_Schedule" bpmnElement="Flow_ApprovalMerge_to_Schedule">
+        <di:waypoint x="1290" y="220" />
+        <di:waypoint x="1360" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Schedule_to_LaunchFork" bpmnElement="Flow_Schedule_to_LaunchFork">
+        <di:waypoint x="1480" y="220" />
+        <di:waypoint x="1545" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PublishOrganic_to_EngageComments" bpmnElement="Flow_PublishOrganic_to_EngageComments">
+        <di:waypoint x="1790" y="220" />
+        <di:waypoint x="1840" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_EngageComments_to_LaunchJoin" bpmnElement="Flow_EngageComments_to_LaunchJoin">
+        <di:waypoint x="1960" y="220" />
+        <di:waypoint x="2050" y="220" />
+        <di:waypoint x="2050" y="335" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WaitOneDay_to_EvaluateEngagement" bpmnElement="Flow_WaitOneDay_to_EvaluateEngagement">
+        <di:waypoint x="4288" y="560" />
+        <di:waypoint x="4390" y="561" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_EvaluateEngagement_to_InterestDecision" bpmnElement="Flow_EvaluateEngagement_to_InterestDecision">
+        <di:waypoint x="4510" y="560" />
+        <di:waypoint x="4540" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_InterestDecision_Yes_to_ScheduleDiscovery" bpmnElement="Flow_InterestDecision_Yes_to_ScheduleDiscovery">
+        <di:waypoint x="4565" y="585" />
+        <di:waypoint x="4565" y="1040" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4571" y="803" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_InterestDecision_No_to_AddNurtureDrip" bpmnElement="Flow_InterestDecision_No_to_AddNurtureDrip">
+        <di:waypoint x="4590" y="560" />
+        <di:waypoint x="4690" y="560" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4633" y="535" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AddNurtureDrip_to_EndNurture" bpmnElement="Flow_AddNurtureDrip_to_EndNurture">
+        <di:waypoint x="4810" y="560" />
+        <di:waypoint x="4882" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ComplianceReview_to_UpdateAssets" bpmnElement="Flow_ComplianceReview_to_UpdateAssets">
+        <di:waypoint x="1025" y="340" />
+        <di:waypoint x="1205" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_LaunchPaid_to_MonitorSpend" bpmnElement="Flow_LaunchPaid_to_MonitorSpend">
+        <di:waypoint x="1790" y="360" />
+        <di:waypoint x="1840" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_MonitorSpend_to_LaunchJoin" bpmnElement="Flow_MonitorSpend_to_LaunchJoin">
+        <di:waypoint x="1960" y="360" />
+        <di:waypoint x="2025" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_LaunchFork_to_LaunchPaid" bpmnElement="Flow_LaunchFork_to_LaunchPaid">
+        <di:waypoint x="1570" y="245" />
+        <di:waypoint x="1570" y="360" />
+        <di:waypoint x="1670" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_LaunchFork_to_PublishOrganic" bpmnElement="Flow_LaunchFork_to_PublishOrganic">
+        <di:waypoint x="1595" y="220" />
+        <di:waypoint x="1670" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_LaunchJoin_to_TrackClicks" bpmnElement="Flow_LaunchJoin_to_TrackClicks">
+        <di:waypoint x="2050" y="385" />
+        <di:waypoint x="2050" y="504" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gbocgz_di" bpmnElement="Flow_0gbocgz">
+        <di:waypoint x="2110" y="544" />
+        <di:waypoint x="2192" y="544" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lqpftf_di" bpmnElement="Flow_1lqpftf">
+        <di:waypoint x="2228" y="544" />
+        <di:waypoint x="2300" y="544" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CaptureForm_to_EnrichProfile" bpmnElement="Flow_CaptureForm_to_EnrichProfile">
+        <di:waypoint x="2420" y="544" />
+        <di:waypoint x="2470" y="544" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_EnrichProfile_to_ConsentCheck" bpmnElement="Flow_EnrichProfile_to_ConsentCheck">
+        <di:waypoint x="2590" y="544" />
+        <di:waypoint x="2640" y="544" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ConsentCheck_Yes_to_ConsentMerge" bpmnElement="Flow_ConsentCheck_Yes_to_ConsentMerge">
+        <di:waypoint x="2690" y="544" />
+        <di:waypoint x="2962" y="544" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2817" y="519" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ConsentCheck_No_to_SendConsent" bpmnElement="Flow_ConsentCheck_No_to_SendConsent">
+        <di:waypoint x="2665" y="569" />
+        <di:waypoint x="2665" y="618" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2673" y="585" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Dedupe_to_NewLeadDecision" bpmnElement="Flow_Dedupe_to_NewLeadDecision">
+        <di:waypoint x="3430" y="830" />
+        <di:waypoint x="3490" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_NewLeadDecision_New_to_CreateLead" bpmnElement="Flow_NewLeadDecision_New_to_CreateLead">
+        <di:waypoint x="3540" y="830" />
+        <di:waypoint x="3600" y="830" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3558" y="805" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_NewLeadDecision_Existing_to_UpdateExisting" bpmnElement="Flow_NewLeadDecision_Existing_to_UpdateExisting">
+        <di:waypoint x="3515" y="855" />
+        <di:waypoint x="3515" y="950" />
+        <di:waypoint x="3600" y="950" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3511" y="891" width="39" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CreateLead_to_AssignSDR" bpmnElement="Flow_CreateLead_to_AssignSDR">
+        <di:waypoint x="3720" y="830" />
+        <di:waypoint x="3790" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AssignSDR_to_DedupeMerge" bpmnElement="Flow_AssignSDR_to_DedupeMerge">
+        <di:waypoint x="3910" y="830" />
+        <di:waypoint x="3965" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ConsentReceived_to_ConsentMerge" bpmnElement="Flow_ConsentReceived_to_ConsentMerge">
+        <di:waypoint x="2743" y="618" />
+        <di:waypoint x="2987" y="618" />
+        <di:waypoint x="2987" y="569" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ConsentMerge_to_ScoreLead" bpmnElement="Flow_ConsentMerge_to_ScoreLead">
+        <di:waypoint x="3012" y="544" />
+        <di:waypoint x="3180" y="544" />
+        <di:waypoint x="3180" y="790" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ConvertOpportunity_to_HandoffAE" bpmnElement="Flow_ConvertOpportunity_to_HandoffAE">
+        <di:waypoint x="5130" y="840" />
+        <di:waypoint x="5350" y="840" />
+        <di:waypoint x="5350" y="1280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_HandoffAE_to_EndQualified" bpmnElement="Flow_HandoffAE_to_EndQualified">
+        <di:waypoint x="5410" y="1320" />
+        <di:waypoint x="5482" y="1320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_UpdateExisting_to_NotifyOwner" bpmnElement="Flow_UpdateExisting_to_NotifyOwner">
+        <di:waypoint x="3720" y="950" />
+        <di:waypoint x="3790" y="950" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_NotifyOwner_to_DedupeMerge" bpmnElement="Flow_NotifyOwner_to_DedupeMerge">
+        <di:waypoint x="3910" y="950" />
+        <di:waypoint x="3990" y="950" />
+        <di:waypoint x="3990" y="855" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_DedupeMerge_to_SendIntroEmails" bpmnElement="Flow_DedupeMerge_to_SendIntroEmails">
+        <di:waypoint x="4015" y="830" />
+        <di:waypoint x="4100" y="830" />
+        <di:waypoint x="4100" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ScheduleDiscovery_to_SDRDiscovery" bpmnElement="Flow_ScheduleDiscovery_to_SDRDiscovery">
+        <di:waypoint x="4625" y="1080" />
+        <di:waypoint x="4690" y="1080" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SDRDiscovery_to_QualifiedDecision" bpmnElement="Flow_SDRDiscovery_to_QualifiedDecision">
+        <di:waypoint x="4750" y="1040" />
+        <di:waypoint x="4750" y="840" />
+        <di:waypoint x="4865" y="840" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_QualifiedDecision_Yes_to_ConvertOpportunity" bpmnElement="Flow_QualifiedDecision_Yes_to_ConvertOpportunity">
+        <di:waypoint x="4915" y="840" />
+        <di:waypoint x="5010" y="840" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4954" y="815" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_QualifiedDecision_No_to_NurtureInCampaign" bpmnElement="Flow_QualifiedDecision_No_to_NurtureInCampaign">
+        <di:waypoint x="4890" y="865" />
+        <di:waypoint x="4890" y="960" />
+        <di:waypoint x="5010" y="960" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4866" y="907" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_NurtureInCampaign_to_EndNurtureSD" bpmnElement="Flow_NurtureInCampaign_to_EndNurtureSD">
+        <di:waypoint x="5130" y="960" />
+        <di:waypoint x="5212" y="960" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17ou4o0_di" bpmnElement="Flow_17ou4o0">
+        <di:waypoint x="2725" y="716" />
+        <di:waypoint x="2725" y="830" />
+        <di:waypoint x="2802" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ScoreLead_to_Dedupe" bpmnElement="Flow_ScoreLead_to_Dedupe">
+        <di:waypoint x="3240" y="830" />
+        <di:waypoint x="3310" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SendIntroEmails_to_WaitOneDay" bpmnElement="Flow_SendIntroEmails_to_WaitOneDay">
+        <di:waypoint x="4160" y="559" />
+        <di:waypoint x="4252" y="559" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02r8vci_di" bpmnElement="Flow_02r8vci">
+        <di:waypoint x="278" y="220" />
+        <di:waypoint x="340" y="220" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

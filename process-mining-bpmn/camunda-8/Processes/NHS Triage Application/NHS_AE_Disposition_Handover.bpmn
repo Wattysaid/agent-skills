@@ -1,0 +1,323 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ns0:definitions xmlns:ns0="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns1="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:ns2="http://www.omg.org/spec/DD/20100524/DC" xmlns:ns3="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_NHS_AE_Disposition_Handover" targetNamespace="http://example.com/schema/bpmn">
+  <ns0:process id="Process_NHS_AE_Disposition_Handover" name="Disposition and Handover" isExecutable="false">
+    <ns0:laneSet id="LaneSet_DH">
+      <ns0:lane id="Lane_Patient_DH" name="Patient">
+        <ns0:flowNodeRef>StartEvent_DH</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_PatientAgreePlan</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_ProvideSafetyNet</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_BookFollowUp</ns0:flowNodeRef>
+        <ns0:flowNodeRef>EndEvent_DH</ns0:flowNodeRef>
+      </ns0:lane>
+      <ns0:lane id="Lane_Clinical_DH" name="Clinical Decision Maker">
+        <ns0:flowNodeRef>Task_ClinicalReeval</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_ReviewResults_DH</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_DispositionChoice</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_StartObservation</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_ReevaluateObservation</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_ObservationOutcome</ns0:flowNodeRef>
+      </ns0:lane>
+      <ns0:lane id="Lane_BedMgmt_DH" name="Bed Management / Admission">
+        <ns0:flowNodeRef>Task_RequestBed</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_BedAvailable</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_EscalateCapacity</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_BookBed</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_SendAdmissionPack</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_InpatientHandover</ns0:flowNodeRef>
+      </ns0:lane>
+      <ns0:lane id="Lane_Discharge_DH" name="Discharge &amp; Pharmacy">
+        <ns0:flowNodeRef>Task_PrepareDischargeSummary</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_PrescribeMeds</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_PharmacyDispense</ns0:flowNodeRef>
+      </ns0:lane>
+      <ns0:lane id="Lane_Transport_DH" name="Transport / Transfer">
+        <ns0:flowNodeRef>Task_AssessTransferNeed</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_SelectReceivingSite</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_ArrangeTransferAmbulance</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_TransferHandover</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_ArrangeTransport</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_FinalMerge</ns0:flowNodeRef>
+      </ns0:lane>
+    </ns0:laneSet>
+    <ns0:startEvent id="StartEvent_DH" name="Ready for disposition" />
+    <ns0:userTask id="Task_ClinicalReeval" name="Clinical re-evaluation" />
+    <ns0:userTask id="Task_ReviewResults_DH" name="Review latest results" />
+    <ns0:exclusiveGateway id="Gateway_DispositionChoice" name="Disposition route?" />
+    <ns0:userTask id="Task_PrepareDischargeSummary" name="Prepare discharge summary" />
+    <ns0:userTask id="Task_PrescribeMeds" name="Prescribe take-home meds" />
+    <ns0:userTask id="Task_PharmacyDispense" name="Pharmacy dispense / TTOs" />
+    <ns0:userTask id="Task_ProvideSafetyNet" name="Safety netting &amp; red flags" />
+    <ns0:userTask id="Task_BookFollowUp" name="Book follow-up / community support" />
+    <ns0:userTask id="Task_ArrangeTransport" name="Arrange patient transport" />
+    <ns0:userTask id="Task_PatientAgreePlan" name="Agree plan &amp; confirm understanding" />
+    <ns0:userTask id="Task_RequestBed" name="Request inpatient bed" />
+    <ns0:exclusiveGateway id="Gateway_BedAvailable" name="Bed available?" />
+    <ns0:userTask id="Task_EscalateCapacity" name="Escalate capacity / site management" />
+    <ns0:userTask id="Task_BookBed" name="Book bed &amp; allocate ward" />
+    <ns0:userTask id="Task_SendAdmissionPack" name="Send admission pack" />
+    <ns0:userTask id="Task_InpatientHandover" name="Inpatient handover" />
+    <ns0:userTask id="Task_AssessTransferNeed" name="Assess transfer need" />
+    <ns0:userTask id="Task_SelectReceivingSite" name="Select receiving site" />
+    <ns0:userTask id="Task_ArrangeTransferAmbulance" name="Arrange transfer ambulance" />
+    <ns0:userTask id="Task_TransferHandover" name="Transfer handover" />
+    <ns0:userTask id="Task_StartObservation" name="Start short-stay observation" />
+    <ns0:userTask id="Task_ReevaluateObservation" name="Re-evaluate after observation" />
+    <ns0:exclusiveGateway id="Gateway_ObservationOutcome" name="Improved after obs?" />
+    <ns0:exclusiveGateway id="Gateway_FinalMerge" name="Exit A&amp;E" />
+    <ns0:endEvent id="EndEvent_DH" name="Disposition complete" />
+    <ns0:sequenceFlow id="Flow_DH_StartToReeval" sourceRef="StartEvent_DH" targetRef="Task_ClinicalReeval" />
+    <ns0:sequenceFlow id="Flow_DH_ReevalToReview" sourceRef="Task_ClinicalReeval" targetRef="Task_ReviewResults_DH" />
+    <ns0:sequenceFlow id="Flow_DH_ReviewToGateway" sourceRef="Task_ReviewResults_DH" targetRef="Gateway_DispositionChoice" />
+    <ns0:sequenceFlow id="Flow_DH_ToDischarge" sourceRef="Gateway_DispositionChoice" targetRef="Task_PrepareDischargeSummary" name="Discharge" />
+    <ns0:sequenceFlow id="Flow_DH_ToAdmission" sourceRef="Gateway_DispositionChoice" targetRef="Task_RequestBed" name="Admit" />
+    <ns0:sequenceFlow id="Flow_DH_ToTransfer" sourceRef="Gateway_DispositionChoice" targetRef="Task_AssessTransferNeed" name="Transfer" />
+    <ns0:sequenceFlow id="Flow_DH_ToObservation" sourceRef="Gateway_DispositionChoice" targetRef="Task_StartObservation" name="Observe" />
+    <ns0:sequenceFlow id="Flow_DH_DischargeToPrescribe" sourceRef="Task_PrepareDischargeSummary" targetRef="Task_PrescribeMeds" />
+    <ns0:sequenceFlow id="Flow_DH_PrescribeToPharmacy" sourceRef="Task_PrescribeMeds" targetRef="Task_PharmacyDispense" />
+    <ns0:sequenceFlow id="Flow_DH_PharmacyToSafety" sourceRef="Task_PharmacyDispense" targetRef="Task_ProvideSafetyNet" />
+    <ns0:sequenceFlow id="Flow_DH_SafetyToFollowup" sourceRef="Task_ProvideSafetyNet" targetRef="Task_BookFollowUp" />
+    <ns0:sequenceFlow id="Flow_DH_FollowupToTransport" sourceRef="Task_BookFollowUp" targetRef="Task_ArrangeTransport" />
+    <ns0:sequenceFlow id="Flow_DH_TransportToAgree" sourceRef="Task_ArrangeTransport" targetRef="Task_PatientAgreePlan" />
+    <ns0:sequenceFlow id="Flow_DH_AgreeToFinal" sourceRef="Task_PatientAgreePlan" targetRef="Gateway_FinalMerge" />
+    <ns0:sequenceFlow id="Flow_DH_RequestBedToGateway" sourceRef="Task_RequestBed" targetRef="Gateway_BedAvailable" />
+    <ns0:sequenceFlow id="Flow_DH_BedYes" sourceRef="Gateway_BedAvailable" targetRef="Task_BookBed" name="Yes" />
+    <ns0:sequenceFlow id="Flow_DH_BedNo" sourceRef="Gateway_BedAvailable" targetRef="Task_EscalateCapacity" name="No" />
+    <ns0:sequenceFlow id="Flow_DH_EscalateToBook" sourceRef="Task_EscalateCapacity" targetRef="Task_BookBed" />
+    <ns0:sequenceFlow id="Flow_DH_BookToPack" sourceRef="Task_BookBed" targetRef="Task_SendAdmissionPack" />
+    <ns0:sequenceFlow id="Flow_DH_PackToHandover" sourceRef="Task_SendAdmissionPack" targetRef="Task_InpatientHandover" />
+    <ns0:sequenceFlow id="Flow_DH_HandoverToFinal" sourceRef="Task_InpatientHandover" targetRef="Gateway_FinalMerge" />
+    <ns0:sequenceFlow id="Flow_DH_TransferAssessToSite" sourceRef="Task_AssessTransferNeed" targetRef="Task_SelectReceivingSite" />
+    <ns0:sequenceFlow id="Flow_DH_SiteToAmbulance" sourceRef="Task_SelectReceivingSite" targetRef="Task_ArrangeTransferAmbulance" />
+    <ns0:sequenceFlow id="Flow_DH_AmbulanceToHandover" sourceRef="Task_ArrangeTransferAmbulance" targetRef="Task_TransferHandover" />
+    <ns0:sequenceFlow id="Flow_DH_TransferToFinal" sourceRef="Task_TransferHandover" targetRef="Gateway_FinalMerge" />
+    <ns0:sequenceFlow id="Flow_DH_StartObs" sourceRef="Task_StartObservation" targetRef="Task_ReevaluateObservation" />
+    <ns0:sequenceFlow id="Flow_DH_ObsToOutcome" sourceRef="Task_ReevaluateObservation" targetRef="Gateway_ObservationOutcome" />
+    <ns0:sequenceFlow id="Flow_DH_OutcomeToDischarge" sourceRef="Gateway_ObservationOutcome" targetRef="Task_PrepareDischargeSummary" name="Improved" />
+    <ns0:sequenceFlow id="Flow_DH_OutcomeToAdmission" sourceRef="Gateway_ObservationOutcome" targetRef="Task_RequestBed" name="Needs admission" />
+    <ns0:sequenceFlow id="Flow_DH_FinalToEnd" sourceRef="Gateway_FinalMerge" targetRef="EndEvent_DH" />
+  </ns0:process>
+  <ns0:collaboration id="Collab_NHS_AE_Disposition" name="Disposition Collaboration">
+    <ns0:participant id="Participant_NHS_AE_Disposition" name="NHS A&amp;E" processRef="Process_NHS_AE_Disposition_Handover" />
+  </ns0:collaboration>
+  <ns1:BPMNDiagram id="BPMNDiagram_DH">
+    <ns1:BPMNPlane id="BPMNPlane_DH" bpmnElement="Collab_NHS_AE_Disposition">
+      <ns1:BPMNShape id="Shape_Participant_DH" bpmnElement="Participant_NHS_AE_Disposition" isHorizontal="true">
+        <ns2:Bounds x="40" y="80" width="1860" height="620" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Patient_DH" bpmnElement="Lane_Patient_DH" isHorizontal="true">
+        <ns2:Bounds x="40" y="80" width="1860" height="120" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Clinical_DH" bpmnElement="Lane_Clinical_DH" isHorizontal="true">
+        <ns2:Bounds x="40" y="200" width="1860" height="140" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_BedMgmt_DH" bpmnElement="Lane_BedMgmt_DH" isHorizontal="true">
+        <ns2:Bounds x="40" y="340" width="1860" height="140" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Discharge_DH" bpmnElement="Lane_Discharge_DH" isHorizontal="true">
+        <ns2:Bounds x="40" y="480" width="1860" height="100" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Transport_DH" bpmnElement="Lane_Transport_DH" isHorizontal="true">
+        <ns2:Bounds x="40" y="580" width="1860" height="120" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_StartEvent_DH" bpmnElement="StartEvent_DH">
+        <ns2:Bounds x="80" y="110" width="36" height="36" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_ClinicalReeval" bpmnElement="Task_ClinicalReeval">
+        <ns2:Bounds x="140" y="220" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_ReviewResults_DH" bpmnElement="Task_ReviewResults_DH">
+        <ns2:Bounds x="350" y="220" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_DispositionChoice" bpmnElement="Gateway_DispositionChoice" isMarkerVisible="true">
+        <ns2:Bounds x="570" y="230" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_PrepareDischargeSummary" bpmnElement="Task_PrepareDischargeSummary">
+        <ns2:Bounds x="740" y="500" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_PrescribeMeds" bpmnElement="Task_PrescribeMeds">
+        <ns2:Bounds x="950" y="500" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_PharmacyDispense" bpmnElement="Task_PharmacyDispense">
+        <ns2:Bounds x="1160" y="500" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_ProvideSafetyNet" bpmnElement="Task_ProvideSafetyNet">
+        <ns2:Bounds x="1370" y="100" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_BookFollowUp" bpmnElement="Task_BookFollowUp">
+        <ns2:Bounds x="1580" y="100" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_ArrangeTransport" bpmnElement="Task_ArrangeTransport">
+        <ns2:Bounds x="1790" y="600" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_PatientAgreePlan" bpmnElement="Task_PatientAgreePlan">
+        <ns2:Bounds x="1580" y="120" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_RequestBed" bpmnElement="Task_RequestBed">
+        <ns2:Bounds x="740" y="360" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_BedAvailable" bpmnElement="Gateway_BedAvailable" isMarkerVisible="true">
+        <ns2:Bounds x="950" y="370" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_EscalateCapacity" bpmnElement="Task_EscalateCapacity">
+        <ns2:Bounds x="1160" y="360" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_BookBed" bpmnElement="Task_BookBed">
+        <ns2:Bounds x="1370" y="360" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_SendAdmissionPack" bpmnElement="Task_SendAdmissionPack">
+        <ns2:Bounds x="1580" y="360" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_InpatientHandover" bpmnElement="Task_InpatientHandover">
+        <ns2:Bounds x="1790" y="360" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_AssessTransferNeed" bpmnElement="Task_AssessTransferNeed">
+        <ns2:Bounds x="740" y="590" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_SelectReceivingSite" bpmnElement="Task_SelectReceivingSite">
+        <ns2:Bounds x="950" y="590" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_ArrangeTransferAmbulance" bpmnElement="Task_ArrangeTransferAmbulance">
+        <ns2:Bounds x="1160" y="590" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_TransferHandover" bpmnElement="Task_TransferHandover">
+        <ns2:Bounds x="1370" y="590" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_StartObservation" bpmnElement="Task_StartObservation">
+        <ns2:Bounds x="740" y="260" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_ReevaluateObservation" bpmnElement="Task_ReevaluateObservation">
+        <ns2:Bounds x="950" y="260" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_ObservationOutcome" bpmnElement="Gateway_ObservationOutcome" isMarkerVisible="true">
+        <ns2:Bounds x="1160" y="270" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_FinalMerge" bpmnElement="Gateway_FinalMerge" isMarkerVisible="true">
+        <ns2:Bounds x="1370" y="200" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_EndEvent_DH" bpmnElement="EndEvent_DH">
+        <ns2:Bounds x="1490" y="210" width="36" height="36" />
+      </ns1:BPMNShape>
+      
+      <ns1:BPMNEdge id="Edge_Flow_DH_StartToReeval" bpmnElement="Flow_DH_StartToReeval">
+        <ns3:waypoint x="116" y="128" />
+        <ns3:waypoint x="140" y="250" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_ReevalToReview" bpmnElement="Flow_DH_ReevalToReview">
+        <ns3:waypoint x="330" y="250" />
+        <ns3:waypoint x="350" y="250" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_ReviewToGateway" bpmnElement="Flow_DH_ReviewToGateway">
+        <ns3:waypoint x="540" y="250" />
+        <ns3:waypoint x="570" y="255" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_ToDischarge" bpmnElement="Flow_DH_ToDischarge">
+        <ns3:waypoint x="620" y="255" />
+        <ns3:waypoint x="740" y="530" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_ToAdmission" bpmnElement="Flow_DH_ToAdmission">
+        <ns3:waypoint x="620" y="255" />
+        <ns3:waypoint x="740" y="390" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_ToTransfer" bpmnElement="Flow_DH_ToTransfer">
+        <ns3:waypoint x="620" y="255" />
+        <ns3:waypoint x="740" y="620" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_ToObservation" bpmnElement="Flow_DH_ToObservation">
+        <ns3:waypoint x="620" y="255" />
+        <ns3:waypoint x="740" y="290" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_DischargeToPrescribe" bpmnElement="Flow_DH_DischargeToPrescribe">
+        <ns3:waypoint x="930" y="530" />
+        <ns3:waypoint x="950" y="530" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_PrescribeToPharmacy" bpmnElement="Flow_DH_PrescribeToPharmacy">
+        <ns3:waypoint x="1140" y="530" />
+        <ns3:waypoint x="1160" y="530" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_PharmacyToSafety" bpmnElement="Flow_DH_PharmacyToSafety">
+        <ns3:waypoint x="1350" y="530" />
+        <ns3:waypoint x="1370" y="130" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_SafetyToFollowup" bpmnElement="Flow_DH_SafetyToFollowup">
+        <ns3:waypoint x="1560" y="130" />
+        <ns3:waypoint x="1580" y="130" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_FollowupToTransport" bpmnElement="Flow_DH_FollowupToTransport">
+        <ns3:waypoint x="1770" y="130" />
+        <ns3:waypoint x="1790" y="630" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_TransportToAgree" bpmnElement="Flow_DH_TransportToAgree">
+        <ns3:waypoint x="1890" y="630" />
+        <ns3:waypoint x="1950" y="150" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_AgreeToFinal" bpmnElement="Flow_DH_AgreeToFinal">
+        <ns3:waypoint x="1770" y="150" />
+        <ns3:waypoint x="1770" y="225" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_RequestBedToGateway" bpmnElement="Flow_DH_RequestBedToGateway">
+        <ns3:waypoint x="930" y="390" />
+        <ns3:waypoint x="950" y="395" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_BedYes" bpmnElement="Flow_DH_BedYes">
+        <ns3:waypoint x="1000" y="395" />
+        <ns3:waypoint x="1370" y="390" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_BedNo" bpmnElement="Flow_DH_BedNo">
+        <ns3:waypoint x="1000" y="395" />
+        <ns3:waypoint x="1160" y="390" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_EscalateToBook" bpmnElement="Flow_DH_EscalateToBook">
+        <ns3:waypoint x="1350" y="390" />
+        <ns3:waypoint x="1370" y="390" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_BookToPack" bpmnElement="Flow_DH_BookToPack">
+        <ns3:waypoint x="1560" y="390" />
+        <ns3:waypoint x="1580" y="390" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_PackToHandover" bpmnElement="Flow_DH_PackToHandover">
+        <ns3:waypoint x="1770" y="390" />
+        <ns3:waypoint x="1790" y="390" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_HandoverToFinal" bpmnElement="Flow_DH_HandoverToFinal">
+        <ns3:waypoint x="1890" y="390" />
+        <ns3:waypoint x="1890" y="225" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_TransferAssessToSite" bpmnElement="Flow_DH_TransferAssessToSite">
+        <ns3:waypoint x="930" y="620" />
+        <ns3:waypoint x="950" y="620" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_SiteToAmbulance" bpmnElement="Flow_DH_SiteToAmbulance">
+        <ns3:waypoint x="1140" y="620" />
+        <ns3:waypoint x="1160" y="620" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_AmbulanceToHandover" bpmnElement="Flow_DH_AmbulanceToHandover">
+        <ns3:waypoint x="1350" y="620" />
+        <ns3:waypoint x="1370" y="620" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_TransferToFinal" bpmnElement="Flow_DH_TransferToFinal">
+        <ns3:waypoint x="1560" y="620" />
+        <ns3:waypoint x="1560" y="225" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_StartObs" bpmnElement="Flow_DH_StartObs">
+        <ns3:waypoint x="930" y="290" />
+        <ns3:waypoint x="950" y="290" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_ObsToOutcome" bpmnElement="Flow_DH_ObsToOutcome">
+        <ns3:waypoint x="1140" y="290" />
+        <ns3:waypoint x="1160" y="295" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_OutcomeToDischarge" bpmnElement="Flow_DH_OutcomeToDischarge">
+        <ns3:waypoint x="1210" y="295" />
+        <ns3:waypoint x="1210" y="530" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_OutcomeToAdmission" bpmnElement="Flow_DH_OutcomeToAdmission">
+        <ns3:waypoint x="1210" y="295" />
+        <ns3:waypoint x="1210" y="390" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_DH_FinalToEnd" bpmnElement="Flow_DH_FinalToEnd">
+        <ns3:waypoint x="1420" y="225" />
+        <ns3:waypoint x="1490" y="228" />
+      </ns1:BPMNEdge>
+    </ns1:BPMNPlane>
+  </ns1:BPMNDiagram>
+</ns0:definitions>

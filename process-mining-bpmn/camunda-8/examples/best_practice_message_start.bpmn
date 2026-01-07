@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Defs4" targetNamespace="http://best.practice/examples" exporter="Camunda Modeler" exporterVersion="5.40.1">
+  <bpmn:collaboration id="Collab_OrderNotification">
+    <bpmn:participant id="Participant_OrderNotification" name="Order Notification" processRef="orderNotification" />
+  </bpmn:collaboration>
+  <bpmn:message id="orderMessage" name="OrderMessage" camunda:subscriptionKey="orderId" />
+  <bpmn:process id="orderNotification" name="Order Notification" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_OrderNotification">
+      <bpmn:lane id="Lane_Notifier" name="Notifier">
+        <bpmn:flowNodeRef>finish</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>notifyCustomer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>msgStart</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:endEvent id="finish" name="Done">
+      <bpmn:incoming>Flow_1cuqeoz</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="notifyCustomer" name="Notify Customer" camunda:type="external" camunda:topic="notifications">
+      <bpmn:incoming>Flow_10ybh6w</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cuqeoz</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="msgStart" name="Order Received">
+      <bpmn:outgoing>Flow_10ybh6w</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="orderMessage" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1cuqeoz" sourceRef="notifyCustomer" targetRef="finish" />
+    <bpmn:sequenceFlow id="Flow_10ybh6w" sourceRef="msgStart" targetRef="notifyCustomer" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_OrderNotification">
+    <bpmndi:BPMNPlane id="BPMNPlane_OrderNotification" bpmnElement="Collab_OrderNotification">
+      <bpmndi:BPMNShape id="Shape_Participant_OrderNotification" bpmnElement="Participant_OrderNotification" isHorizontal="true">
+        <dc:Bounds x="160" y="120" width="550" height="220" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Notifier" bpmnElement="Lane_Notifier" isHorizontal="true">
+        <dc:Bounds x="190" y="120" width="520" height="220" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_finish" bpmnElement="finish">
+        <dc:Bounds x="562" y="200" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="567" y="242" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_notifyCustomer" bpmnElement="notifyCustomer">
+        <dc:Bounds x="370" y="178" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_msgStart" bpmnElement="msgStart">
+        <dc:Bounds x="272" y="200" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="251" y="241" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_10ybh6w_di" bpmnElement="Flow_10ybh6w">
+        <di:waypoint x="308" y="218" />
+        <di:waypoint x="370" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cuqeoz_di" bpmnElement="Flow_1cuqeoz">
+        <di:waypoint x="490" y="218" />
+        <di:waypoint x="562" y="218" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

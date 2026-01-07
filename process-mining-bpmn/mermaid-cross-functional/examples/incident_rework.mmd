@@ -1,0 +1,21 @@
+flowchart LR
+  subgraph Customer
+    A[Start] --> B[Report issue]
+  end
+  subgraph Support
+    B --> C[Log ticket]
+    C --> D{Info complete?}
+    D -->|No| E[Request info]
+  end
+  E --> F[Provide info]
+  F --> C
+  D -->|Yes| G[Diagnose]
+  G --> H{Fix type?}
+  H -->|Quick| I[Apply fix]
+  H -->|Escalate| J[Escalate]
+  subgraph Engineering
+    J --> K[Develop patch]
+  end
+  I --> L[Confirm fix]
+  K --> L
+  L --> M[Close]

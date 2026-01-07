@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Defs5" targetNamespace="http://best.practice/examples" exporter="Camunda Modeler" exporterVersion="5.40.1">
+  <bpmn:collaboration id="Collab_ParallelReview">
+    <bpmn:participant id="Participant_ParallelReview" name="Parallel Review Process" processRef="parallelReview" />
+  </bpmn:collaboration>
+  <bpmn:process id="parallelReview" name="Parallel Review Process" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_ParallelReview">
+      <bpmn:lane id="Lane_Reviewers" name="Reviewers">
+        <bpmn:flowNodeRef>startParallel</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>financeReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>legalReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>fork</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>join</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>finalApproval</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>complete</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="startParallel" name="Start">
+      <bpmn:outgoing>Flow_16v9wt7</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="financeReview" name="Finance Review">
+      <bpmn:incoming>Flow_1xccspx</bpmn:incoming>
+      <bpmn:outgoing>Flow_1m2tipu</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="legalReview" name="Legal Review">
+      <bpmn:incoming>Flow_0uut08x</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lp80ta</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="fork" name="Fork">
+      <bpmn:incoming>Flow_16v9wt7</bpmn:incoming>
+      <bpmn:outgoing>Flow_0uut08x</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1xccspx</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:parallelGateway id="join" name="Join">
+      <bpmn:incoming>Flow_1lp80ta</bpmn:incoming>
+      <bpmn:incoming>Flow_1m2tipu</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kot5zr</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="finalApproval" name="Final Approval">
+      <bpmn:incoming>Flow_0kot5zr</bpmn:incoming>
+      <bpmn:outgoing>Flow_12eydjc</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="complete" name="Complete">
+      <bpmn:incoming>Flow_12eydjc</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_16v9wt7" sourceRef="startParallel" targetRef="fork" />
+    <bpmn:sequenceFlow id="Flow_1xccspx" sourceRef="fork" targetRef="financeReview" />
+    <bpmn:sequenceFlow id="Flow_1m2tipu" sourceRef="financeReview" targetRef="join" />
+    <bpmn:sequenceFlow id="Flow_0uut08x" sourceRef="fork" targetRef="legalReview" />
+    <bpmn:sequenceFlow id="Flow_1lp80ta" sourceRef="legalReview" targetRef="join" />
+    <bpmn:sequenceFlow id="Flow_0kot5zr" sourceRef="join" targetRef="finalApproval" />
+    <bpmn:sequenceFlow id="Flow_12eydjc" sourceRef="finalApproval" targetRef="complete" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ParallelReview">
+    <bpmndi:BPMNPlane id="BPMNPlane_ParallelReview" bpmnElement="Collab_ParallelReview">
+      <bpmndi:BPMNShape id="Shape_Participant_ParallelReview" bpmnElement="Participant_ParallelReview" isHorizontal="true">
+        <dc:Bounds x="160" y="120" width="850" height="330" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Reviewers" bpmnElement="Lane_Reviewers" isHorizontal="true">
+        <dc:Bounds x="190" y="120" width="820" height="330" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_startParallel" bpmnElement="startParallel">
+        <dc:Bounds x="230" y="200" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="236" y="241" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_financeReview" bpmnElement="financeReview">
+        <dc:Bounds x="440" y="320" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_legalReview" bpmnElement="legalReview">
+        <dc:Bounds x="440" y="178" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_fork" bpmnElement="fork" isMarkerVisible="true">
+        <dc:Bounds x="325" y="193" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="338" y="169" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_join" bpmnElement="join" isMarkerVisible="true">
+        <dc:Bounds x="645" y="193" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="659" y="169" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_finalApproval" bpmnElement="finalApproval">
+        <dc:Bounds x="750" y="178" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_complete" bpmnElement="complete">
+        <dc:Bounds x="932" y="200" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="926" y="242" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_16v9wt7_di" bpmnElement="Flow_16v9wt7">
+        <di:waypoint x="266" y="218" />
+        <di:waypoint x="325" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uut08x_di" bpmnElement="Flow_0uut08x">
+        <di:waypoint x="375" y="218" />
+        <di:waypoint x="440" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xccspx_di" bpmnElement="Flow_1xccspx">
+        <di:waypoint x="350" y="243" />
+        <di:waypoint x="350" y="360" />
+        <di:waypoint x="440" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lp80ta_di" bpmnElement="Flow_1lp80ta">
+        <di:waypoint x="560" y="218" />
+        <di:waypoint x="645" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1m2tipu_di" bpmnElement="Flow_1m2tipu">
+        <di:waypoint x="560" y="360" />
+        <di:waypoint x="670" y="360" />
+        <di:waypoint x="670" y="243" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kot5zr_di" bpmnElement="Flow_0kot5zr">
+        <di:waypoint x="695" y="218" />
+        <di:waypoint x="750" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12eydjc_di" bpmnElement="Flow_12eydjc">
+        <di:waypoint x="870" y="218" />
+        <di:waypoint x="932" y="218" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

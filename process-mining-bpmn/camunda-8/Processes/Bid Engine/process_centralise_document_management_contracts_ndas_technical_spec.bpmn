@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_Centralise_document_management_contracts_NDAs_technical_spec" targetNamespace="http://example.com/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.1">
+  <bpmn:collaboration id="Collab_Centralise_document_management_contracts_NDAs_technical_spec">
+    <bpmn:participant id="Participant_Centralise_document_management_contracts_NDAs_technical_spec" name="Centralise document management: contracts, NDAs, technical specs" processRef="Process_Centralise_document_management_contracts_NDAs_technical_spec" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Centralise_document_management_contracts_NDAs_technical_spec" name="Centralise document management: contracts, NDAs, technical specs" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Centralise_document_management_contracts_NDAs_technical_spec">
+      <bpmn:lane id="Lane_Team_Centralise_document_management_contracts_NDAs_technical_spec" name="Bid Team / Stakeholders">
+        <bpmn:flowNodeRef>Task_Compliance_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Compliance_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Rework_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RequestContext_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_WaitContext_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Review_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Corrections_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Platform_Centralise_document_management_contracts_NDAs_technical_spec" name="AI Bid Platform">
+        <bpmn:flowNodeRef>Task_CaptureContext_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ValidateSignals_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ContextReady_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Rerun_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_AcceptMerge_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Personalize_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_UpdateSystem_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Notify_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Sync_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_UpdateDashboard_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Success_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ContextMerge_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CoreAction_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AIEnrich_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Accept_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:serviceTask id="Task_CaptureContext_Centralise_document_management_contracts_NDAs_technical_spec" name="Capture request and objectives">
+      <bpmn:incoming>Flow_1cppam8</bpmn:incoming>
+      <bpmn:outgoing>Flow_Capture_to_Validate_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_ValidateSignals_Centralise_document_management_contracts_NDAs_technical_spec" name="Validate inputs &#38; data signals">
+      <bpmn:incoming>Flow_Capture_to_Validate_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_Validate_to_ContextGW_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_ContextReady_Centralise_document_management_contracts_NDAs_technical_spec" name="Context complete?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Validate_to_ContextGW_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_ContextReady_Yes_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ContextReady_No_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_Rerun_Centralise_document_management_contracts_NDAs_technical_spec" name="Re-run generation with feedback">
+      <bpmn:incoming>Flow_Corrections_to_Rerun_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_Rerun_to_AcceptMerge_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_AcceptMerge_Centralise_document_management_contracts_NDAs_technical_spec" name="Draft resolved" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_Accept_Yes_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:incoming>Flow_Rerun_to_AcceptMerge_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_AcceptMerge_to_Personalize_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_Personalize_Centralise_document_management_contracts_NDAs_technical_spec" name="Personalize &#38; tailor outputs">
+      <bpmn:incoming>Flow_AcceptMerge_to_Personalize_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_Personalize_to_Compliance_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_Compliance_Centralise_document_management_contracts_NDAs_technical_spec" name="Compliance / quality review">
+      <bpmn:incoming>Flow_Personalize_to_Compliance_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_Compliance_to_Gateway_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_Compliance_Centralise_document_management_contracts_NDAs_technical_spec" name="Passed checks?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Compliance_to_Gateway_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_Compliance_Yes_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Compliance_No_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_UpdateSystem_Centralise_document_management_contracts_NDAs_technical_spec" name="Update systems of record">
+      <bpmn:incoming>Flow_Compliance_Yes_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_UpdateSystem_to_Notify_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_Notify_Centralise_document_management_contracts_NDAs_technical_spec" name="Notify stakeholders &#38; logs">
+      <bpmn:incoming>Flow_UpdateSystem_to_Notify_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_Notify_to_Sync_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_Sync_Centralise_document_management_contracts_NDAs_technical_spec" name="Sync CRM / attach artefacts">
+      <bpmn:incoming>Flow_Notify_to_Sync_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_Sync_to_Dashboard_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_UpdateDashboard_Centralise_document_management_contracts_NDAs_technical_spec" name="Update dashboard/status">
+      <bpmn:incoming>Flow_Sync_to_Dashboard_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_Dashboard_to_End_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_Success_Centralise_document_management_contracts_NDAs_technical_spec" name="End - Completed">
+      <bpmn:incoming>Flow_Dashboard_to_End_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="EndEvent_Rework_Centralise_document_management_contracts_NDAs_technical_spec" name="End - Rework/stop">
+      <bpmn:incoming>Flow_Compliance_No_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Task_RequestContext_Centralise_document_management_contracts_NDAs_technical_spec" name="Request missing inputs from team">
+      <bpmn:incoming>Flow_ContextReady_No_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_RequestContext_to_Wait_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="StartEvent_Centralise_document_management_contracts_NDAs_technical_spec" name="Start - Centralise document management: contract">
+      <bpmn:outgoing>Flow_1cppam8</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="Event_WaitContext_Centralise_document_management_contracts_NDAs_technical_spec" name="Wait for context/approvals">
+      <bpmn:incoming>Flow_RequestContext_to_Wait_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_Wait_to_ContextMerge_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+      <bpmn:timerEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="Gateway_ContextMerge_Centralise_document_management_contracts_NDAs_technical_spec" name="Context resolved" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_ContextReady_Yes_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:incoming>Flow_Wait_to_ContextMerge_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_ContextMerge_to_Core_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_CoreAction_Centralise_document_management_contracts_NDAs_technical_spec" name="Centralise document management: contracts, NDAs, technical specs">
+      <bpmn:incoming>Flow_ContextMerge_to_Core_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_Core_to_AI_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_AIEnrich_Centralise_document_management_contracts_NDAs_technical_spec" name="AI enrich &#38; structure output">
+      <bpmn:incoming>Flow_Core_to_AI_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_AI_to_Review_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_Review_Centralise_document_management_contracts_NDAs_technical_spec" name="Team review &#38; annotate">
+      <bpmn:incoming>Flow_AI_to_Review_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_Review_to_Accept_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_Accept_Centralise_document_management_contracts_NDAs_technical_spec" name="Accept draft?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Review_to_Accept_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_Accept_Yes_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Accept_No_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_Corrections_Centralise_document_management_contracts_NDAs_technical_spec" name="Apply corrections &#38; guidance">
+      <bpmn:incoming>Flow_Accept_No_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_Corrections_to_Rerun_Centralise_document_management_contracts_NDAs_technical_spec</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1cppam8" sourceRef="StartEvent_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_CaptureContext_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Capture_to_Validate_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_CaptureContext_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_ValidateSignals_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Validate_to_ContextGW_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_ValidateSignals_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Gateway_ContextReady_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_ContextReady_Yes_Centralise_document_management_contracts_NDAs_technical_spec" name="Ready" sourceRef="Gateway_ContextReady_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Gateway_ContextMerge_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_ContextReady_No_Centralise_document_management_contracts_NDAs_technical_spec" name="Missing" sourceRef="Gateway_ContextReady_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_RequestContext_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Corrections_to_Rerun_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_Corrections_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_Rerun_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Rerun_to_AcceptMerge_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_Rerun_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Gateway_AcceptMerge_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Accept_Yes_Centralise_document_management_contracts_NDAs_technical_spec" name="Yes" sourceRef="Gateway_Accept_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Gateway_AcceptMerge_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_AcceptMerge_to_Personalize_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Gateway_AcceptMerge_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_Personalize_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Personalize_to_Compliance_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_Personalize_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_Compliance_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Compliance_to_Gateway_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_Compliance_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Gateway_Compliance_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Compliance_Yes_Centralise_document_management_contracts_NDAs_technical_spec" name="Pass" sourceRef="Gateway_Compliance_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_UpdateSystem_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Compliance_No_Centralise_document_management_contracts_NDAs_technical_spec" name="Fail" sourceRef="Gateway_Compliance_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="EndEvent_Rework_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_UpdateSystem_to_Notify_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_UpdateSystem_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_Notify_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Notify_to_Sync_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_Notify_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_Sync_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Sync_to_Dashboard_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_Sync_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_UpdateDashboard_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Dashboard_to_End_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_UpdateDashboard_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="EndEvent_Success_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_RequestContext_to_Wait_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_RequestContext_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Event_WaitContext_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Wait_to_ContextMerge_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Event_WaitContext_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Gateway_ContextMerge_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_ContextMerge_to_Core_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Gateway_ContextMerge_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_CoreAction_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Core_to_AI_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_CoreAction_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_AIEnrich_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_AI_to_Review_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_AIEnrich_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_Review_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Review_to_Accept_Centralise_document_management_contracts_NDAs_technical_spec" sourceRef="Task_Review_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Gateway_Accept_Centralise_document_management_contracts_NDAs_technical_spec" />
+    <bpmn:sequenceFlow id="Flow_Accept_No_Centralise_document_management_contracts_NDAs_technical_spec" name="No" sourceRef="Gateway_Accept_Centralise_document_management_contracts_NDAs_technical_spec" targetRef="Task_Corrections_Centralise_document_management_contracts_NDAs_technical_spec" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Centralise_document_management_contracts_NDAs_technical_spec">
+    <bpmndi:BPMNPlane id="BPMNPlane_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Collab_Centralise_document_management_contracts_NDAs_technical_spec">
+      <bpmndi:BPMNShape id="ParticipantShape_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Participant_Centralise_document_management_contracts_NDAs_technical_spec" isHorizontal="true">
+        <dc:Bounds x="160" y="120" width="3200" height="440" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_Team_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Lane_Team_Centralise_document_management_contracts_NDAs_technical_spec" isHorizontal="true">
+        <dc:Bounds x="160" y="340" width="3200" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LaneShape_Platform_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Lane_Platform_Centralise_document_management_contracts_NDAs_technical_spec" isHorizontal="true">
+        <dc:Bounds x="160" y="140" width="3200" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CaptureContext_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_CaptureContext_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="300" y="200" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ValidateSignals_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_ValidateSignals_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="450" y="200" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ContextReady_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Gateway_ContextReady_Centralise_document_management_contracts_NDAs_technical_spec" isMarkerVisible="true">
+        <dc:Bounds x="600" y="215" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="599" y="177.5" width="51" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rerun_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_Rerun_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="1800" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_AcceptMerge_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Gateway_AcceptMerge_Centralise_document_management_contracts_NDAs_technical_spec" isMarkerVisible="true">
+        <dc:Bounds x="1950" y="215" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1941" y="265" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Personalize_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_Personalize_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="2100" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Compliance_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_Compliance_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="2250" y="400" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Compliance_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Gateway_Compliance_Centralise_document_management_contracts_NDAs_technical_spec" isMarkerVisible="true">
+        <dc:Bounds x="2400" y="415" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2385" y="465" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_UpdateSystem_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_UpdateSystem_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="2550" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Notify_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_Notify_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="2700" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Sync_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_Sync_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="2850" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_UpdateDashboard_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_UpdateDashboard_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="3000" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_Success_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="EndEvent_Success_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="3150" y="220" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3127" y="256" width="83" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_Rework_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="EndEvent_Rework_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="2400" y="470" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2384" y="506" width="69" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RequestContext_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_RequestContext_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="565" y="400" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_StartEvent_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="StartEvent_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="222" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="201" y="258" width="78" height="66" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Event_WaitContext_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Event_WaitContext_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="750" y="426" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="725" y="462" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ContextMerge_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Gateway_ContextMerge_Centralise_document_management_contracts_NDAs_technical_spec" isMarkerVisible="true">
+        <dc:Bounds x="845" y="215" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="828" y="191" width="83" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CoreAction_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_CoreAction_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="950" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AIEnrich_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_AIEnrich_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="1160" y="200" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Review_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_Review_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="1160" y="400" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Accept_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Gateway_Accept_Centralise_document_management_contracts_NDAs_technical_spec" isMarkerVisible="true">
+        <dc:Bounds x="1485" y="215" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1478" y="191" width="64" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Corrections_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Task_Corrections_Centralise_document_management_contracts_NDAs_technical_spec">
+        <dc:Bounds x="1620" y="404" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_Capture_to_Validate_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Capture_to_Validate_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="420" y="240" />
+        <di:waypoint x="450" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Validate_to_ContextGW_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Validate_to_ContextGW_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="570" y="240" />
+        <di:waypoint x="600" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ContextReady_Yes_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_ContextReady_Yes_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="650" y="240" />
+        <di:waypoint x="845" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="731" y="215" width="33" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ContextReady_No_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_ContextReady_No_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="625" y="265" />
+        <di:waypoint x="625" y="400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="621" y="323" width="38" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RequestContext_to_Wait_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_RequestContext_to_Wait_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="685" y="443" />
+        <di:waypoint x="750" y="443" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Wait_to_ContextMerge_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Wait_to_ContextMerge_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="786" y="444" />
+        <di:waypoint x="870" y="444" />
+        <di:waypoint x="870" y="265" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ContextMerge_to_Core_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_ContextMerge_to_Core_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="895" y="240" />
+        <di:waypoint x="950" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Core_to_AI_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Core_to_AI_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="1090" y="240" />
+        <di:waypoint x="1160" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AI_to_Review_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_AI_to_Review_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="1230" y="280" />
+        <di:waypoint x="1230" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Review_to_Accept_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Review_to_Accept_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="1300" y="440" />
+        <di:waypoint x="1510" y="440" />
+        <di:waypoint x="1510" y="265" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Accept_Yes_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Accept_Yes_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="1535" y="240" />
+        <di:waypoint x="1950" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1734" y="215" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Accept_No_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Accept_No_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="1510" y="265" />
+        <di:waypoint x="1510" y="444" />
+        <di:waypoint x="1620" y="444" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1520" y="348" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Corrections_to_Rerun_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Corrections_to_Rerun_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="1690" y="404" />
+        <di:waypoint x="1690" y="240" />
+        <di:waypoint x="1800" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Rerun_to_AcceptMerge_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Rerun_to_AcceptMerge_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="1940" y="240" />
+        <di:waypoint x="1950" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AcceptMerge_to_Personalize_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_AcceptMerge_to_Personalize_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="2000" y="240" />
+        <di:waypoint x="2100" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Personalize_to_Compliance_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Personalize_to_Compliance_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="2240" y="240" />
+        <di:waypoint x="2250" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Compliance_to_Gateway_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Compliance_to_Gateway_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="2390" y="440" />
+        <di:waypoint x="2400" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Compliance_Yes_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Compliance_Yes_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="2450" y="440" />
+        <di:waypoint x="2550" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2488" y="315" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Compliance_No_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Compliance_No_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="2425" y="465" />
+        <di:waypoint x="2425" y="490" />
+        <di:waypoint x="2400" y="490" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2431" y="468" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_UpdateSystem_to_Notify_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_UpdateSystem_to_Notify_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="2690" y="240" />
+        <di:waypoint x="2700" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Notify_to_Sync_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Notify_to_Sync_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="2840" y="240" />
+        <di:waypoint x="2850" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Sync_to_Dashboard_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Sync_to_Dashboard_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="2990" y="240" />
+        <di:waypoint x="3000" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Dashboard_to_End_Centralise_document_management_contracts_NDAs_technical_spec" bpmnElement="Flow_Dashboard_to_End_Centralise_document_management_contracts_NDAs_technical_spec">
+        <di:waypoint x="3140" y="240" />
+        <di:waypoint x="3150" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cppam8_di" bpmnElement="Flow_1cppam8">
+        <di:waypoint x="258" y="240" />
+        <di:waypoint x="300" y="240" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

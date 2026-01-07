@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+  id="Definitions_PerfReview" targetNamespace="http://example.com/schema/bpmn">
+  <bpmn:collaboration id="Collaboration_PerfReview">
+    <bpmn:participant id="Participant_Review" name="Performance Review Process" processRef="Process_PerfReview" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_PerfReview" name="Performance Review" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Review">
+      <bpmn:lane id="Lane_Employee" name="Employee">
+        <bpmn:flowNodeRef>StartEvent_ReviewCycle</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SelfAssessment</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_MeetingScheduled</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Manager" name="Manager">
+        <bpmn:flowNodeRef>Task_ManagerReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ScheduleMeeting</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ConductMeeting</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_FinalizeReview</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_HR" name="HR">
+        <bpmn:flowNodeRef>Task_ArchiveReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_ReviewComplete</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_ReviewCycle" name="Review Cycle Starts">
+      <bpmn:outgoing>Flow_Start_to_Self</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeCycle>R/P1Y</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_SelfAssessment" name="Complete Self-Assessment">
+      <bpmn:incoming>Flow_Start_to_Self</bpmn:incoming>
+      <bpmn:outgoing>Flow_Self_to_ManagerReview</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_ManagerReview" name="Review Self-Assessment and Provide Feedback">
+      <bpmn:incoming>Flow_Self_to_ManagerReview</bpmn:incoming>
+      <bpmn:outgoing>Flow_ManagerReview_to_Schedule</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_ScheduleMeeting" name="Schedule Review Meeting">
+      <bpmn:incoming>Flow_ManagerReview_to_Schedule</bpmn:incoming>
+      <bpmn:outgoing>Flow_Schedule_to_Event</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="Event_MeetingScheduled" name="Meeting Scheduled">
+        <bpmn:incoming>Flow_Schedule_to_Event</bpmn:incoming>
+        <bpmn:outgoing>Flow_Event_to_ConductMeeting</bpmn:outgoing>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="Task_ConductMeeting" name="Conduct Review Meeting">
+      <bpmn:incoming>Flow_Event_to_ConductMeeting</bpmn:incoming>
+      <bpmn:outgoing>Flow_Meeting_to_Finalize</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_FinalizeReview" name="Finalize Performance Review">
+      <bpmn:incoming>Flow_Meeting_to_Finalize</bpmn:incoming>
+      <bpmn:outgoing>Flow_Finalize_to_Archive</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_ArchiveReview" name="Archive Review Document">
+      <bpmn:incoming>Flow_Finalize_to_Archive</bpmn:incoming>
+      <bpmn:outgoing>Flow_Archive_to_End</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_ReviewComplete" name="Review Complete">
+      <bpmn:incoming>Flow_Archive_to_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_Start_to_Self" sourceRef="StartEvent_ReviewCycle" targetRef="Task_SelfAssessment" />
+    <bpmn:sequenceFlow id="Flow_Self_to_ManagerReview" sourceRef="Task_SelfAssessment" targetRef="Task_ManagerReview" />
+    <bpmn:sequenceFlow id="Flow_ManagerReview_to_Schedule" sourceRef="Task_ManagerReview" targetRef="Task_ScheduleMeeting" />
+    <bpmn:sequenceFlow id="Flow_Schedule_to_Event" sourceRef="Task_ScheduleMeeting" targetRef="Event_MeetingScheduled" />
+    <bpmn:sequenceFlow id="Flow_Event_to_ConductMeeting" sourceRef="Event_MeetingScheduled" targetRef="Task_ConductMeeting" />
+    <bpmn:sequenceFlow id="Flow_Meeting_to_Finalize" sourceRef="Task_ConductMeeting" targetRef="Task_FinalizeReview" />
+    <bpmn:sequenceFlow id="Flow_Finalize_to_Archive" sourceRef="Task_FinalizeReview" targetRef="Task_ArchiveReview" />
+    <bpmn:sequenceFlow id="Flow_Archive_to_End" sourceRef="Task_ArchiveReview" targetRef="EndEvent_ReviewComplete" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_PerfReview">
+    <bpmndi:BPMNPlane id="BPMNPlane_PerfReview" bpmnElement="Collaboration_PerfReview">
+      <bpmndi:BPMNShape id="Shape_Participant_Review" bpmnElement="Participant_Review" isHorizontal="true">
+        <dc:Bounds x="100" y="50" width="1200" height="600" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Employee" bpmnElement="Lane_Employee" isHorizontal="true">
+        <dc:Bounds x="130" y="50" width="1170" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Manager" bpmnElement="Lane_Manager" isHorizontal="true">
+        <dc:Bounds x="130" y="250" width="1170" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_HR" bpmnElement="Lane_HR" isHorizontal="true">
+        <dc:Bounds x="130" y="450" width="1170" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_StartEvent_ReviewCycle" bpmnElement="StartEvent_ReviewCycle">
+        <dc:Bounds x="180" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SelfAssessment" bpmnElement="Task_SelfAssessment">
+        <dc:Bounds x="260" y="110" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ManagerReview" bpmnElement="Task_ManagerReview">
+        <dc:Bounds x="420" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ScheduleMeeting" bpmnElement="Task_ScheduleMeeting">
+        <dc:Bounds x="580" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Event_MeetingScheduled" bpmnElement="Event_MeetingScheduled">
+        <dc:Bounds x="740" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ConductMeeting" bpmnElement="Task_ConductMeeting">
+        <dc:Bounds x="820" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_FinalizeReview" bpmnElement="Task_FinalizeReview">
+        <dc:Bounds x="980" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ArchiveReview" bpmnElement="Task_ArchiveReview">
+        <dc:Bounds x="1140" y="510" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_ReviewComplete" bpmnElement="EndEvent_ReviewComplete">
+        <dc:Bounds x="1300" y="532" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_Start_to_Self" bpmnElement="Flow_Start_to_Self">
+        <di:waypoint x="216" y="150" />
+        <di:waypoint x="260" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Self_to_ManagerReview" bpmnElement="Flow_Self_to_ManagerReview">
+        <di:waypoint x="320" y="190" />
+        <di:waypoint x="320" y="350" />
+        <di:waypoint x="420" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ManagerReview_to_Schedule" bpmnElement="Flow_ManagerReview_to_Schedule">
+        <di:waypoint x="540" y="350" />
+        <di:waypoint x="580" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Schedule_to_Event" bpmnElement="Flow_Schedule_to_Event">
+        <di:waypoint x="640" y="310" />
+        <di:waypoint x="640" y="150" />
+        <di:waypoint x="740" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Event_to_ConductMeeting" bpmnElement="Flow_Event_to_ConductMeeting">
+        <di:waypoint x="776" y="150" />
+        <di:waypoint x="880" y="150" />
+        <di:waypoint x="880" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Meeting_to_Finalize" bpmnElement="Flow_Meeting_to_Finalize">
+        <di:waypoint x="940" y="350" />
+        <di:waypoint x="980" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Finalize_to_Archive" bpmnElement="Flow_Finalize_to_Archive">
+        <di:waypoint x="1040" y="390" />
+        <di:waypoint x="1040" y="550" />
+        <di:waypoint x="1140" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Archive_to_End" bpmnElement="Flow_Archive_to_End">
+        <di:waypoint x="1260" y="550" />
+        <di:waypoint x="1300" y="550" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,332 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ns0:definitions xmlns:ns0="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns1="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:ns2="http://www.omg.org/spec/DD/20100524/DC" xmlns:ns3="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_NHS_AE_Triage_Streaming" targetNamespace="http://example.com/schema/bpmn">
+  <ns0:process id="Process_NHS_AE_Triage_Streaming" name="Clinical Triage and Streaming" isExecutable="false">
+    <ns0:laneSet id="LaneSet_Triage">
+      <ns0:lane id="Lane_Patient_TS" name="Patient">
+        <ns0:flowNodeRef>StartEvent_TS</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_CaptureComplaint</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_PainScore</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_ProvideInitialCare</ns0:flowNodeRef>
+        <ns0:flowNodeRef>EndEvent_TS</ns0:flowNodeRef>
+      </ns0:lane>
+      <ns0:lane id="Lane_TriageNurse_TS" name="Triage Nurse">
+        <ns0:flowNodeRef>Task_ReceiveFromRegistration</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_ConfirmIdentity</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_MeasureVitals</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_AllergyCheck</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_MedicationHistory</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_NEWS2Score</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_SepsisScreen</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_SuicideScreen</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_PregnancyScreen</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_InfectiousRisk</ns0:flowNodeRef>
+      </ns0:lane>
+      <ns0:lane id="Lane_ClinicalLead_TS" name="Clinical Decision Maker">
+        <ns0:flowNodeRef>Gateway_HighAcuity</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_ActivateResus</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_ReturnAfterResus</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_IsolationNeeded</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_Streaming</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_StreamResus</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_StreamMajors</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_StreamMinors</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_StreamPaediatrics</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Task_StreamMentalHealth</ns0:flowNodeRef>
+        <ns0:flowNodeRef>Gateway_StreamingMerge</ns0:flowNodeRef>
+      </ns0:lane>
+      <ns0:lane id="Lane_Infection_TS" name="Infection Control / Isolation">
+        <ns0:flowNodeRef>Task_AssignIsolation</ns0:flowNodeRef>
+      </ns0:lane>
+    </ns0:laneSet>
+    <ns0:startEvent id="StartEvent_TS" name="Registered and waiting for triage" />
+    <ns0:userTask id="Task_ReceiveFromRegistration" name="Receive handover from reception" />
+    <ns0:userTask id="Task_ConfirmIdentity" name="Confirm identity &amp; location" />
+    <ns0:userTask id="Task_CaptureComplaint" name="Capture presenting complaint" />
+    <ns0:userTask id="Task_MeasureVitals" name="Record vital signs" />
+    <ns0:userTask id="Task_PainScore" name="Pain and comfort score" />
+    <ns0:userTask id="Task_AllergyCheck" name="Allergy and alerts check" />
+    <ns0:userTask id="Task_MedicationHistory" name="Medication and anticoagulant history" />
+    <ns0:userTask id="Task_NEWS2Score" name="NEWS2 / PEWS scoring" />
+    <ns0:userTask id="Task_SepsisScreen" name="Sepsis &amp; time-critical screen" />
+    <ns0:userTask id="Task_SuicideScreen" name="Mental health / suicide risk screen" />
+    <ns0:userTask id="Task_PregnancyScreen" name="Pregnancy / safeguarding check" />
+    <ns0:exclusiveGateway id="Gateway_HighAcuity" name="Immediate resus or high acuity?" />
+    <ns0:userTask id="Task_ActivateResus" name="Activate resus &amp; crash call" />
+    <ns0:exclusiveGateway id="Gateway_ReturnAfterResus" name="Return to streaming" />
+    <ns0:userTask id="Task_InfectiousRisk" name="Infectious disease risk" />
+    <ns0:exclusiveGateway id="Gateway_IsolationNeeded" name="Isolation required?" />
+    <ns0:userTask id="Task_AssignIsolation" name="Assign isolation cubicle" />
+    <ns0:userTask id="Task_ProvideInitialCare" name="Provide initial interventions" />
+    <ns0:exclusiveGateway id="Gateway_Streaming" name="Streaming destination?" />
+    <ns0:userTask id="Task_StreamResus" name="Stream to resus" />
+    <ns0:userTask id="Task_StreamMajors" name="Stream to majors" />
+    <ns0:userTask id="Task_StreamMinors" name="Stream to minors / UTC" />
+    <ns0:userTask id="Task_StreamPaediatrics" name="Stream to paediatrics" />
+    <ns0:userTask id="Task_StreamMentalHealth" name="Stream to mental health team" />
+    <ns0:exclusiveGateway id="Gateway_StreamingMerge" name="Ready for next phase" />
+    <ns0:endEvent id="EndEvent_TS" name="Handover to clinical area" />
+    <ns0:sequenceFlow id="Flow_TS_StartToReceive" sourceRef="StartEvent_TS" targetRef="Task_ReceiveFromRegistration" />
+    <ns0:sequenceFlow id="Flow_TS_ReceiveToConfirm" sourceRef="Task_ReceiveFromRegistration" targetRef="Task_ConfirmIdentity" />
+    <ns0:sequenceFlow id="Flow_TS_ConfirmToComplaint" sourceRef="Task_ConfirmIdentity" targetRef="Task_CaptureComplaint" />
+    <ns0:sequenceFlow id="Flow_TS_ComplaintToVitals" sourceRef="Task_CaptureComplaint" targetRef="Task_MeasureVitals" />
+    <ns0:sequenceFlow id="Flow_TS_VitalsToPain" sourceRef="Task_MeasureVitals" targetRef="Task_PainScore" />
+    <ns0:sequenceFlow id="Flow_TS_PainToAllergy" sourceRef="Task_PainScore" targetRef="Task_AllergyCheck" />
+    <ns0:sequenceFlow id="Flow_TS_AllergyToMeds" sourceRef="Task_AllergyCheck" targetRef="Task_MedicationHistory" />
+    <ns0:sequenceFlow id="Flow_TS_MedsToNEWS" sourceRef="Task_MedicationHistory" targetRef="Task_NEWS2Score" />
+    <ns0:sequenceFlow id="Flow_TS_NEWSToSepsis" sourceRef="Task_NEWS2Score" targetRef="Task_SepsisScreen" />
+    <ns0:sequenceFlow id="Flow_TS_SepsisToSuicide" sourceRef="Task_SepsisScreen" targetRef="Task_SuicideScreen" />
+    <ns0:sequenceFlow id="Flow_TS_SuicideToPregnancy" sourceRef="Task_SuicideScreen" targetRef="Task_PregnancyScreen" />
+    <ns0:sequenceFlow id="Flow_TS_PregnancyToGateway" sourceRef="Task_PregnancyScreen" targetRef="Gateway_HighAcuity" />
+    <ns0:sequenceFlow id="Flow_TS_GatewayYes" sourceRef="Gateway_HighAcuity" targetRef="Task_ActivateResus" name="Yes" />
+    <ns0:sequenceFlow id="Flow_TS_GatewayNo" sourceRef="Gateway_HighAcuity" targetRef="Gateway_ReturnAfterResus" name="No" />
+    <ns0:sequenceFlow id="Flow_TS_ResusToReturn" sourceRef="Task_ActivateResus" targetRef="Gateway_ReturnAfterResus" />
+    <ns0:sequenceFlow id="Flow_TS_ReturnToInfectious" sourceRef="Gateway_ReturnAfterResus" targetRef="Task_InfectiousRisk" />
+    <ns0:sequenceFlow id="Flow_TS_InfectiousToIsolation" sourceRef="Task_InfectiousRisk" targetRef="Gateway_IsolationNeeded" />
+    <ns0:sequenceFlow id="Flow_TS_IsolationYes" sourceRef="Gateway_IsolationNeeded" targetRef="Task_AssignIsolation" name="Yes" />
+    <ns0:sequenceFlow id="Flow_TS_IsolationNo" sourceRef="Gateway_IsolationNeeded" targetRef="Task_ProvideInitialCare" name="No" />
+    <ns0:sequenceFlow id="Flow_TS_IsolationToCare" sourceRef="Task_AssignIsolation" targetRef="Task_ProvideInitialCare" />
+    <ns0:sequenceFlow id="Flow_TS_CareToStreaming" sourceRef="Task_ProvideInitialCare" targetRef="Gateway_Streaming" />
+    <ns0:sequenceFlow id="Flow_TS_StreamResus" sourceRef="Gateway_Streaming" targetRef="Task_StreamResus" name="Resus" />
+    <ns0:sequenceFlow id="Flow_TS_StreamMajors" sourceRef="Gateway_Streaming" targetRef="Task_StreamMajors" name="Majors" />
+    <ns0:sequenceFlow id="Flow_TS_StreamMinors" sourceRef="Gateway_Streaming" targetRef="Task_StreamMinors" name="Minors/UTC" />
+    <ns0:sequenceFlow id="Flow_TS_StreamPaeds" sourceRef="Gateway_Streaming" targetRef="Task_StreamPaediatrics" name="Paediatrics" />
+    <ns0:sequenceFlow id="Flow_TS_StreamMH" sourceRef="Gateway_Streaming" targetRef="Task_StreamMentalHealth" name="Mental health" />
+    <ns0:sequenceFlow id="Flow_TS_ResusToMerge" sourceRef="Task_StreamResus" targetRef="Gateway_StreamingMerge" />
+    <ns0:sequenceFlow id="Flow_TS_MajorsToMerge" sourceRef="Task_StreamMajors" targetRef="Gateway_StreamingMerge" />
+    <ns0:sequenceFlow id="Flow_TS_MinorsToMerge" sourceRef="Task_StreamMinors" targetRef="Gateway_StreamingMerge" />
+    <ns0:sequenceFlow id="Flow_TS_PaedsToMerge" sourceRef="Task_StreamPaediatrics" targetRef="Gateway_StreamingMerge" />
+    <ns0:sequenceFlow id="Flow_TS_MHToMerge" sourceRef="Task_StreamMentalHealth" targetRef="Gateway_StreamingMerge" />
+    <ns0:sequenceFlow id="Flow_TS_MergeToEnd" sourceRef="Gateway_StreamingMerge" targetRef="EndEvent_TS" />
+  </ns0:process>
+  <ns0:collaboration id="Collab_NHS_AE_Triage_Streaming" name="Triage and Streaming Collaboration">
+    <ns0:participant id="Participant_NHS_AE_Triage" name="NHS A&amp;E" processRef="Process_NHS_AE_Triage_Streaming" />
+  </ns0:collaboration>
+  <ns1:BPMNDiagram id="BPMNDiagram_Triage">
+    <ns1:BPMNPlane id="BPMNPlane_Triage" bpmnElement="Collab_NHS_AE_Triage_Streaming">
+      <ns1:BPMNShape id="Shape_Participant_Triage" bpmnElement="Participant_NHS_AE_Triage" isHorizontal="true">
+        <ns2:Bounds x="40" y="80" width="4400" height="620" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Patient_TS" bpmnElement="Lane_Patient_TS" isHorizontal="true">
+        <ns2:Bounds x="40" y="80" width="4400" height="130" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_TriageNurse_TS" bpmnElement="Lane_TriageNurse_TS" isHorizontal="true">
+        <ns2:Bounds x="40" y="210" width="4400" height="170" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_ClinicalLead_TS" bpmnElement="Lane_ClinicalLead_TS" isHorizontal="true">
+        <ns2:Bounds x="40" y="380" width="4400" height="200" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Lane_Infection_TS" bpmnElement="Lane_Infection_TS" isHorizontal="true">
+        <ns2:Bounds x="40" y="580" width="4400" height="120" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_StartEvent_TS" bpmnElement="StartEvent_TS">
+        <ns2:Bounds x="80" y="120" width="36" height="36" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_ReceiveFromRegistration" bpmnElement="Task_ReceiveFromRegistration">
+        <ns2:Bounds x="150" y="250" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_ConfirmIdentity" bpmnElement="Task_ConfirmIdentity">
+        <ns2:Bounds x="370" y="250" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_CaptureComplaint" bpmnElement="Task_CaptureComplaint">
+        <ns2:Bounds x="580" y="110" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_MeasureVitals" bpmnElement="Task_MeasureVitals">
+        <ns2:Bounds x="820" y="250" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_PainScore" bpmnElement="Task_PainScore">
+        <ns2:Bounds x="1060" y="110" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_AllergyCheck" bpmnElement="Task_AllergyCheck">
+        <ns2:Bounds x="1300" y="250" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_MedicationHistory" bpmnElement="Task_MedicationHistory">
+        <ns2:Bounds x="1540" y="250" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_NEWS2Score" bpmnElement="Task_NEWS2Score">
+        <ns2:Bounds x="1780" y="250" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_SepsisScreen" bpmnElement="Task_SepsisScreen">
+        <ns2:Bounds x="2020" y="250" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_SuicideScreen" bpmnElement="Task_SuicideScreen">
+        <ns2:Bounds x="2260" y="250" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_PregnancyScreen" bpmnElement="Task_PregnancyScreen">
+        <ns2:Bounds x="2500" y="430" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_HighAcuity" bpmnElement="Gateway_HighAcuity" isMarkerVisible="true">
+        <ns2:Bounds x="2720" y="520" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_ActivateResus" bpmnElement="Task_ActivateResus">
+        <ns2:Bounds x="2820" y="520" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_ReturnAfterResus" bpmnElement="Gateway_ReturnAfterResus" isMarkerVisible="true">
+        <ns2:Bounds x="3000" y="520" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_InfectiousRisk" bpmnElement="Task_InfectiousRisk">
+        <ns2:Bounds x="3180" y="430" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_IsolationNeeded" bpmnElement="Gateway_IsolationNeeded" isMarkerVisible="true">
+        <ns2:Bounds x="3360" y="430" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_AssignIsolation" bpmnElement="Task_AssignIsolation">
+        <ns2:Bounds x="3540" y="600" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_ProvideInitialCare" bpmnElement="Task_ProvideInitialCare">
+        <ns2:Bounds x="3540" y="430" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_Streaming" bpmnElement="Gateway_Streaming" isMarkerVisible="true">
+        <ns2:Bounds x="3720" y="430" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_StreamResus" bpmnElement="Task_StreamResus">
+        <ns2:Bounds x="3900" y="430" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_StreamMajors" bpmnElement="Task_StreamMajors">
+        <ns2:Bounds x="3900" y="520" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_StreamMinors" bpmnElement="Task_StreamMinors">
+        <ns2:Bounds x="3900" y="610" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_StreamPaediatrics" bpmnElement="Task_StreamPaediatrics">
+        <ns2:Bounds x="3900" y="340" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Task_StreamMentalHealth" bpmnElement="Task_StreamMentalHealth">
+        <ns2:Bounds x="3900" y="250" width="120" height="80" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_Gateway_StreamingMerge" bpmnElement="Gateway_StreamingMerge" isMarkerVisible="true">
+        <ns2:Bounds x="4080" y="520" width="50" height="50" />
+      </ns1:BPMNShape>
+      <ns1:BPMNShape id="Shape_EndEvent_TS" bpmnElement="EndEvent_TS">
+        <ns2:Bounds x="4220" y="640" width="36" height="36" />
+      </ns1:BPMNShape>
+      <ns1:BPMNEdge id="Edge_Flow_TS_StartToReceive" bpmnElement="Flow_TS_StartToReceive">
+        <ns3:waypoint x="116" y="138" />
+        <ns3:waypoint x="150" y="285" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_ReceiveToConfirm" bpmnElement="Flow_TS_ReceiveToConfirm">
+        <ns3:waypoint x="270" y="285" />
+        <ns3:waypoint x="430" y="285" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_ConfirmToComplaint" bpmnElement="Flow_TS_ConfirmToComplaint">
+        <ns3:waypoint x="430" y="285" />
+        <ns3:waypoint x="640" y="150" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_ComplaintToVitals" bpmnElement="Flow_TS_ComplaintToVitals">
+        <ns3:waypoint x="700" y="150" />
+        <ns3:waypoint x="880" y="290" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_VitalsToPain" bpmnElement="Flow_TS_VitalsToPain">
+        <ns3:waypoint x="880" y="290" />
+        <ns3:waypoint x="1120" y="150" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_PainToAllergy" bpmnElement="Flow_TS_PainToAllergy">
+        <ns3:waypoint x="1120" y="150" />
+        <ns3:waypoint x="1360" y="290" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_AllergyToMeds" bpmnElement="Flow_TS_AllergyToMeds">
+        <ns3:waypoint x="1360" y="290" />
+        <ns3:waypoint x="1600" y="290" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_MedsToNEWS" bpmnElement="Flow_TS_MedsToNEWS">
+        <ns3:waypoint x="1600" y="290" />
+        <ns3:waypoint x="1840" y="290" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_NEWSToSepsis" bpmnElement="Flow_TS_NEWSToSepsis">
+        <ns3:waypoint x="1840" y="290" />
+        <ns3:waypoint x="2080" y="290" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_SepsisToSuicide" bpmnElement="Flow_TS_SepsisToSuicide">
+        <ns3:waypoint x="2080" y="290" />
+        <ns3:waypoint x="2320" y="290" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_SuicideToPregnancy" bpmnElement="Flow_TS_SuicideToPregnancy">
+        <ns3:waypoint x="2320" y="290" />
+        <ns3:waypoint x="2560" y="470" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_PregnancyToGateway" bpmnElement="Flow_TS_PregnancyToGateway">
+        <ns3:waypoint x="2560" y="470" />
+        <ns3:waypoint x="2745" y="545" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_GatewayYes" bpmnElement="Flow_TS_GatewayYes">
+        <ns3:waypoint x="2745" y="545" />
+        <ns3:waypoint x="2880" y="560" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_GatewayNo" bpmnElement="Flow_TS_GatewayNo">
+        <ns3:waypoint x="2745" y="545" />
+        <ns3:waypoint x="3025" y="545" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_ResusToReturn" bpmnElement="Flow_TS_ResusToReturn">
+        <ns3:waypoint x="3000" y="560" />
+        <ns3:waypoint x="3025" y="545" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_ReturnToInfectious" bpmnElement="Flow_TS_ReturnToInfectious">
+        <ns3:waypoint x="3050" y="545" />
+        <ns3:waypoint x="3240" y="470" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_InfectiousToIsolation" bpmnElement="Flow_TS_InfectiousToIsolation">
+        <ns3:waypoint x="3300" y="470" />
+        <ns3:waypoint x="3385" y="455" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_IsolationYes" bpmnElement="Flow_TS_IsolationYes">
+        <ns3:waypoint x="3410" y="455" />
+        <ns3:waypoint x="3600" y="640" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_IsolationNo" bpmnElement="Flow_TS_IsolationNo">
+        <ns3:waypoint x="3410" y="455" />
+        <ns3:waypoint x="3600" y="470" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_IsolationToCare" bpmnElement="Flow_TS_IsolationToCare">
+        <ns3:waypoint x="3660" y="640" />
+        <ns3:waypoint x="3660" y="470" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_CareToStreaming" bpmnElement="Flow_TS_CareToStreaming">
+        <ns3:waypoint x="3660" y="470" />
+        <ns3:waypoint x="3745" y="455" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_StreamResus" bpmnElement="Flow_TS_StreamResus">
+        <ns3:waypoint x="3745" y="455" />
+        <ns3:waypoint x="3960" y="470" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_StreamMajors" bpmnElement="Flow_TS_StreamMajors">
+        <ns3:waypoint x="3745" y="455" />
+        <ns3:waypoint x="3960" y="560" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_StreamMinors" bpmnElement="Flow_TS_StreamMinors">
+        <ns3:waypoint x="3745" y="455" />
+        <ns3:waypoint x="3960" y="650" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_StreamPaeds" bpmnElement="Flow_TS_StreamPaeds">
+        <ns3:waypoint x="3745" y="455" />
+        <ns3:waypoint x="3960" y="375" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_StreamMH" bpmnElement="Flow_TS_StreamMH">
+        <ns3:waypoint x="3745" y="455" />
+        <ns3:waypoint x="3960" y="285" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_ResusToMerge" bpmnElement="Flow_TS_ResusToMerge">
+        <ns3:waypoint x="4020" y="470" />
+        <ns3:waypoint x="4105" y="545" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_MajorsToMerge" bpmnElement="Flow_TS_MajorsToMerge">
+        <ns3:waypoint x="4020" y="560" />
+        <ns3:waypoint x="4105" y="545" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_MinorsToMerge" bpmnElement="Flow_TS_MinorsToMerge">
+        <ns3:waypoint x="4020" y="650" />
+        <ns3:waypoint x="4105" y="545" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_PaedsToMerge" bpmnElement="Flow_TS_PaedsToMerge">
+        <ns3:waypoint x="4020" y="375" />
+        <ns3:waypoint x="4105" y="545" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_MHToMerge" bpmnElement="Flow_TS_MHToMerge">
+        <ns3:waypoint x="4020" y="285" />
+        <ns3:waypoint x="4105" y="545" />
+      </ns1:BPMNEdge>
+      <ns1:BPMNEdge id="Edge_Flow_TS_MergeToEnd" bpmnElement="Flow_TS_MergeToEnd">
+        <ns3:waypoint x="4130" y="545" />
+        <ns3:waypoint x="4238" y="658" />
+      </ns1:BPMNEdge>
+    </ns1:BPMNPlane>
+  </ns1:BPMNDiagram>
+</ns0:definitions>

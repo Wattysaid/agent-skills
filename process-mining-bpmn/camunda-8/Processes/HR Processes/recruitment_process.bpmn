@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_Recruitment" targetNamespace="http://example.com/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.1">
+  <bpmn:collaboration id="Collaboration_Recruitment">
+    <bpmn:participant id="Participant_Recruitment" name="Recruitment Process" processRef="Process_Recruitment" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Recruitment" name="Recruitment" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Recruitment">
+      <bpmn:lane id="Lane_HiringManager" name="Hiring Manager">
+        <bpmn:flowNodeRef>Task_TechnicalInterview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_MakeDecision</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_HireDecision</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_NotHired</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_HR" name="HR">
+        <bpmn:flowNodeRef>StartEvent_PositionApproved</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PublishJobOpening</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ScreenCandidates</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Split_Interviews</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Join_Interviews</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SendOffer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Hired</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_HRInterview</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_PositionApproved" name="New Position Approved">
+      <bpmn:outgoing>Flow_Start_to_Publish</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_PublishJobOpening" name="Publish Job Opening">
+      <bpmn:incoming>Flow_Start_to_Publish</bpmn:incoming>
+      <bpmn:outgoing>Flow_Publish_to_Screen</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_ScreenCandidates" name="Screen Candidates">
+      <bpmn:incoming>Flow_Publish_to_Screen</bpmn:incoming>
+      <bpmn:outgoing>Flow_Screen_to_Split</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="Gateway_Split_Interviews">
+      <bpmn:incoming>Flow_Screen_to_Split</bpmn:incoming>
+      <bpmn:outgoing>Flow_Split_to_HRInterview</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Split_to_TechInterview</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="Task_TechnicalInterview" name="Conduct Technical Interview">
+      <bpmn:incoming>Flow_Split_to_TechInterview</bpmn:incoming>
+      <bpmn:outgoing>Flow_TechInterview_to_Join</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="Gateway_Join_Interviews">
+      <bpmn:incoming>Flow_HRInterview_to_Join</bpmn:incoming>
+      <bpmn:incoming>Flow_TechInterview_to_Join</bpmn:incoming>
+      <bpmn:outgoing>Flow_Join_to_Decision</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="Task_MakeDecision" name="Make Hiring Decision">
+      <bpmn:incoming>Flow_Join_to_Decision</bpmn:incoming>
+      <bpmn:outgoing>Flow_Decision_to_Gateway</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_SendOffer" name="Send Offer to Candidate">
+      <bpmn:incoming>Flow_Gateway_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_Offer_to_EndHired</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_Hired" name="Candidate Hired">
+      <bpmn:incoming>Flow_Offer_to_EndHired</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Task_HRInterview" name="Conduct HR Interview">
+      <bpmn:incoming>Flow_Split_to_HRInterview</bpmn:incoming>
+      <bpmn:outgoing>Flow_HRInterview_to_Join</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_HireDecision" name="Hire Candidate?">
+      <bpmn:incoming>Flow_Decision_to_Gateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_Gateway_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Gateway_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="EndEvent_NotHired" name="Candidate Not Hired">
+      <bpmn:incoming>Flow_Gateway_No</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_Start_to_Publish" sourceRef="StartEvent_PositionApproved" targetRef="Task_PublishJobOpening" />
+    <bpmn:sequenceFlow id="Flow_Publish_to_Screen" sourceRef="Task_PublishJobOpening" targetRef="Task_ScreenCandidates" />
+    <bpmn:sequenceFlow id="Flow_Screen_to_Split" sourceRef="Task_ScreenCandidates" targetRef="Gateway_Split_Interviews" />
+    <bpmn:sequenceFlow id="Flow_Split_to_HRInterview" sourceRef="Gateway_Split_Interviews" targetRef="Task_HRInterview" />
+    <bpmn:sequenceFlow id="Flow_Split_to_TechInterview" sourceRef="Gateway_Split_Interviews" targetRef="Task_TechnicalInterview" />
+    <bpmn:sequenceFlow id="Flow_TechInterview_to_Join" sourceRef="Task_TechnicalInterview" targetRef="Gateway_Join_Interviews" />
+    <bpmn:sequenceFlow id="Flow_HRInterview_to_Join" sourceRef="Task_HRInterview" targetRef="Gateway_Join_Interviews" />
+    <bpmn:sequenceFlow id="Flow_Join_to_Decision" sourceRef="Gateway_Join_Interviews" targetRef="Task_MakeDecision" />
+    <bpmn:sequenceFlow id="Flow_Decision_to_Gateway" sourceRef="Task_MakeDecision" targetRef="Gateway_HireDecision" />
+    <bpmn:sequenceFlow id="Flow_Gateway_Yes" name="Yes" sourceRef="Gateway_HireDecision" targetRef="Task_SendOffer" />
+    <bpmn:sequenceFlow id="Flow_Offer_to_EndHired" sourceRef="Task_SendOffer" targetRef="EndEvent_Hired" />
+    <bpmn:sequenceFlow id="Flow_Gateway_No" name="No" sourceRef="Gateway_HireDecision" targetRef="EndEvent_NotHired" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Recruitment">
+    <bpmndi:BPMNPlane id="BPMNPlane_Recruitment" bpmnElement="Collaboration_Recruitment">
+      <bpmndi:BPMNShape id="Shape_Participant_Recruitment" bpmnElement="Participant_Recruitment" isHorizontal="true">
+        <dc:Bounds x="160" y="50" width="1300" height="400" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_HiringManager" bpmnElement="Lane_HiringManager" isHorizontal="true">
+        <dc:Bounds x="190" y="250" width="1270" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_HR" bpmnElement="Lane_HR" isHorizontal="true">
+        <dc:Bounds x="190" y="50" width="1270" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_StartEvent_PositionApproved" bpmnElement="StartEvent_PositionApproved">
+        <dc:Bounds x="240" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="226" y="168" width="65" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PublishJobOpening" bpmnElement="Task_PublishJobOpening">
+        <dc:Bounds x="320" y="110" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ScreenCandidates" bpmnElement="Task_ScreenCandidates">
+        <dc:Bounds x="480" y="110" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Split_Interviews" bpmnElement="Gateway_Split_Interviews">
+        <dc:Bounds x="640" y="125" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_TechnicalInterview" bpmnElement="Task_TechnicalInterview">
+        <dc:Bounds x="730" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Join_Interviews" bpmnElement="Gateway_Join_Interviews">
+        <dc:Bounds x="890" y="125" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_MakeDecision" bpmnElement="Task_MakeDecision">
+        <dc:Bounds x="980" y="310" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SendOffer" bpmnElement="Task_SendOffer">
+        <dc:Bounds x="1230" y="80" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_Hired" bpmnElement="EndEvent_Hired">
+        <dc:Bounds x="1390" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1368" y="138" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_HRInterview" bpmnElement="Task_HRInterview">
+        <dc:Bounds x="730" y="110" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_HireDecision" bpmnElement="Gateway_HireDecision" isMarkerVisible="true">
+        <dc:Bounds x="1155" y="325" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1140" y="375" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_NotHired" bpmnElement="EndEvent_NotHired">
+        <dc:Bounds x="1292" y="332" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1274" y="368" width="72" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_Start_to_Publish" bpmnElement="Flow_Start_to_Publish">
+        <di:waypoint x="276" y="150" />
+        <di:waypoint x="320" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Publish_to_Screen" bpmnElement="Flow_Publish_to_Screen">
+        <di:waypoint x="440" y="150" />
+        <di:waypoint x="480" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Screen_to_Split" bpmnElement="Flow_Screen_to_Split">
+        <di:waypoint x="600" y="150" />
+        <di:waypoint x="640" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Split_to_HRInterview" bpmnElement="Flow_Split_to_HRInterview">
+        <di:waypoint x="690" y="150" />
+        <di:waypoint x="730" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Split_to_TechInterview" bpmnElement="Flow_Split_to_TechInterview">
+        <di:waypoint x="665" y="175" />
+        <di:waypoint x="665" y="350" />
+        <di:waypoint x="730" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_HRInterview_to_Join" bpmnElement="Flow_HRInterview_to_Join">
+        <di:waypoint x="850" y="150" />
+        <di:waypoint x="890" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_TechInterview_to_Join" bpmnElement="Flow_TechInterview_to_Join">
+        <di:waypoint x="850" y="350" />
+        <di:waypoint x="915" y="350" />
+        <di:waypoint x="915" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Join_to_Decision" bpmnElement="Flow_Join_to_Decision">
+        <di:waypoint x="940" y="150" />
+        <di:waypoint x="1040" y="150" />
+        <di:waypoint x="1040" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Decision_to_Gateway" bpmnElement="Flow_Decision_to_Gateway">
+        <di:waypoint x="1100" y="350" />
+        <di:waypoint x="1155" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Gateway_Yes" bpmnElement="Flow_Gateway_Yes">
+        <di:waypoint x="1180" y="325" />
+        <di:waypoint x="1180" y="113" />
+        <di:waypoint x="1230" y="113" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1154" y="201" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Gateway_No" bpmnElement="Flow_Gateway_No">
+        <di:waypoint x="1205" y="350" />
+        <di:waypoint x="1292" y="350" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1213" y="328" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Offer_to_EndHired" bpmnElement="Flow_Offer_to_EndHired">
+        <di:waypoint x="1350" y="120" />
+        <di:waypoint x="1390" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

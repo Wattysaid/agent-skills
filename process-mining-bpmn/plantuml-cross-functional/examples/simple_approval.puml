@@ -1,0 +1,13 @@
+@startuml
+|Requester|
+start
+:Submit;
+|Approver|
+:Review;
+if (Approved?) then (yes)
+  :Approve;
+else (no)
+  :Reject;
+endif
+stop
+@enduml

@@ -1,0 +1,30 @@
+{
+  "bpmn:process": {
+    "required": [
+      "id",
+      "isExecutable"
+    ],
+    "children": [
+      "bpmn:startEvent",
+      "bpmn:endEvent",
+      "bpmn:task",
+      "bpmn:sequenceFlow",
+      "bpmn:exclusiveGateway",
+      "bpmn:parallelGateway",
+      "bpmn:subProcess",
+      "bpmn:laneSet"
+    ]
+  },
+  "bpmn:sequenceFlow": {
+    "required": [
+      "id",
+      "sourceRef",
+      "targetRef"
+    ]
+  },
+  "bpmn:laneSet": {
+    "children": [
+      "bpmn:lane"
+    ]
+  }
+}

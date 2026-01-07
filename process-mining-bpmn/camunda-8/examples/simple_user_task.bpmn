@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+  id="Definitions_Simple_User_Task" targetNamespace="http://example.camunda.com">
+
+  <bpmn:collaboration id="Collaboration_Simple_User_Task">
+    <bpmn:participant id="Participant_Main" name="Simple Process" processRef="Process_Simple"/>
+  </bpmn:collaboration>
+
+  <bpmn:process id="Process_Simple" name="Simple Process" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_Main">
+      <bpmn:lane id="Lane_Default" name="Owner">
+        <bpmn:flowNodeRef>StartEvent_Start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_Form</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_End</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="StartEvent_Start" name="Start"/>
+    <bpmn:userTask id="UserTask_Form" name="Complete Form"/>
+    <bpmn:endEvent id="EndEvent_End" name="End"/>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_Start" targetRef="UserTask_Form"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="UserTask_Form" targetRef="EndEvent_End"/>
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Simple_User_Task">
+    <bpmndi:BPMNPlane id="BPMNPlane_Simple_User_Task" bpmnElement="Collaboration_Simple_User_Task">
+      <bpmndi:BPMNShape id="Shape_Participant_Main" bpmnElement="Participant_Main" isHorizontal="true">
+        <dc:Bounds x="40" y="120" width="400" height="200"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Default" bpmnElement="Lane_Default" isHorizontal="true">
+        <dc:Bounds x="70" y="120" width="370" height="200"/>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_StartEvent_Start" bpmnElement="StartEvent_Start">
+        <dc:Bounds x="110" y="200" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_UserTask_Form" bpmnElement="UserTask_Form">
+        <dc:Bounds x="190" y="180" width="120" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_End" bpmnElement="EndEvent_End">
+        <dc:Bounds x="340" y="200" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Edge_Flow_1" bpmnElement="Flow_1">
+        <di:waypoint x="146" y="218"/>
+        <di:waypoint x="190" y="220"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_2" bpmnElement="Flow_2">
+        <di:waypoint x="310" y="220"/>
+        <di:waypoint x="340" y="218"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

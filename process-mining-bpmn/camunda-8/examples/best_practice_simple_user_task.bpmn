@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Defs1" targetNamespace="http://best.practice/examples" exporter="Camunda Modeler" exporterVersion="5.40.1">
+  <bpmn:collaboration id="Collab_SimpleUserTask">
+    <bpmn:participant id="Participant_Simple" name="Simple User Task" processRef="simpleUserTask" />
+  </bpmn:collaboration>
+  <bpmn:process id="simpleUserTask" name="Simple User Task" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_Simple">
+      <bpmn:lane id="Lane_Owner" name="Owner">
+        <bpmn:flowNodeRef>enterData</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:userTask id="enterData" name="Enter Data">
+      <bpmn:incoming>Flow_0ubd5g3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1g71ivq</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="start" name="Start">
+      <bpmn:outgoing>Flow_0ubd5g3</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="end" name="End">
+      <bpmn:incoming>Flow_1g71ivq</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ubd5g3" sourceRef="start" targetRef="enterData" />
+    <bpmn:sequenceFlow id="Flow_1g71ivq" sourceRef="enterData" targetRef="end" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Simple">
+    <bpmndi:BPMNPlane id="BPMNPlane_Simple" bpmnElement="Collab_SimpleUserTask">
+      <bpmndi:BPMNShape id="Shape_Participant_Simple" bpmnElement="Participant_Simple" isHorizontal="true">
+        <dc:Bounds x="160" y="120" width="420" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_Owner" bpmnElement="Lane_Owner" isHorizontal="true">
+        <dc:Bounds x="190" y="120" width="390" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_enterData" bpmnElement="enterData">
+        <dc:Bounds x="330" y="178" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_start" bpmnElement="start">
+        <dc:Bounds x="252" y="200" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="258" y="236" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_end" bpmnElement="end">
+        <dc:Bounds x="502" y="200" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="510" y="236" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1g71ivq_di" bpmnElement="Flow_1g71ivq">
+        <di:waypoint x="450" y="218" />
+        <di:waypoint x="502" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ubd5g3_di" bpmnElement="Flow_0ubd5g3">
+        <di:waypoint x="288" y="218" />
+        <di:waypoint x="330" y="218" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
