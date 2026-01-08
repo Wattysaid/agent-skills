@@ -1,6 +1,6 @@
 ---
-name: process-mining-bpmn
-description: Create BPMN process maps and analyses from transcripts, event logs, or connector data. Use when asked for process discovery/mining, variants/bottlenecks, or BPMN outputs (Camunda 7/8, Mermaid, PlantUML, or generic BPMN XML).
+name: process-architect-bpmn
+description: Create BPMN process maps and analyses from transcripts, event logs, or connector data. Use when asked for process discovery, variants/bottlenecks, or BPMN outputs (Camunda 7/8, Mermaid, PlantUML, or generic BPMN XML).
 ---
 
 # Process Mining BPMN Skill

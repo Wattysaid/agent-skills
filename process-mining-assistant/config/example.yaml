@@ -1,0 +1,11 @@
+file: path/to/event_log.csv
+format: csv
+case: CaseID
+activity: Activity
+timestamp: Timestamp
+output: output
+noise_threshold: 0.2
+dependency_threshold: 0.5
+frequency_threshold: 0.01
+start_activities: "Start"
+end_activities: "End"
