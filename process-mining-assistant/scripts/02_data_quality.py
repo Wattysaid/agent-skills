@@ -4,7 +4,7 @@
 import argparse
 import os
 
-from common import ensure_output_dir, exit_with_error, require_file, save_json, ExitCodes
+from common import ensure_notebook, ensure_output_dir, ensure_stage_dir, exit_with_error, require_file, save_json, write_stage_manifest, ExitCodes
 from process_mining_steps import load_csv_dataframe, run_data_quality_checks
 
 
@@ -30,6 +30,7 @@ def parse_arguments() -> argparse.Namespace:
                         help="Disable masking detected sensitive columns.")
     parser.set_defaults(auto_mask_sensitive=True)
     parser.add_argument("--sensitive-column-patterns", help="Comma-separated patterns for sensitive columns.")
+    parser.add_argument("--notebook-revision", default="R1.00", help="Notebook revision label.")
     return parser.parse_args()
 
 
@@ -38,12 +39,44 @@ def main() -> None:
     try:
         require_file(args.file)
         ensure_output_dir(args.output)
+        stage_dir = ensure_stage_dir(args.output, "stage_02_data_quality")
         df = load_csv_dataframe(args.file, args.case, args.activity, args.timestamp)
         df, quality, recommendations = run_data_quality_checks(df, vars(args))
-        df.to_csv(os.path.join(args.output, "cleaned_log.csv"), index=False)
-        save_json(quality, os.path.join(args.output, "data_quality.json"))
+        cleaned_path = os.path.join(stage_dir, "cleaned_log.csv")
+        df.to_csv(cleaned_path, index=False)
+        quality_path = os.path.join(stage_dir, "data_quality.json")
+        save_json(quality, quality_path)
         if recommendations:
-            save_json(recommendations, os.path.join(args.output, "data_quality_recommendations.json"))
+            save_json(recommendations, os.path.join(stage_dir, "data_quality_recommendations.json"))
+        notebook_path = ensure_notebook(
+            args.output,
+            args.notebook_revision,
+            "02_data_quality.ipynb",
+            "Data Quality Assessment",
+            context_lines=[
+                "",
+                f"- Input: {args.file}",
+                f"- Cleaned rows: {len(df)}",
+            ],
+            code_lines=[
+                "import pandas as pd",
+                f"df = pd.read_csv(r\"{cleaned_path}\")",
+                "df.describe(include='all').head()",
+            ],
+        )
+        artifacts = {
+            "cleaned_log_csv": cleaned_path,
+            "data_quality_json": quality_path,
+        }
+        if recommendations:
+            artifacts["data_quality_recommendations_json"] = os.path.join(stage_dir, "data_quality_recommendations.json")
+        write_stage_manifest(
+            stage_dir,
+            vars(args),
+            artifacts,
+            args.notebook_revision,
+            notebook_path=notebook_path,
+        )
     except ValueError as exc:
         message = str(exc)
         if "Timestamp parse failure" in message:

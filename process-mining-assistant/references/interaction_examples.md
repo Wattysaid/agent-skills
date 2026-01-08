@@ -179,3 +179,16 @@ Impact: determines whether the report records choices and rationale."
 - Do not request all option numbers in a single reply.
 - Do not proceed to mining until data quality and filtering choices are resolved.
 - Do not mask or drop columns without an explicit user choice.
+
+## Between Phases: Notebook Review Gate
+
+### Situation M: User may have edited the stage notebook
+Context: The previous stage produced a notebook and the user could have edited it.
+
+Ask:
+"Before we proceed, I checked the stage notebook and it looks like it was updated after the last run.
+Complication: if we skip these edits, the next stage may not reflect your changes.
+Options (preferred marked):
+1. I will re-load the notebook changes and continue (preferred).
+2. I will re-run the previous stage using the updated notebook as the source of truth.
+Impact: option 1 is faster; option 2 ensures outputs are regenerated from your edits."

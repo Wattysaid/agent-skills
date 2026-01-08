@@ -18,3 +18,5 @@ impute_missing_timestamps: false
 timestamp_impute_strategy: median
 auto_mask_sensitive: true
 sensitive_column_patterns: "name,email,phone,ssn,address,user,customer,patient,employee,resource"
+generate_notebooks: true
+notebook_revision: "R1.00"

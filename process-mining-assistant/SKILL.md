@@ -1,78 +1,318 @@
 ---
 name: process-mining-assistant
-description: Perform an end‑to‑end process mining analysis via a command‑line tool. Use this skill when a user needs to load, clean and analyse event logs, discover process models, evaluate conformance and performance, or generate reports using PM4Py outside of a notebook.
+description: Perform an end-to-end process mining analysis via a command-line workflow that progressively ingests, profiles, cleans, mines and reports on event logs using PM4Py. The workflow generates stage-based artefacts (including versioned notebooks) and pauses at decision checkpoints so the user can validate findings and choose how to proceed.
 ---
 
 ## Overview
 
-This skill equips you with a repeatable command‑line workflow for conducting comprehensive process mining analyses.  It is designed for business analysts and data scientists who need to run the entire process mining lifecycle—from data ingestion through discovery, conformance checking and performance analysis—without relying on a notebook environment.  The skill assumes familiarity with Python and the PM4Py library.
+This skill defines a **progressive, evidence-led** command-line workflow for end-to-end process mining using **PM4Py**.
+It is designed for business analysts and data scientists who want repeatable outputs with an audit trail, while still keeping a human-in-the-loop for key decisions.
 
-### Decision-First Interaction (Required)
+Core principles:
+- **Sequential execution:** ingest first, then decide. Decisions must be grounded in the dataset’s observed state.
+- **Decision checkpoints:** the assistant pauses at each phase that changes assumptions or outputs.
+- **Artefact-first validation:** each phase generates a dedicated output folder with logs, summaries, charts and a **versioned notebook** that the user can run and edit.
+- **Reproducibility:** every run produces a manifest of parameters and derived artefacts, and the assistant checks for user edits before progressing.
 
-For every phase that changes outputs or assumptions, ask the user to decide. Each question must include:
+## Decision-First Interaction (Required)
 
-- Ask: "Choose how we should handle X."
-- Complication: why the decision matters for correctness, privacy, or interpretability.
-- Options: 2-4 approaches, mark the preferred option.
-- Impact: what each choice changes in the outputs or artifacts.
+### Evidence-led sequencing (mandatory)
 
-Do not proceed until the user chooses. Use this framing for data loading, schema mapping, data quality thresholds, filtering, mining strategy, conformance methods, privacy controls, and reporting formats.
+It is not useful to ask about cleaning, thresholds, filtering or mining strategies before the data is loaded and profiled.
+The assistant must therefore follow this order:
 
-#### Step-by-Step Questioning (Required)
+1. **Validate environment**
+2. **Ingest and profile data**
+3. **Ask phase-specific questions based on findings**
+4. **Execute the phase with the user’s chosen options**
+5. **Write artefacts and a versioned notebook**
+6. **Check for notebook changes**
+7. **Proceed to the next phase**
 
-- Ask decisions by phase (schema, data quality, filtering, mining/conformance, reporting). You may ask multiple questions within a single phase if needed for accuracy.
+### Decision question format (mandatory)
+
+For each phase that changes outputs or assumptions, ask the user to decide. Each decision must include:
+
+- **Ask:** “Choose how we should handle X.”
+- **Complication:** why the decision matters for correctness, privacy, interpretability, or downstream metrics.
+- **Options:** 2 to 4 approaches, mark the preferred option.
+- **Impact:** what each choice changes in outputs or artefacts.
+
+Do not proceed until the user chooses.
+
+### Step-by-step questioning (mandatory)
+
+- Ask decisions **by phase** (mapping, data quality, cleaning and filtering, mining, conformance, performance, reporting).
 - Do not ask questions for future phases until the current phase is resolved.
 - After each user answer, proceed to the next relevant decision based on the data and prior choices.
-- Be verbose and decision-supportive: briefly restate the current context, why the decision matters, and what you will do next after their choice.
-- Prefer progressive disclosure: start with schema and resource mapping, then data quality, then filtering, then mining/conformance, then reporting.
-- Never ask the user to reply with all phases' option numbers in one message.
+- Prefer progressive disclosure: start with mapping, then data quality, then filtering, then mining, then conformance, then performance and organisational mining, then reporting.
+- Never ask the user to reply with all phases’ option numbers in one message.
 - When in doubt about pacing or sequencing, consult `references/interaction_examples.md` and follow the phase-based patterns.
 
-### Prerequisites & Dependencies
+## Prerequisites and Dependencies
 
-To use this skill effectively, ensure the following software is available on your system:
+Required:
+- **Python 3.8+**
+- **PM4Py**
+- **pandas**, **numpy**, **matplotlib**
 
-- **Python 3.8** or higher – The CLI script is implemented in Python.
-- **PM4Py** – Process mining library providing algorithms for discovery, conformance checking and performance analysis.
-- **pandas**, **numpy**, **matplotlib** – Standard Python data‑science packages used for data manipulation, numerical computations and visualisation.
-
-Install these packages via pip (or use the bundled `requirements.txt`):
-
+Install:
 ```bash
 pip install pm4py pandas numpy matplotlib
 ```
 
-For YAML configs, install PyYAML:
-
+For YAML configs:
 ```bash
 pip install pyyaml
 ```
 
-The skill includes `requirements.txt` with tested ranges for production use.
+The repository includes a `requirements.txt` with tested ranges for production use.
 
-The CLI workflow accepts event logs in either **XES** or **CSV** format and outputs reports, visualisations and diagnostic metrics.  It follows best practices for modularity and reproducibility, mirroring the notebook‑based process mining guidance but adapted for non‑interactive execution.  The tool automatically performs data preparation, exploratory analysis, model discovery, conformance checking and organisational mining, then summarises findings and recommends improvements.
+## Project Structure and Versioning
 
-## CLI Workflow
+### Inputs
 
-1. **Installation**
+- Event logs: **XES** or **CSV**
+- Optional config: **YAML** or **JSON**
 
-   - Ensure Python 3.8 or higher is available on the system.
-   - Install dependencies using pip:
-     ```bash
-     pip install pm4py pandas numpy matplotlib
-     ```
-   - Optional: set up a virtual environment to isolate packages.
+### Output directory conventions
 
-2. **Prepare the CLI Scripts**
+The assistant creates a project output directory with stage folders:
 
-   - Use the modular scripts in `scripts/` for each process mining phase.  The main orchestration entrypoint is `scripts/run_pipeline.py`, while `scripts/process_mining_cli.py` is kept as a backward‑compatible wrapper.
-   - Each script focuses on a single phase (ingest, EDA, discovery, conformance, performance, organisational mining, reporting) and shares common utilities in `scripts/common.py`.
-   - Use the PM4Py APIs to implement process discovery and conformance checking.  Leverage pandas for data manipulation and matplotlib for visualisations.
+```
+output/
+  manifest.json
+  run_log.txt
+  stage_00_validate_env/
+  stage_01_ingest_profile/
+  stage_02_data_quality/
+  stage_03_clean_filter/
+  stage_04_eda/
+  stage_05_discover/
+  stage_06_conformance/
+  stage_07_performance/
+  stage_08_org_mining/
+  stage_09_report/
+  notebooks/
+    R1.00/
+      01_ingest_profile.ipynb
+      02_data_quality.ipynb
+      ...
+```
 
-3. **Command‑Line Arguments**
+Version control rules:
+- Use **R1.00, R1.01, R1.02…** for notebooks and stage outputs.
+- Increment the revision when:
+  - the user changes a notebook, or
+  - parameters change, or
+  - the assistant re-runs a phase due to detected inconsistencies.
+- Every stage writes or updates `manifest.json` to record:
+  - inputs (file, format, columns, time window)
+  - chosen options (thresholds, filters, miners, privacy settings)
+  - artefact paths
+  - revision history (R-code, timestamp, reason)
 
-   - The pipeline accepts arguments for the input file path (`--file`), file type (`--format=csv` or `--format=xes`), case column, activity column and timestamp column names (for CSV), output directory (`--output`), and optional thresholds (e.g., `--noise-threshold` for miners).
-   - Include flags to enable or disable differential privacy mechanisms (e.g., `--anonymise` with parameters ε, k and p) when processing sensitive datasets.
+## CLI Workflow (Sequential)
+
+### Phase 0: Validate environment (fast gate)
+
+Run:
+- `scripts/00_validate_env.py`
+
+Outputs:
+- `output/stage_00_validate_env/validate_env.json`
+- `output/stage_00_validate_env/validate_env.log`
+
+Decision checkpoint:
+- If dependencies are missing or incompatible, stop and instruct remediation before continuing.
+
+### Phase 1: Ingest and profile (must happen before decisions)
+
+Run:
+- `scripts/01_ingest.py`
+
+Purpose:
+- Load the log (CSV or XES), normalise schema, parse timestamps, and compute an initial profile.
+
+Outputs:
+- `normalised_log.csv` (and/or normalised XES if needed)
+- `ingest_profile.json` (columns, inferred types, parse success, missingness, duplicates)
+- `sample_rows.csv` (small sample for inspection)
+- Notebook: `notebooks/Rx.xx/01_ingest_profile.ipynb`
+
+Decision checkpoint (asked after profiling):
+- **Schema mapping (CSV):** confirm case, activity, timestamp, and resource columns.
+- **Timestamp parsing:** confirm timezone and parse format if failures are detected.
+- **Sensitive columns:** confirm masking patterns if PII-like fields are detected.
+
+### Phase 2: Data quality assessment (after mapping)
+
+Run:
+- `scripts/03_data_quality.py` (or compatible file name, see Script Layout)
+
+Purpose:
+- Validate required fields, compute missingness and parse failure rates, identify duplicates, detect sensitive columns (if enabled), and propose thresholds based on observed rates.
+
+Outputs:
+- `data_quality.json`
+- `data_quality_recommendations.json`
+- Notebook: `notebooks/Rx.xx/02_data_quality.ipynb`
+
+Decision checkpoint:
+- Choose how to handle:
+  - missing values (drop vs impute vs flag)
+  - timestamp parse failures (drop vs repair vs manual mapping)
+  - duplicates (drop exact vs deduplicate by keys)
+  - masking/anonymisation (on/off and scope)
+
+### Phase 3: Cleaning and filtering (after data quality decisions)
+
+Run:
+- `scripts/04_clean_filter.py`
+
+Purpose:
+- Apply cleaning actions and optional filtering (start/end activities, time window, rare activities, variant thresholding).
+
+Outputs:
+- `filtered_log.csv`
+- `filter_summary.json`
+- Notebook: `notebooks/Rx.xx/03_clean_filter.ipynb`
+
+Decision checkpoint:
+- Choose:
+  - rare activity filtering (on/off and minimum frequency)
+  - start/end activity constraints
+  - time range restrictions
+  - variant frequency threshold
+
+### Phase 4: Exploratory analysis (EDA)
+
+Run:
+- `scripts/05_eda.py`
+
+Outputs (examples):
+- `summary_stats.json`
+- `variant_counts.csv`, `variant_pareto.png`
+- distribution charts (hour, weekday, month)
+- arrival and throughput time series
+- Notebook: `notebooks/Rx.xx/04_eda.ipynb`
+
+Decision checkpoint:
+- Confirm whether to continue with:
+  - full log vs filtered subset
+  - additional segmentation (time windows, case types, org unit)
+
+### Phase 5: Process discovery
+
+Run:
+- `scripts/06_discover.py`
+
+Purpose:
+- Discover models using inductive miner, heuristic miner, or an auto strategy.
+
+Outputs:
+- model visualisations (DFG/Petri net artefacts)
+- `model_metrics.csv`
+- Notebook: `notebooks/Rx.xx/05_discover.ipynb`
+
+Decision checkpoint:
+- Choose miner strategy (auto vs inductive vs heuristic vs both) and thresholds.
+
+### Phase 6: Conformance checking
+
+Run:
+- `scripts/07_conformance.py`
+
+Purpose:
+- Evaluate fitness and precision using token-based replay and or alignments.
+
+Outputs:
+- conformance metrics tables (CSV/JSON)
+- deviations summaries
+- Notebook: `notebooks/Rx.xx/06_conformance.ipynb`
+
+Decision checkpoint:
+- Choose method:
+  - token-based replay (faster, broad) [preferred]
+  - alignments (more precise, more costly)
+- Choose deviation reporting detail (executive vs technical).
+
+### Phase 7: Performance analysis
+
+Run:
+- `scripts/08_performance.py`
+
+Outputs:
+- `case_durations.csv`, distribution plots, SPC chart
+- `sojourn_times.csv`, chart
+- `performance_summary.json`
+- Notebook: `notebooks/Rx.xx/07_performance.ipynb`
+
+Decision checkpoint:
+- Choose performance lens:
+  - case duration focus
+  - activity sojourn focus
+  - both (recommended)
+
+### Phase 8: Organisational mining
+
+Run:
+- `scripts/09_org_mining.py`
+
+Outputs:
+- `handover_of_work.csv`
+- optional network artefacts
+- Notebook: `notebooks/Rx.xx/08_org_mining.ipynb`
+
+Decision checkpoint:
+- Choose whether to include resource-level analysis if privacy constraints apply.
+
+### Phase 9: Reporting and packaging
+
+Run:
+- `scripts/10_report.py`
+- optionally `scripts/export_artifacts.py`
+
+Outputs:
+- `process_mining_report.md`
+- `manifest.json` (finalised)
+- zipped artefacts package (optional)
+- Notebook: `notebooks/Rx.xx/09_report.ipynb` (optional)
+
+Decision checkpoint:
+- Choose reporting formats and audience:
+  - executive summary
+  - management deck inputs
+  - technical report
+  - data quality log
+- Choose whether to generate a zipped bundle of artefacts.
+
+## Notebook Change Detection (Required)
+
+Before proceeding from any phase to the next, the assistant must check whether the user has edited:
+- the phase notebook
+- config files
+- phase outputs that act as inputs to the next stage
+
+Rules:
+- If changes are detected, the assistant must:
+  - record the change in `manifest.json` (revision bump)
+  - re-run only the impacted phase(s)
+  - regenerate downstream artefacts if needed
+- The assistant must never silently continue using stale artefacts.
+
+Implementation guidance:
+- Track notebook modification timestamps and or hash checksums per file.
+- Store these in `manifest.json` and compare on every phase transition.
+
+## CLI Arguments
+
+The pipeline accepts arguments for:
+- input file path (`--file`), file type (`--format=csv` or `--format=xes`)
+- CSV schema mapping: `--case`, `--activity`, `--timestamp`
+- output directory (`--output`)
+- mining thresholds and filters (examples below)
+- config file (`--config`)
 
 | Argument | Default | Description |
 | --- | --- | --- |
@@ -100,38 +340,41 @@ The CLI workflow accepts event logs in either **XES** or **CSV** format and outp
 | `--miner-selection` | `auto` | Miner selection strategy |
 | `--variant-noise-threshold` | `0.01` | Variant frequency threshold |
 
-### Decision Checkpoints (Ask Before Running)
+Optional but recommended flags (implement if not present):
+- `--generate-notebooks` (default true)
+- `--notebook-dir` (default `output/notebooks`)
+- `--resume` (resume from latest successful stage)
+- `--strict-repro` (fail if artefacts and manifest do not match)
+- `--check-notebook-changes` (default true)
 
-- Input format and schema mapping (CSV column names, timestamp format).
-- Data quality thresholds (missing, parse failure, duplicates).
-- Privacy handling (masking/anonymization settings).
-- Filtering (start/end activities, rare activity filtering).
-- Miner selection (auto vs inductive vs heuristic vs both).
-- Conformance method preference (token replay vs alignments if applicable).
-- Output/reporting formats and audience (executive vs technical vs data quality log).
+## Script Layout
 
-### Script Layout
+The orchestration entry point is `scripts/run_pipeline.py`.
+A backwards compatible wrapper may be provided as `scripts/process_mining_cli.py`.
 
 | Script | Purpose |
 | --- | --- |
-| `scripts/00_validate_env.py` | Verify pm4py/pandas/numpy/matplotlib availability |
-| `scripts/01_ingest.py` | Load and normalize logs, export normalized CSV/XES |
-| `scripts/02_data_quality.py` | Data quality checks, schema validation, missing values |
-| `scripts/02_clean_filter.py` | Clean and filter logs (start/end activity filters) |
-| `scripts/03_eda.py` | Stats, distributions, variants, arrival metrics |
-| `scripts/04_discover.py` | Process discovery (inductive/heuristic miners) |
-| `scripts/05_conformance.py` | Conformance metrics and evaluation CSV |
-| `scripts/06_performance.py` | Case durations and sojourn analysis |
-| `scripts/07_org_mining.py` | Handover-of-work analysis |
-| `scripts/08_report.py` | Report generation from artifacts |
-| `scripts/run_pipeline.py` | Full end-to-end orchestration |
-| `scripts/export_artifacts.py` | Zip and index output artifacts |
-| `scripts/validate_schema.py` | Validate required CSV schema |
+| `scripts/00_validate_env.py` | Verify PM4Py, pandas, numpy, matplotlib availability |
+| `scripts/01_ingest.py` | Load and normalise logs, export normalised CSV/XES, produce ingest profile |
+| `scripts/02_validate_schema.py` | Validate required CSV schema and mappings (compatible alias: `scripts/validate_schema.py`) |
+| `scripts/03_data_quality.py` | Data quality checks, missingness, parse failures, duplicates, sensitive column detection |
+| `scripts/04_clean_filter.py` | Clean and filter logs (start/end activity filters, rare activity filtering) |
+| `scripts/05_eda.py` | Stats, distributions, variants, arrival metrics |
+| `scripts/06_discover.py` | Process discovery (inductive, heuristics, auto selection) |
+| `scripts/07_conformance.py` | Conformance metrics and evaluation artefacts |
+| `scripts/08_performance.py` | Case durations and sojourn analysis |
+| `scripts/09_org_mining.py` | Organisational mining and handover-of-work |
+| `scripts/10_report.py` | Report generation from artefacts |
+| `scripts/run_pipeline.py` | Full end-to-end orchestration with checkpoints |
+| `scripts/export_artifacts.py` | Zip and index output artefacts |
+| `scripts/common.py` | Shared utilities (logging, config, IO, paths) |
+| `scripts/process_mining_cli.py` | Wrapper for `run_pipeline.py` (optional) |
 
-### Configuration
+## Configuration
 
-The pipeline accepts a JSON or YAML configuration file via `--config`. Example:
+The pipeline accepts JSON or YAML via `--config`.
 
+Example YAML:
 ```yaml
 file: path/to/event_log.csv
 format: csv
@@ -155,164 +398,117 @@ auto_mask_sensitive: true
 sensitive_column_patterns: "name,email,phone,ssn,address,user,customer,patient,employee,resource"
 miner_selection: auto
 variant_noise_threshold: 0.01
+generate_notebooks: true
+notebook_revision: "R1.00"
 ```
 
-### Input Schema (CSV)
+## Input Schema (CSV)
 
-| Column | Required | Description |
-| --- | --- | --- |
-| Case ID | Yes | Case identifier (mapped to `case:concept:name`) |
-| Activity | Yes | Activity label (mapped to `concept:name`) |
-| Timestamp | Yes | Event timestamp (mapped to `time:timestamp`) |
-| org:resource | No | Resource performing the activity |
+Minimum required columns (after mapping):
+- Case identifier (mapped to `case:concept:name`)
+- Activity (mapped to `concept:name`)
+- Timestamp (mapped to `time:timestamp`)
 
-### Output Artifacts
+Optional:
+- `org:resource` for organisational mining
 
-| Artifact | Description |
-| --- | --- |
-| `summary_stats.json` | Basic counts, arrival metrics, start/end activities |
-| `variant_counts.csv` | Variant frequencies |
-| `variant_pareto.png` | Pareto chart of top variants |
-| `activity_distribution_hour.png` | Event distribution by hour |
-| `activity_distribution_weekday.png` | Event distribution by weekday |
-| `activity_distribution_month.png` | Event distribution by month |
-| `activity_frequency.csv` | Activity frequency table |
-| `event_throughput_timeseries.png` | Events per day over time |
-| `case_arrival_timeseries.png` | Case arrivals over time |
-| `model_metrics.csv` | Fitness/precision/generalisation/simplicity/soundness |
-| `case_durations.csv` | Case duration distribution data |
-| `case_duration_distribution.png` | Case duration histogram |
-| `case_duration_boxplot.png` | Case duration boxplot |
-| `case_duration_spc.png` | Case duration SPC chart |
-| `sojourn_times.csv` | Average sojourn time per activity |
-| `sojourn_time_chart.png` | Sojourn time bar chart |
-| `handover_of_work.csv` | Handover-of-work counts |
-| `process_mining_report.md` | Markdown report |
-| `manifest.json` | Parameters and artifact map |
-| `data_quality.json` | Missing rates, parse failures, duplicate rates |
-| `data_quality_recommendations.json` | Suggested thresholds and masks |
-| `performance_summary.json` | Performance recommendations |
+## Output Artefacts
 
-### Output Documentation Outline
+The pipeline produces artefacts per stage and a consolidated set in the root output directory.
 
-Use the artifacts generated by the pipeline to produce stakeholder‑specific deliverables. The outlines below map directly to the metrics, charts and logs created by the scripts.
+Common artefacts:
+- `summary_stats.json`
+- `variant_counts.csv`
+- `variant_pareto.png`
+- `activity_distribution_hour.png`
+- `activity_distribution_weekday.png`
+- `activity_distribution_month.png`
+- `activity_frequency.csv`
+- `event_throughput_timeseries.png`
+- `case_arrival_timeseries.png`
+- `model_metrics.csv`
+- `case_durations.csv`
+- `case_duration_distribution.png`
+- `case_duration_boxplot.png`
+- `case_duration_spc.png`
+- `sojourn_times.csv`
+- `sojourn_time_chart.png`
+- `handover_of_work.csv`
+- `process_mining_report.md`
+- `manifest.json`
+- `data_quality.json`
+- `data_quality_recommendations.json`
+- `performance_summary.json`
+- `notebooks/` (versioned notebooks by stage)
+
+## Output Documentation Outline
+
+Use generated artefacts to produce stakeholder-specific deliverables.
 
 **Executive Summary Report (Senior Leadership)**
-- Purpose & scope: business process analysed and project goals.
-- Key insights & KPIs: average case duration, throughput, compliance metrics, top variants.
-- Strategic implications: alignment with objectives, compliance risks, cost/efficiency impacts.
-- Recommended actions: priority initiatives with expected impact/effort.
-- Next steps: roadmap and follow‑up analyses.
+- Purpose and scope
+- Key insights and KPIs (durations, throughput, conformance)
+- Strategic implications (risk, cost, compliance)
+- Recommended actions (impact and effort)
+- Next steps
 
-**Management Slide Deck / Presentation (Managers)**
-- Introduction: objectives, scope, stakeholders.
-- Methodology overview: data sources, discovery, conformance, performance.
-- Data preparation & quality: cleaning steps, duplicates, missing values, timestamp handling.
-- Discovered models: inductive/heuristic visuals with main paths and bottlenecks.
-- Conformance & performance: fitness/precision charts, throughput, resource utilization.
-- Recommendations: improvement opportunities and cost/benefit notes.
-- Q&A points for discussion.
+**Management Slide Deck Inputs**
+- Objectives and scope
+- Method overview
+- Data quality and preparation
+- Discovered models and bottlenecks
+- Conformance and performance highlights
+- Recommendations and decisions required
 
-**Technical Analysis Report (Analysts / Process‑Mining Specialists)**
-- Data inventory: sources, fields, volumes, time window.
-- Data preparation procedures: column normalization, duplicate removal, missing/invalid handling, datetime conversion.
-- EDA: events/cases/activities/variants, activity frequency charts, case duration plots.
-- Process discovery: algorithms used, parameters, selection rationale.
-- Conformance checking: method, fitness/precision/generalization/simplicity/soundness.
-- Performance & organizational analysis: bottlenecks, sojourn times, handovers.
-- Limitations & data challenges: missingness, skew, privacy safeguards.
-- Appendices: config files, parameters, reproducibility notes.
+**Technical Analysis Report**
+- Data inventory and assumptions
+- Data preparation and transformations
+- EDA results and caveats
+- Discovery, parameters and selection rationale
+- Conformance evaluation and deviations
+- Performance and organisational analysis
+- Limitations, bias and privacy controls
+- Appendices (configs and manifest extracts)
 
-**Data Quality & Preparation Log**
-- Overview: purpose and link to analysis.
-- Data cleaning summary: issues found, methods used, assumptions.
-- Validation results: schema checks, parsing success, post‑cleaning metrics.
-- Privacy & compliance: masking/anonymization steps.
-- Recommendations for future data collection.
+**Data Quality and Preparation Log**
+- Issues found and how addressed
+- Thresholds chosen and rationale
+- Post-cleaning validation results
+- Privacy and compliance notes
+- Data collection recommendations
 
-**Conformance & Performance Dashboard (PDF / Interactive)**
-- Metrics overview: fitness, precision, throughput, sojourn by variant or time window.
-- Visualizations: DFG/Petri nets, variant Pareto, bottleneck heatmaps.
-- Drill‑downs: filters by case type, time range, org unit.
-- Export options: charts/tables for reporting.
+## Quick Start
 
-**Recommendations & Implementation Roadmap (Action Plan)**
-- Summary of findings: key issues and risks.
-- Prioritized recommendations: owners, benefits, resources, risks.
-- Timeline: quick wins, mid‑term redesign, long‑term initiatives.
-- Monitoring plan: KPIs and cadence for ongoing mining.
+Run the end-to-end pipeline:
+```bash
+python scripts/run_pipeline.py   --file assets/sample_log.csv   --format csv   --case CaseID --activity Activity --timestamp Timestamp   --output output
+```
 
-4. **Data Loading & Cleaning**
-
-   - **XES Logs**: load using `pm4py.read_xes(file_path)`.  PM4Py automatically recognises the case identifier, activity name and timestamp.
-   - **CSV Logs**: read with `pandas.read_csv(file_path)`.  Rename the case, activity and timestamp columns to PM4Py’s standard keys (`case:concept:name`, `concept:name`, `time:timestamp`).  Convert timestamps to datetime using `pm4py.objects.conversion.log.converter`.  Remove duplicate rows with `drop_duplicates()` and handle missing values through imputation or removal.  Document any assumptions about data types.
-   - **Data Quality Checks**: run `scripts/02_data_quality.py` or the pipeline’s built‑in checks to validate required columns, validate timestamp parsing, assess missing rates, drop or impute missing timestamps based on thresholds, and mask detected sensitive columns when enabled.
-   - **Filtering**: apply PM4Py’s filtering functions (`filter_start_activities`, `filter_end_activities`, `filter_event_attribute_values`, `filter_trace_attribute_values`, `filter_variants`, `filter_time_range`) to remove noise and outliers.  Provide optional CLI flags for setting frequency thresholds.
-   - **Privacy**: if the user enables anonymisation, apply control‑flow anonymisation (e.g., SaCoFa) and contextual anonymisation (PRIPEL) with the specified ε, k and p values.
-
-5. **Exploratory Data Analysis (EDA)**
-
-   - **Statistics**: compute the number of events, cases and unique variants via `pm4py.get_variants(log)`.  Save these metrics to a summary report.
-   - **Distributions**: plot activity frequency over time (hour, day, month) and case throughput times using histograms or boxplots.  Use matplotlib to create charts and save them to the output directory.
-   - **Variants**: calculate variant counts and generate a Pareto chart showing the top variants and their percentage of total cases.
-   - **Start/End Activities**: identify start and end activities using `pm4py.get_start_activities(log)` and `pm4py.get_end_activities(log)`.
-   - **Additional Metrics**: compute events per case, case arrival rates and inter‑arrival times to reveal process dynamics.
-
-6. **Process Discovery**
-
-   - **Inductive Miner**: run `pm4py.discover_petri_net_inductive(log, noise_threshold=t)` where *t* is a user‑defined noise threshold.  Save the resulting Petri net image.
-   - **Heuristic Miner**: run `pm4py.discover_petri_net_heuristics(log, dependency_threshold=d, frequency_threshold=f)` with user‑defined thresholds.  The heuristic miner filters infrequent behaviour to produce robust models.  Save the model visualisation.
-   - Compare models by computing the five quality dimensions (fitness, precision, generalisation, simplicity, soundness) using PM4Py’s evaluation functions.
-   - Provide guidance in the report on when to prefer each miner: the Inductive Miner yields sound models but may overfit noisy logs; the Heuristic Miner is more robust to noise but may lack soundness.
-   - When `--miner-selection=auto`, the pipeline selects a miner based on variant diversity and rare-variant ratios, defaulting to the Heuristic Miner when logs are noisy.
-
-7. **Conformance Checking**
-
-   - Use token‑based replay and alignments to evaluate how well the discovered models reproduce the observed behaviour.  Implement `pm4py.conformance_token_based_replay` and `pm4py.conformance_alignments` as appropriate.
-   - Summarise fitness and precision scores in a table.  Identify deviations (e.g., missing or extra activities) and include them in the report.
-   - Compute generalisation, simplicity and soundness metrics.  Highlight trade‑offs between complex models and simpler ones with lower precision.
-
-8. **Performance & Organisational Analysis**
-
-   - **Bottleneck Detection**: calculate sojourn times per activity to identify steps with long waiting or processing times.  Plot bar charts of average sojourn times and highlight outliers.
-   - **Throughput & Arrival**: compute case durations, arrival rates and length of stay metrics.  Visualise event counts over time to identify peaks and slack periods.
-   - **Social Network Analysis**: use PM4Py’s social network analysis tools to generate handover‑of‑work and working‑together networks.  Optionally export network graphs to interactive formats (e.g., HTML) for stakeholder review.
-   - **Resource Utilisation**: correlate resource workloads with bottlenecks and suggest reallocation or additional resources during busy periods.
-
-9. **Reporting & Recommendations**
-
-   - Generate a final report (e.g., Markdown or HTML) summarising:
-     - Key statistics and visualisations from the EDA phase.
-     - Discovered process models with their quality metrics.
-     - Deviations identified during conformance checking.
-     - Performance bottlenecks and resource insights.
-     - Actionable recommendations for process improvement, such as reducing variants, updating reference models or reallocating staff.
-   - Save the report and all associated plots in the output directory specified by the user.
+If a config is used:
+```bash
+python scripts/run_pipeline.py --config config/example.yaml
+```
 
 ## Additional Resources
 
-- **PM4Py Documentation** – Official documentation for process mining algorithms and APIs.
-- **IEEE XES Standard** – Details of the standard event log format.
-- **Improved Prompt Reference** – Consult `references/improved_prompt.md` for a comprehensive notebook‑based version of this workflow.  The CLI implementation in this skill mirrors that guidance in a scriptable form.
-- **Interaction Examples** – Consult `references/interaction_examples.md` for realistic, phase-by-phase question flows and common situations.
+- PM4Py documentation (official)
+- IEEE XES standard (event log format)
+- `references/improved_prompt.md` (notebook-based guidance mirrored here)
+- `references/interaction_examples.md` (phase-by-phase question flows)
 
-## Packaging & Testing
+## Packaging and Testing
 
-To prepare and distribute this skill:
+- Create a folder named `process-mining-assistant/` containing:
+  - this `SKILL.md`
+  - `scripts/`
+  - `references/`
+  - `assets/`
+  - `requirements.txt`
+  - `config/example.yaml` (optional but recommended)
+- Zip the folder so the archive contains the `process-mining-assistant/` directory at its root.
+- Test with sample logs (CSV and XES) and confirm:
+  - stage folders are created
+  - manifest is updated per phase
+  - notebooks are generated and versioned
+  - re-running after a notebook edit triggers the expected revision bump and selective re-execution
 
-- Create a folder named `process-mining-assistant` (matching the `name` field) containing this `SKILL.md`, the CLI scripts in `scripts/`, any reference files (e.g., `improved_prompt.md`), and assets (sample logs, images).
-- Zip the folder such that the archive contains the `process-mining-assistant/` directory at its root.  This structure is required when uploading the skill to Claude.
-- Before uploading, verify that the description accurately reflects when and how to use the skill, and that all referenced resources exist.  Check that required Python packages are installed.
-- Test the CLI with sample logs to ensure it produces meaningful results.  Adjust noise or dependency thresholds as needed.
- - Keep `requirements.txt` and `config/example.yaml` in sync with the scripts to ensure reproducible runs.
-4. **Quick Start**
-
-   Run the end‑to‑end pipeline:
-
-   ```bash
-   python scripts/run_pipeline.py \
-     --file assets/sample_log.csv \
-     --format csv \
-     --case CaseID --activity Activity --timestamp Timestamp \
-     --output output
-   ```

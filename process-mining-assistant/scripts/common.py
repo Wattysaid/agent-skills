@@ -2,6 +2,7 @@
 """Shared utilities for the process mining CLI workflow."""
 
 import argparse
+import hashlib
 import json
 import logging
 import os
@@ -74,6 +75,77 @@ def write_manifest(output_dir: str, params: Dict[str, Any], artifacts: Dict[str,
         "artifacts": artifacts,
     }
     save_json(manifest, os.path.join(output_dir, "manifest.json"))
+
+
+def file_hash(path: str) -> str:
+    hasher = hashlib.sha256()
+    with open(path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(8192), b""):
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+
+def ensure_stage_dir(output_root: str, stage_name: str) -> str:
+    stage_dir = os.path.join(output_root, stage_name)
+    os.makedirs(stage_dir, exist_ok=True)
+    return stage_dir
+
+
+def ensure_notebook(output_root: str, revision: str, notebook_name: str, title: str,
+                    context_lines: Optional[list] = None, code_lines: Optional[list] = None) -> str:
+    notebooks_dir = os.path.join(output_root, "notebooks", revision)
+    os.makedirs(notebooks_dir, exist_ok=True)
+    notebook_path = os.path.join(notebooks_dir, notebook_name)
+    context_lines = context_lines or []
+    code_lines = code_lines or []
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [line if line.endswith("\n") else line + "\n" for line in [f"# {title}"] + context_lines],
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [line if line.endswith("\n") else line + "\n" for line in code_lines],
+            },
+        ],
+        "metadata": {
+            "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
+            "language_info": {"name": "python"},
+        },
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    with open(notebook_path, "w", encoding="utf-8") as handle:
+        json.dump(notebook, handle, indent=2)
+    return notebook_path
+
+
+def write_stage_manifest(stage_dir: str,
+                         params: Dict[str, Any],
+                         artifacts: Dict[str, str],
+                         revision: str,
+                         notebook_path: Optional[str] = None,
+                         notes: Optional[str] = None) -> str:
+    manifest = {
+        "generated_at": datetime.utcnow().isoformat() + "Z",
+        "revision": revision,
+        "parameters": params,
+        "artifacts": artifacts,
+        "notes": notes or "",
+    }
+    if notebook_path:
+        manifest["notebook"] = {
+            "path": notebook_path,
+            "sha256": file_hash(notebook_path),
+        }
+    manifest_path = os.path.join(stage_dir, "manifest.json")
+    save_json(manifest, manifest_path)
+    return manifest_path
 
 
 def require_file(path: str) -> None:
