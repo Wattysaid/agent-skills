@@ -10,6 +10,13 @@ from datetime import datetime
 from typing import Any, Dict, Optional, Tuple
 
 
+class ExitCodes:
+    SCHEMA_ERROR = 10
+    TIMESTAMP_ERROR = 11
+    MISSING_VALUES_ERROR = 12
+    RUNTIME_ERROR = 20
+
+
 def setup_logging(verbosity: int) -> None:
     """Configure logging output."""
     level = logging.WARNING

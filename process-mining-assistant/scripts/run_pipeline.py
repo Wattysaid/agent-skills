@@ -18,21 +18,26 @@ from common import (
     save_json,
     setup_logging,
     write_manifest,
+    ExitCodes,
 )
 from process_mining_steps import (
     apply_filters,
     clean_event_log,
     compute_arrival_metrics,
+    compute_case_duration_stats,
     compute_start_end,
     compute_statistics,
     compute_variant_stats,
+    convert_dataframe_to_event_log,
     discover_models,
     evaluate_models,
     load_event_log,
+    load_csv_dataframe,
     log_to_dataframe,
     organisational_analysis,
     performance_analysis,
     plot_activity_distributions,
+    run_data_quality_checks,
 )
 
 
@@ -49,6 +54,17 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--frequency-threshold", type=float, default=0.0, help="Frequency threshold for heuristic miner.")
     parser.add_argument("--start-activities", help="Comma-separated start activities to retain.")
     parser.add_argument("--end-activities", help="Comma-separated end activities to retain.")
+    parser.add_argument("--missing-value-threshold", type=float, help="Missing value threshold for dropping/imputation.")
+    parser.add_argument("--timestamp-parse-threshold", type=float, help="Max allowed timestamp parse failure rate.")
+    parser.add_argument("--duplicate-threshold", type=float, help="Warn on duplicate rate above threshold.")
+    parser.add_argument("--auto-filter-rare-activities", action="store_true", default=None, help="Filter low-frequency activities.")
+    parser.add_argument("--min-activity-frequency", type=float, help="Min activity frequency for filtering.")
+    parser.add_argument("--min-timestamp", help="Minimum timestamp (inclusive).")
+    parser.add_argument("--max-timestamp", help="Maximum timestamp (inclusive).")
+    parser.add_argument("--impute-missing-timestamps", action="store_true", default=None, help="Impute missing timestamps above threshold.")
+    parser.add_argument("--auto-mask-sensitive", action="store_true", default=None, help="Mask detected sensitive columns.")
+    parser.add_argument("--sensitive-column-patterns", help="Comma-separated patterns for sensitive columns.")
+    parser.add_argument("--timestamp-impute-strategy", choices=["median", "mean"], help="Timestamp imputation strategy.")
     parser.add_argument("--config", help="Optional JSON/YAML config file.")
     parser.add_argument("-v", "--verbose", action="count", default=0, help="Increase logging verbosity.")
     return parser.parse_args()
@@ -58,6 +74,8 @@ def generate_report(stats: Dict[str, int],
                     model_metrics: pd.DataFrame,
                     arrival_metrics: Dict[str, float],
                     start_end: Dict[str, Dict[str, int]],
+                    data_quality: Dict[str, object],
+                    performance_summary: Dict[str, object],
                     output_dir: str,
                     report_path: str) -> None:
     with open(report_path, "w", encoding="utf-8") as handle:
@@ -69,6 +87,26 @@ def generate_report(stats: Dict[str, int],
         handle.write("## Arrival Metrics\n")
         handle.write(f"- Mean inter-arrival (hours): {arrival_metrics.get('mean_interarrival_hours')}\n")
         handle.write(f"- Median inter-arrival (hours): {arrival_metrics.get('median_interarrival_hours')}\n\n")
+        if data_quality:
+            handle.write("## Data Quality\n")
+            missing = data_quality.get("missing_rates", {})
+            handle.write(f"- Missing case IDs: {missing.get('case:concept:name', 0):.2%}\n")
+            handle.write(f"- Missing activities: {missing.get('concept:name', 0):.2%}\n")
+            handle.write(f"- Missing timestamps: {missing.get('time:timestamp', 0):.2%}\n")
+            handle.write(f"- Timestamp parse failure rate: {data_quality.get('timestamp_parse_failure_rate', 0):.2%}\n")
+            handle.write(f"- Duplicate rate: {data_quality.get('duplicate_rate', 0):.2%}\n\n")
+        if performance_summary:
+            handle.write("## Performance Summary\n")
+            duration_stats = performance_summary.get("duration_stats", {})
+            if duration_stats:
+                handle.write(f"- Mean case duration (hours): {duration_stats.get('mean_hours')}\n")
+                handle.write(f"- Median case duration (hours): {duration_stats.get('median_hours')}\n")
+                handle.write(f"- P95 case duration (hours): {duration_stats.get('p95_hours')}\n")
+                handle.write(f"- Max case duration (hours): {duration_stats.get('max_hours')}\n")
+            skew_ratio = performance_summary.get("p95_to_median_ratio")
+            if skew_ratio:
+                handle.write(f"- Heavy tail ratio (P95/Median): {skew_ratio:.2f}\n")
+            handle.write("\n")
         handle.write("## Start Activities\n")
         handle.write(pd.DataFrame(list(start_end["start_activities"].items()), columns=["activity", "count"]).to_markdown(index=False))
         handle.write("\n\n")
@@ -92,22 +130,37 @@ def main() -> None:
     except Exception as exc:
         exit_with_error(str(exc))
 
+    data_quality = {}
+    quality_recommendations = {}
     try:
-        event_log = load_event_log(
-            params["file"],
-            params["format"],
-            params["case"],
-            params["activity"],
-            params["timestamp"],
-        )
+        if params["format"] == "csv":
+            df = load_csv_dataframe(params["file"], params["case"], params["activity"], params["timestamp"])
+            df, data_quality, quality_recommendations = run_data_quality_checks(df, params)
+            save_json(data_quality, os.path.join(params["output"], "data_quality.json"))
+            if quality_recommendations:
+                save_json(quality_recommendations, os.path.join(params["output"], "data_quality_recommendations.json"))
+            event_log = convert_dataframe_to_event_log(df)
+        else:
+            event_log = load_event_log(
+                params["file"],
+                params["format"],
+                params["case"],
+                params["activity"],
+                params["timestamp"],
+            )
         event_log = clean_event_log(event_log)
         event_log = apply_filters(
             event_log,
             start_activities=parse_list(params.get("start_activities")),
             end_activities=parse_list(params.get("end_activities")),
         )
+    except ValueError as exc:
+        message = str(exc)
+        if "Timestamp parse failure" in message:
+            exit_with_error(f"Validation error: {exc}", ExitCodes.TIMESTAMP_ERROR)
+        exit_with_error(f"Validation error: {exc}", ExitCodes.MISSING_VALUES_ERROR)
     except Exception as exc:
-        exit_with_error(f"Failed to load or filter event log: {exc}")
+        exit_with_error(f"Failed to load or filter event log: {exc}", ExitCodes.RUNTIME_ERROR)
 
     stats = compute_statistics(event_log)
     start_end = compute_start_end(event_log)
@@ -127,11 +180,13 @@ def main() -> None:
         params["frequency_threshold"],
     )
     model_metrics = evaluate_models(event_log, models, params["output"])
-    perf_artifacts = performance_analysis(event_log, params["output"])
+    perf_artifacts, perf_summary = performance_analysis(event_log, params["output"])
+    if perf_summary.get("recommendations"):
+        save_json(perf_summary, os.path.join(params["output"], "performance_summary.json"))
     org_artifact = organisational_analysis(event_log, params["output"])
 
     report_path = os.path.join(params["output"], "process_mining_report.md")
-    generate_report(stats, model_metrics, arrival_metrics, start_end, params["output"], report_path)
+    generate_report(stats, model_metrics, arrival_metrics, start_end, data_quality, perf_summary, params["output"], report_path)
 
     artifacts = {
         **dist_artifacts,
@@ -140,7 +195,12 @@ def main() -> None:
         "org_handover": org_artifact,
         "model_metrics": os.path.join(params["output"], "model_metrics.csv"),
         "report": report_path,
+        "data_quality": os.path.join(params["output"], "data_quality.json"),
     }
+    if quality_recommendations:
+        artifacts["data_quality_recommendations"] = os.path.join(params["output"], "data_quality_recommendations.json")
+    if perf_summary.get("recommendations"):
+        artifacts["performance_summary"] = os.path.join(params["output"], "performance_summary.json")
     write_manifest(params["output"], params, artifacts)
 
     logging.info("Process mining analysis complete. Results saved in %s", params["output"])
