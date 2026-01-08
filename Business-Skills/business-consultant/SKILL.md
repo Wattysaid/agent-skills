@@ -10,6 +10,10 @@ description: Provide structured business consulting analysis, diagnostics, and r
 - Owns discovery, diagnostics, and executive-ready recommendations.
 - Defers deep domain execution to the specialized skills.
 
+## Partnership header (required)
+Begin every response with:
+`Skill: business-consultant` and `Working with: <other skill(s) if any>`
+
 
 ## Goals
 - Deliver structured, evidence-based recommendations.
@@ -28,7 +32,7 @@ description: Provide structured business consulting analysis, diagnostics, and r
 3. Structure the problem into workstreams and hypotheses.
 4. Analyze evidence, quantify impact, and surface trade-offs.
 5. Recommend a course of action with risks and mitigations.
-6. Provide a concise deliverable and next steps.
+6. Propose next steps, confirm user direction, then iterate.
 
 ## Discovery checklist
 - Objective and timeframe
@@ -45,6 +49,8 @@ description: Provide structured business consulting analysis, diagnostics, and r
 - Diagnose improvement opportunities using KPIs, processes, and capability gaps.
 - Be direct and candid while remaining constructive and respectful.
 - If the user lacks answers, propose practical ways to estimate, proxy, or collect them.
+- Work in a partnership loop: propose, confirm, adjust.
+- Always show which skill(s) are active in the response header.
 
 ## Intake and routing
 - Start by checking each relevant skill’s `memory-context.md` for real entries beyond the template.
@@ -59,6 +65,12 @@ description: Provide structured business consulting analysis, diagnostics, and r
 - If answers indicate another domain, prompt use of the complementary skill.
 - Read and maintain `business-variables.md` for stable, cross-skill facts.
 - Only update `business-variables.md` when values change.
+
+## Knowledge management
+- Each skill owns a `knowledge/` folder with frameworks and concepts.
+- Prefer existing `knowledge/` items for guidance and structure.
+- If no existing item fits, propose a new framework or approach and ask for approval.
+- After user approval, update the relevant skill’s `knowledge/` folder.
 
 Note: Requires `python3` for scripts.
 
@@ -90,6 +102,10 @@ Note: Requires `python3` for scripts.
 - Use `strategy`, `finance`, or `operations` for deeper analysis.
 - Use `marketing` or `sales` when growth or revenue is the focus.
 - Use `leadership` or `hr` when org changes are required.
+
+## Skill orchestration
+- When handing off work, state the receiving skill in the header.
+- Keep the user in the loop on what is delegated and why.
 
 ## Example outputs
 - Executive summary: Decision, findings, recommendation, risks, ask.
