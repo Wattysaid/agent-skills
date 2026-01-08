@@ -24,6 +24,8 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--max-timestamp", help="Maximum timestamp (inclusive).")
     parser.add_argument("--impute-missing-timestamps", action="store_true", help="Impute missing timestamps above threshold.")
     parser.add_argument("--timestamp-impute-strategy", choices=["median", "mean"], default="median", help="Timestamp imputation strategy.")
+    parser.add_argument("--auto-mask-sensitive", action="store_true", help="Mask detected sensitive columns.")
+    parser.add_argument("--sensitive-column-patterns", help="Comma-separated patterns for sensitive columns.")
     return parser.parse_args()
 
 
@@ -42,6 +44,8 @@ def main() -> None:
         message = str(exc)
         if "Timestamp parse failure" in message:
             exit_with_error(message, ExitCodes.TIMESTAMP_ERROR)
+        if "Missing required columns" in message:
+            exit_with_error(message, ExitCodes.SCHEMA_ERROR)
         exit_with_error(message, ExitCodes.MISSING_VALUES_ERROR)
     except Exception as exc:
         exit_with_error(str(exc), ExitCodes.RUNTIME_ERROR)

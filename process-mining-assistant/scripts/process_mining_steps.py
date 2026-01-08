@@ -70,6 +70,9 @@ def clean_event_log(event_log: object) -> object:
 
 def run_data_quality_checks(df: pd.DataFrame, config: Dict[str, Any]) -> Tuple[pd.DataFrame, Dict[str, Any], Dict[str, Any]]:
     required = ["case:concept:name", "concept:name", "time:timestamp"]
+    missing_columns = [col for col in required if col not in df.columns]
+    if missing_columns:
+        raise ValueError(f"Missing required columns: {', '.join(missing_columns)}")
     missing = {col: float(df[col].isna().mean()) for col in required if col in df.columns}
     missing_threshold = float(config.get("missing_value_threshold", 0.05))
     timestamp_parse_threshold = float(config.get("timestamp_parse_threshold", 0.02))
@@ -217,6 +220,9 @@ def plot_activity_distributions(df: pd.DataFrame, output_dir: str) -> Dict[str, 
     df["date"] = df["time:timestamp"].dt.date
 
     artifacts = {}
+    activity_counts = df["concept:name"].value_counts()
+    activity_counts.to_csv(os.path.join(output_dir, "activity_frequency.csv"), header=["count"])
+    artifacts["activity_frequency"] = os.path.join(output_dir, "activity_frequency.csv")
     plt.figure(figsize=(10, 6))
     df.groupby("hour")["concept:name"].count().plot(kind="bar", color="skyblue")
     plt.xlabel("Hour of Day")
@@ -349,28 +355,45 @@ def compute_case_duration_stats(event_log: object) -> Dict[str, float]:
 
 
 def discover_models(event_log: object, output_dir: str, noise_threshold: float,
-                    dependency_threshold: float, frequency_threshold: float) -> Dict[str, object]:
+                    dependency_threshold: float, frequency_threshold: float,
+                    miner_selection: str = "auto", variant_noise_threshold: float = 0.01) -> Dict[str, object]:
     require_pm4py()
     models = {}
-    try:
-        net_ind, im_ind, fm_ind = inductive_miner.apply(event_log, parameters={"noise_threshold": noise_threshold})
-        gviz_ind = pn_vis.apply(net_ind, im_ind, fm_ind)
-        pn_vis.save(gviz_ind, os.path.join(output_dir, "inductive_miner_petri_net.png"))
-        models["inductive"] = (net_ind, im_ind, fm_ind)
-    except Exception as exc:
-        logging.warning("Inductive miner failed: %s", exc)
-
-    try:
-        net_heu, im_heu, fm_heu = heuristic_miner.apply_heu(
-            event_log,
-            dependency_threshold=dependency_threshold,
-            frequency_threshold=frequency_threshold,
+    selection = miner_selection.lower()
+    if selection == "auto":
+        variants = variants_get.get_variants(event_log)
+        num_cases = max(len(event_log), 1)
+        variant_count = len(variants)
+        low_freq_variants = sum(
+            1 for traces in variants.values()
+            if len(traces) / num_cases < variant_noise_threshold
         )
-        gviz_heu = pn_vis.apply(net_heu, im_heu, fm_heu)
-        pn_vis.save(gviz_heu, os.path.join(output_dir, "heuristic_miner_petri_net.png"))
-        models["heuristic"] = (net_heu, im_heu, fm_heu)
-    except Exception as exc:
-        logging.warning("Heuristic miner failed: %s", exc)
+        noisy = variant_count / num_cases > 0.5 or (variant_count > 0 and low_freq_variants / variant_count > 0.5)
+        selection = "heuristic" if noisy else "inductive"
+        if selection == "heuristic" and frequency_threshold < 0.02:
+            frequency_threshold = max(frequency_threshold, 0.02)
+
+    if selection in ("inductive", "both"):
+        try:
+            net_ind, im_ind, fm_ind = inductive_miner.apply(event_log, parameters={"noise_threshold": noise_threshold})
+            gviz_ind = pn_vis.apply(net_ind, im_ind, fm_ind)
+            pn_vis.save(gviz_ind, os.path.join(output_dir, "inductive_miner_petri_net.png"))
+            models["inductive"] = (net_ind, im_ind, fm_ind)
+        except Exception as exc:
+            logging.warning("Inductive miner failed: %s", exc)
+
+    if selection in ("heuristic", "both"):
+        try:
+            net_heu, im_heu, fm_heu = heuristic_miner.apply_heu(
+                event_log,
+                dependency_threshold=dependency_threshold,
+                frequency_threshold=frequency_threshold,
+            )
+            gviz_heu = pn_vis.apply(net_heu, im_heu, fm_heu)
+            pn_vis.save(gviz_heu, os.path.join(output_dir, "heuristic_miner_petri_net.png"))
+            models["heuristic"] = (net_heu, im_heu, fm_heu)
+        except Exception as exc:
+            logging.warning("Heuristic miner failed: %s", exc)
     return models
 
 

@@ -18,6 +18,8 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--noise-threshold", type=float, default=0.0, help="Noise threshold for inductive miner.")
     parser.add_argument("--dependency-threshold", type=float, default=0.5, help="Dependency threshold for heuristic miner.")
     parser.add_argument("--frequency-threshold", type=float, default=0.0, help="Frequency threshold for heuristic miner.")
+    parser.add_argument("--miner-selection", choices=["auto", "inductive", "heuristic", "both"], default="auto", help="Miner selection strategy.")
+    parser.add_argument("--variant-noise-threshold", type=float, default=0.01, help="Variant frequency threshold for auto selection.")
     return parser.parse_args()
 
 
@@ -27,7 +29,15 @@ def main() -> None:
         require_file(args.file)
         ensure_output_dir(args.output)
         event_log = load_event_log(args.file, args.format, args.case, args.activity, args.timestamp)
-        discover_models(event_log, args.output, args.noise_threshold, args.dependency_threshold, args.frequency_threshold)
+        discover_models(
+            event_log,
+            args.output,
+            args.noise_threshold,
+            args.dependency_threshold,
+            args.frequency_threshold,
+            args.miner_selection,
+            args.variant_noise_threshold,
+        )
     except Exception as exc:
         exit_with_error(str(exc))
 

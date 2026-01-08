@@ -67,6 +67,17 @@ The CLI workflow accepts event logs in either **XES** or **CSV** format and outp
 | `--start-activities` | None | Comma-separated start activities |
 | `--end-activities` | None | Comma-separated end activities |
 | `--config` | None | JSON/YAML config file |
+| `--missing-value-threshold` | `0.05` | Missing value threshold |
+| `--timestamp-parse-threshold` | `0.02` | Timestamp parse failure threshold |
+| `--duplicate-threshold` | `0.02` | Duplicate rate warning threshold |
+| `--auto-filter-rare-activities` | False | Filter low-frequency activities |
+| `--min-activity-frequency` | `0.01` | Minimum activity frequency |
+| `--impute-missing-timestamps` | False | Impute timestamps above threshold |
+| `--timestamp-impute-strategy` | `median` | Timestamp imputation strategy |
+| `--auto-mask-sensitive` | True | Mask detected sensitive columns |
+| `--sensitive-column-patterns` | None | Patterns for sensitive columns |
+| `--miner-selection` | `auto` | Miner selection strategy |
+| `--variant-noise-threshold` | `0.01` | Variant frequency threshold |
 
 ### Script Layout
 
@@ -74,6 +85,7 @@ The CLI workflow accepts event logs in either **XES** or **CSV** format and outp
 | --- | --- |
 | `scripts/00_validate_env.py` | Verify pm4py/pandas/numpy/matplotlib availability |
 | `scripts/01_ingest.py` | Load and normalize logs, export normalized CSV/XES |
+| `scripts/02_data_quality.py` | Data quality checks, schema validation, missing values |
 | `scripts/02_clean_filter.py` | Clean and filter logs (start/end activity filters) |
 | `scripts/03_eda.py` | Stats, distributions, variants, arrival metrics |
 | `scripts/04_discover.py` | Process discovery (inductive/heuristic miners) |
@@ -101,6 +113,17 @@ dependency_threshold: 0.5
 frequency_threshold: 0.01
 start_activities: "Start"
 end_activities: "End"
+missing_value_threshold: 0.05
+timestamp_parse_threshold: 0.02
+duplicate_threshold: 0.02
+auto_filter_rare_activities: false
+min_activity_frequency: 0.01
+impute_missing_timestamps: false
+timestamp_impute_strategy: median
+auto_mask_sensitive: true
+sensitive_column_patterns: "name,email,phone,ssn,address,user,customer,patient,employee,resource"
+miner_selection: auto
+variant_noise_threshold: 0.01
 ```
 
 ### Input Schema (CSV)
@@ -122,19 +145,28 @@ end_activities: "End"
 | `activity_distribution_hour.png` | Event distribution by hour |
 | `activity_distribution_weekday.png` | Event distribution by weekday |
 | `activity_distribution_month.png` | Event distribution by month |
+| `activity_frequency.csv` | Activity frequency table |
+| `event_throughput_timeseries.png` | Events per day over time |
+| `case_arrival_timeseries.png` | Case arrivals over time |
 | `model_metrics.csv` | Fitness/precision/generalisation/simplicity/soundness |
 | `case_durations.csv` | Case duration distribution data |
 | `case_duration_distribution.png` | Case duration histogram |
+| `case_duration_boxplot.png` | Case duration boxplot |
+| `case_duration_spc.png` | Case duration SPC chart |
 | `sojourn_times.csv` | Average sojourn time per activity |
 | `sojourn_time_chart.png` | Sojourn time bar chart |
 | `handover_of_work.csv` | Handover-of-work counts |
 | `process_mining_report.md` | Markdown report |
 | `manifest.json` | Parameters and artifact map |
+| `data_quality.json` | Missing rates, parse failures, duplicate rates |
+| `data_quality_recommendations.json` | Suggested thresholds and masks |
+| `performance_summary.json` | Performance recommendations |
 
 4. **Data Loading & Cleaning**
 
    - **XES Logs**: load using `pm4py.read_xes(file_path)`.  PM4Py automatically recognises the case identifier, activity name and timestamp.
    - **CSV Logs**: read with `pandas.read_csv(file_path)`.  Rename the case, activity and timestamp columns to PM4Py’s standard keys (`case:concept:name`, `concept:name`, `time:timestamp`).  Convert timestamps to datetime using `pm4py.objects.conversion.log.converter`.  Remove duplicate rows with `drop_duplicates()` and handle missing values through imputation or removal.  Document any assumptions about data types.
+   - **Data Quality Checks**: run `scripts/02_data_quality.py` or the pipeline’s built‑in checks to validate required columns, validate timestamp parsing, assess missing rates, drop or impute missing timestamps based on thresholds, and mask detected sensitive columns when enabled.
    - **Filtering**: apply PM4Py’s filtering functions (`filter_start_activities`, `filter_end_activities`, `filter_event_attribute_values`, `filter_trace_attribute_values`, `filter_variants`, `filter_time_range`) to remove noise and outliers.  Provide optional CLI flags for setting frequency thresholds.
    - **Privacy**: if the user enables anonymisation, apply control‑flow anonymisation (e.g., SaCoFa) and contextual anonymisation (PRIPEL) with the specified ε, k and p values.
 
@@ -152,6 +184,7 @@ end_activities: "End"
    - **Heuristic Miner**: run `pm4py.discover_petri_net_heuristics(log, dependency_threshold=d, frequency_threshold=f)` with user‑defined thresholds.  The heuristic miner filters infrequent behaviour to produce robust models.  Save the model visualisation.
    - Compare models by computing the five quality dimensions (fitness, precision, generalisation, simplicity, soundness) using PM4Py’s evaluation functions.
    - Provide guidance in the report on when to prefer each miner: the Inductive Miner yields sound models but may overfit noisy logs; the Heuristic Miner is more robust to noise but may lack soundness.
+   - When `--miner-selection=auto`, the pipeline selects a miner based on variant diversity and rare-variant ratios, defaulting to the Heuristic Miner when logs are noisy.
 
 7. **Conformance Checking**
 

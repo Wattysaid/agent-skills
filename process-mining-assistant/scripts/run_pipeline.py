@@ -24,7 +24,6 @@ from process_mining_steps import (
     apply_filters,
     clean_event_log,
     compute_arrival_metrics,
-    compute_case_duration_stats,
     compute_start_end,
     compute_statistics,
     compute_variant_stats,
@@ -52,6 +51,8 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--noise-threshold", type=float, default=0.0, help="Noise threshold for inductive miner.")
     parser.add_argument("--dependency-threshold", type=float, default=0.5, help="Dependency threshold for heuristic miner.")
     parser.add_argument("--frequency-threshold", type=float, default=0.0, help="Frequency threshold for heuristic miner.")
+    parser.add_argument("--miner-selection", choices=["auto", "inductive", "heuristic", "both"], help="Miner selection strategy.")
+    parser.add_argument("--variant-noise-threshold", type=float, help="Variant frequency threshold for auto selection.")
     parser.add_argument("--start-activities", help="Comma-separated start activities to retain.")
     parser.add_argument("--end-activities", help="Comma-separated end activities to retain.")
     parser.add_argument("--missing-value-threshold", type=float, help="Missing value threshold for dropping/imputation.")
@@ -132,11 +133,13 @@ def main() -> None:
 
     data_quality = {}
     quality_recommendations = {}
+    data_quality_path = None
     try:
         if params["format"] == "csv":
             df = load_csv_dataframe(params["file"], params["case"], params["activity"], params["timestamp"])
             df, data_quality, quality_recommendations = run_data_quality_checks(df, params)
-            save_json(data_quality, os.path.join(params["output"], "data_quality.json"))
+            data_quality_path = os.path.join(params["output"], "data_quality.json")
+            save_json(data_quality, data_quality_path)
             if quality_recommendations:
                 save_json(quality_recommendations, os.path.join(params["output"], "data_quality_recommendations.json"))
             event_log = convert_dataframe_to_event_log(df)
@@ -158,6 +161,8 @@ def main() -> None:
         message = str(exc)
         if "Timestamp parse failure" in message:
             exit_with_error(f"Validation error: {exc}", ExitCodes.TIMESTAMP_ERROR)
+        if "Missing required columns" in message:
+            exit_with_error(f"Validation error: {exc}", ExitCodes.SCHEMA_ERROR)
         exit_with_error(f"Validation error: {exc}", ExitCodes.MISSING_VALUES_ERROR)
     except Exception as exc:
         exit_with_error(f"Failed to load or filter event log: {exc}", ExitCodes.RUNTIME_ERROR)
@@ -178,6 +183,8 @@ def main() -> None:
         params["noise_threshold"],
         params["dependency_threshold"],
         params["frequency_threshold"],
+        params.get("miner_selection", "auto"),
+        float(params.get("variant_noise_threshold", 0.01)),
     )
     model_metrics = evaluate_models(event_log, models, params["output"])
     perf_artifacts, perf_summary = performance_analysis(event_log, params["output"])
@@ -195,8 +202,9 @@ def main() -> None:
         "org_handover": org_artifact,
         "model_metrics": os.path.join(params["output"], "model_metrics.csv"),
         "report": report_path,
-        "data_quality": os.path.join(params["output"], "data_quality.json"),
     }
+    if data_quality_path:
+        artifacts["data_quality"] = data_quality_path
     if quality_recommendations:
         artifacts["data_quality_recommendations"] = os.path.join(params["output"], "data_quality_recommendations.json")
     if perf_summary.get("recommendations"):
