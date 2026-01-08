@@ -4,6 +4,11 @@
 - Purpose:
 - Link to analysis:
 
+## Decision Log
+| Decision | Why it matters | Options (preferred) | Impact on outputs |
+| --- | --- | --- | --- |
+| | | | |
+
 ## Data Cleaning Summary
 | Data Source | Issues Found | Resolution Method | Assumptions |
 | --- | --- | --- | --- |

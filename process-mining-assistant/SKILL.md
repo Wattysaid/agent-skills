@@ -7,6 +7,17 @@ description: Perform an end‑to‑end process mining analysis via a command‑l
 
 This skill equips you with a repeatable command‑line workflow for conducting comprehensive process mining analyses.  It is designed for business analysts and data scientists who need to run the entire process mining lifecycle—from data ingestion through discovery, conformance checking and performance analysis—without relying on a notebook environment.  The skill assumes familiarity with Python and the PM4Py library.
 
+### Decision-First Interaction (Required)
+
+For every phase that changes outputs or assumptions, ask the user to decide. Each question must include:
+
+- Ask: "Choose how we should handle X."
+- Complication: why the decision matters for correctness, privacy, or interpretability.
+- Options: 2-4 approaches, mark the preferred option.
+- Impact: what each choice changes in the outputs or artifacts.
+
+Do not proceed until the user chooses. Use this framing for data loading, schema mapping, data quality thresholds, filtering, mining strategy, conformance methods, privacy controls, and reporting formats.
+
 ### Prerequisites & Dependencies
 
 To use this skill effectively, ensure the following software is available on your system:
@@ -78,6 +89,16 @@ The CLI workflow accepts event logs in either **XES** or **CSV** format and outp
 | `--sensitive-column-patterns` | None | Patterns for sensitive columns |
 | `--miner-selection` | `auto` | Miner selection strategy |
 | `--variant-noise-threshold` | `0.01` | Variant frequency threshold |
+
+### Decision Checkpoints (Ask Before Running)
+
+- Input format and schema mapping (CSV column names, timestamp format).
+- Data quality thresholds (missing, parse failure, duplicates).
+- Privacy handling (masking/anonymization settings).
+- Filtering (start/end activities, rare activity filtering).
+- Miner selection (auto vs inductive vs heuristic vs both).
+- Conformance method preference (token replay vs alignments if applicable).
+- Output/reporting formats and audience (executive vs technical vs data quality log).
 
 ### Script Layout
 

@@ -24,7 +24,11 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--max-timestamp", help="Maximum timestamp (inclusive).")
     parser.add_argument("--impute-missing-timestamps", action="store_true", help="Impute missing timestamps above threshold.")
     parser.add_argument("--timestamp-impute-strategy", choices=["median", "mean"], default="median", help="Timestamp imputation strategy.")
-    parser.add_argument("--auto-mask-sensitive", action="store_true", help="Mask detected sensitive columns.")
+    parser.add_argument("--auto-mask-sensitive", dest="auto_mask_sensitive", action="store_true",
+                        help="Mask detected sensitive columns.")
+    parser.add_argument("--no-auto-mask-sensitive", dest="auto_mask_sensitive", action="store_false",
+                        help="Disable masking detected sensitive columns.")
+    parser.set_defaults(auto_mask_sensitive=True)
     parser.add_argument("--sensitive-column-patterns", help="Comma-separated patterns for sensitive columns.")
     return parser.parse_args()
 

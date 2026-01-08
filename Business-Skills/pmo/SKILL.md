@@ -1,6 +1,6 @@
 ---
 name: pmo
-description: Support project and program management: planning, tracking, governance, and delivery. Use for PMO reporting, roadmaps, risk logs, or execution cadence tasks.
+description: "Support project and program management: planning, tracking, governance, and delivery. Use for PMO reporting, roadmaps, risk logs, or execution cadence tasks."
 ---
 
 # PMO

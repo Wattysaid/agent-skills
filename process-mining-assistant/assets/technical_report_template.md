@@ -6,6 +6,11 @@
 - Volume:
 - Time period:
 
+## Decision Log
+| Decision | Why it matters | Options (preferred) | Impact on outputs |
+| --- | --- | --- | --- |
+| | | | |
+
 ## Data Preparation Procedures
 - Column normalization:
 - Duplicate removal:
