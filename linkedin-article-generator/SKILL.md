@@ -3,27 +3,32 @@ name: linkedin-article-generator
 description: |
   Generate leadership‑style LinkedIn articles from a collection of topic and conversation files.  
   Use this skill whenever a user wants to draft a reflective LinkedIn post or long‑form article based on notes, meeting transcripts or other documents.  
-  The skill reads all text files within a specified folder, synthesises the key points and produces a polished LinkedIn article using a distinctive tone of voice (observational, pragmatic and operator‑credible) with second‑order thinking and practical takeaways.  
+  The skill reads all text files within a specified folder (provided by the user), synthesises the key points and produces a polished LinkedIn article using a distinctive tone of voice (observational, pragmatic and operator‑credible) with second‑order thinking and practical takeaways.  
 ---
 
 # LinkedIn Article Generator
 
-This skill helps an agent draft LinkedIn posts and articles by reading a folder of source documents (e.g. meeting notes, chat logs, research) and composing a thoughtful post in a distinctive tone of voice.  The skill uses **progressive disclosure**: lightweight metadata (the `name` and `description` fields) allow Claude to discover the skill, and detailed instructions appear in this document.  Additional resources such as tone guidance and templates live in the `references/` directory and only load when needed【477748344563007†L372-L383】.
+This skill helps an agent draft LinkedIn posts and articles by reading a folder of source documents (e.g. meeting notes, chat logs, research, articles, LinkedIn posts, etc.) and composing a thoughtful post in a distinctive tone of voice. The skill uses **progressive disclosure**: lightweight metadata (the `name` and `description` fields) allow the agent to discover the skill, and detailed instructions appear in this document.  Additional resources such as tone guidance and templates live in the `references/` directory and only load when needed. 
 
 ## When to use this skill
 
-Use this skill whenever a user wants to publish a LinkedIn post or article and provides a folder containing topics and conversation transcripts.  Typical requests include:
+Use this skill whenever a user wants to publish a LinkedIn post or article and provides a folder containing topics and/or conversation transcripts. Typical requests include:
 
-- Drafting an experience‑led post that extracts lessons from a recent meeting or pattern.
-- Writing a thought‑leadership article on an emerging market shift with second‑order consequences.
-- Composing a short punchy post that shares a single operational truth with a checklist and question.
-- Converting a rant into a constructive article that channels emotion into mechanism and outcomes.
+- **Narrative-Driven Insights:** Extracting high-level lessons from recent experiences, meetings, or industry patterns.
+- **Thought Leadership:** Developing deep-dive articles on emerging market shifts and their second-order consequences.
+- **Tactical Execution:** Crafting "punchy" short-form posts that deliver a single operational truth, paired with a checklist or call-to-action.
+- **Refining Perspectives:** Converting raw opinions or "rants" into constructive, professional articles that focus on mechanisms and outcomes.
+- **Contrarian Takes:** Challenging "best practices" or popular industry myths with evidence-based counter-arguments.
+- **Curation & Synthesizing:** Distilling a complex transcript or folder of notes into a "Top 5 Takeaways" summary for busy professionals.
+- **Building in Public:** Documenting a work-in-progress project, highlighting specific failures, pivots, and the logic behind them.
+- **Event/Keynote Repurposing:** Transforming a recorded speech or webinar transcript into a structured, readable long-form article.
+- **Framework Development:** Turning a conversational explanation of a workflow into a named, repeatable framework (e.g., "The 3-Step XYZ Method").
 
 If the user asks for help with general writing that is **not** intended for LinkedIn (e.g. academic papers, sales emails), do not activate this skill.
 
 ## How it works
 
-1. **Get the input folder**: Ask the user for the path to the folder containing their topics and conversation transcripts.  Each file should be plain‑text (`.txt` or `.md`) and describe an event, meeting or concept.
+1. **Get the input folder**: Ask the user for the path to the folder containing their topics and conversation transcripts.  Each file should be plain‑text (`.txt`, `.pptx`, `.docx` or `.md`) and describe an event, meeting, concept, situation or experience.
 2. **Read all files**: Use the provided Python script `scripts/generate_article.py` to read and concatenate the contents of the folder.  The script supports optional arguments such as `--archetype` (e.g. `experience`, `market`, `punch`, `rant`) and `--length` (`short` or `long`) to tailor the output style.
 3. **Identify the archetype**: Determine which post archetype best fits the content and the user’s brief:
    - **Experience‑led**: story from the field with operational tips.
