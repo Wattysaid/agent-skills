@@ -1,0 +1,9 @@
+filename,category,description
+docs/openai_codex_cli.md,docs,Codex CLI overview and skills design
+docs/claude_code_skills.md,docs,Claude Code skills and CLAUDE.md usage
+docs/gemini_cli_skills.md,docs,Gemini CLI extensions and skills patterns
+community_repos/awesome_agent_skills.md,community,Multi-agent skills repositories
+community_repos/awesome_claude_code.md,community,Claude Code community resources
+tutorials/cli_comparisons.md,tutorials,Comparison of AI coding CLIs
+tutorials/skills_file_format.md,tutorials,Skill file formats and best practices
+research/agent_benchmarks.md,research,Academic and benchmark context

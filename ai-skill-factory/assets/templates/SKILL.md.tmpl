@@ -1,0 +1,40 @@
+---
+name: {{skill_name}}
+description: {{skill_description}}
+version: "R1.00"
+author: "Your Name"
+
+# Optional: Agent-specific configuration
+# Gemini:
+#   extensions:
+#     - my-extension
+# Claude:
+#   context_file: "CLAUDE.md"
+---
+
+# {{skill_name}}
+
+## Purpose
+- **Use when:** {{skill_triggers}}
+- **Goal:** {{skill_goal}}
+
+## Workflow
+1.  **Confirm scope:** Understand the user's request and confirm the desired outcome.
+2.  **Gather inputs:** Identify and validate all necessary inputs, including files, data, and user-provided parameters.
+3.  **Execute steps:** Follow the steps outlined below to achieve the goal.
+4.  **Provide outputs:** Present the results to the user in a clear and concise format.
+5.  **Verify:** Confirm that the output meets the user's expectations and that all changes are correct.
+
+## Instructions
+1.  {{step_1}}
+2.  {{step_2}}
+3.  {{step_3}}
+
+## Safety & Guardrails
+- **Destructive actions:** Require user confirmation before deleting or modifying critical resources.
+- **File modifications:** Always create a backup of any file before modifying it.
+- **Rollback:** Provide instructions on how to undo any changes made by the skill.
+
+## Examples
+- **Command:** `do {{skill_name}} with --input file.txt`
+- **Expected output:** A summary of the changes made to `file.txt`.

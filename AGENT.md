@@ -24,6 +24,12 @@ Usage notes:
 <available_skills>
 
 <skill>
+<name>ai-skill-factory</name>
+<description>Create new AI skills for Codex, Claude, and Gemini with proper structure, boilerplate, and best practices. Use when users request creating a new skill or need to scaffold a skill directory with all necessary files.</description>
+<location>project</location>
+</skill>
+
+<skill>
 <name>algorithmic-art</name>
 <description>Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use when users request creating art using code, generative art, algorithmic art, flow fields, or particle systems. Create original algorithmic art rather than copying existing artists' work to avoid copyright violations.</description>
 <location>project</location>
@@ -122,6 +128,12 @@ Usage notes:
 <skill>
 <name>skill-creator</name>
 <description>Guide for creating effective skills. Use when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>skill-installer</name>
+<description>Install agent-skills for Claude Code, Gemini Code Assist, and Codex. Use when users want to install skills, set up the skills system, or make skills available to AI assistants. Provides installers for Windows (PowerShell), macOS/Linux (Bash), and cross-platform (Python).</description>
 <location>project</location>
 </skill>
 
